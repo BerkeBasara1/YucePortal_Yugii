@@ -1,0 +1,250 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="rpaDescription">
+        <br>
+        <h3>Duyuru Geçmişi</h3>
+        <br>
+        <small>Önceden paylaştığınız duyuları burada görüntüleyebilir ve akıştan kaldırabilir veya kışa tekrar ekleyebilirsiniz.</small>
+        <br>
+        <hr>
+    </div>
+    <div style="text-align: right;margin-right: 3%;">
+        <button id="saveBtn" type="button" class="btn btn-primary" style="min-width: 10%;"><i class="fa-regular fa-floppy-disk"></i>&nbsp;&nbsp;Kaydet</button>
+    </div>
+    <br>
+    <div class="rpaContent">
+        <div id="tableContainer" style="overflow: visible;">
+            <table class="arac2elTable">
+                <thead>
+                    <th style="width: 10%;">Departman</th>
+                    <th style="width: 10%;">Başlık</th>
+                    <th style="width: 11%;">İçerik</th>
+                    <th style="width: 4%;">Paylaşım Tarihi</th>
+                    <th style="width: 4%;">Email Bilgilendirme</th>
+                    <th style="width: 4%;">Görsel</th>
+                    <th style="width: 4%;">Aktif/Pasif</th>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                        <tr id="{{ post['id'] }}">
+                            <td>{{ post['department'] }}</td>
+                            <td style="color: #F7B046; text-decoration: underline; cursor: pointer;">{{ post['title'] }}</td>
+                            <td data-full-content="{{ post['content'] }}">{{ post['content'][:40] }}...</td>
+                            <td>{{ post['timestamp'] }}</td>
+                            <td>{{ "Evet" if post['notif_emmail'] == 1 else "-" }}</td>
+                            <td>
+                                {% if post['image_url'] %}
+                                    <img src="{{ post['image_url'] }}" alt="Post Image" style="max-width: 100px; max-height: 100px; border-radius:10px;">
+                                {% else %}
+                                    No Image
+                                {% endif %}
+                            </td>
+                            <td><input type="checkbox" name="aktif_pasif" class="form-control" id="{{ post['active'] }}" {% if post['active'] == 1 %} checked {% endif %}></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <div id="myModal" class="modal" style="display:none;">
+        <div class="post-card">
+          <button id="closeModalBtn" class="close-modal-btn" style="float: right;">×</button>
+          <br>
+          <div class="post-info">
+            <p class="department_post_owner" id="post_department"></p>
+            <p class="timestamp"><small id="post_time"></small></p>
+          </div>
+          <div class="post-image">
+            <img id="post_image" src="" alt="Post Image 1">
+          </div>
+          <div class="post-content">
+            <h4 id="post_title"></h4>
+            <p id="post_text"></p>
+          </div>
+        </div>
+    </div>
+</div>
+<style>
+    #dashboardLink {
+        color: #F7B046;
+        text-decoration: underline;
+    }
+
+    .arac2elTable input[type="checkbox"] {
+        width: 25px;
+        height: 25px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0.4);
+        overflow: hidden; /* Prevent scrolling */
+    }
+
+    .post-card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #E3E5E6;
+        padding: 20px;
+        border: 1px solid #cacecf;
+        border-radius: 25px;
+        width: 80%;
+        max-width: 55%;
+        box-sizing: border-box;
+        box-shadow: 0 5px 15px rgba(14, 58, 47, 0.8);
+        z-index: 2;
+    }
+
+    .dark-mode .post-card {
+        background-color: black;
+        box-shadow: none;
+    }
+
+    @media (max-width: 767px) {
+        .post-card {
+        width: 90%;
+        }
+    }
+
+    .post-info {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: #E3E5E6;
+        color: #0E3A2F;
+    }
+
+    .dark-mode .post-info {
+        background-color: black;
+        color: #78FAAE;
+    }
+
+    .post-image img {
+        width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+    }
+
+    .post-content {
+        padding: 15px;
+        background-color: #E3E5E6;
+        color: #0E3A2F;
+    }
+
+    .dark-mode .post-content {
+        background-color: black;
+    }
+
+    .dark-mode #post_title {
+        color: #78FAAE;
+    }
+
+    .dark-mode #post_text {
+        color: #FFF;
+    }
+
+    #closeModalBtn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #F15252 !important;
+        cursor: pointer;
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all post titles
+        document.querySelectorAll("table.arac2elTable tbody tr td:nth-child(2)").forEach(titleCell => {
+            titleCell.addEventListener("click", function () {
+                let row = this.parentElement; // Get the clicked row
+
+                // Extract data from the row
+                let department = row.cells[0].innerText;
+                let title = row.cells[1].innerText;
+                let fullContent = row.cells[2].getAttribute("data-full-content");
+                console.log(fullContent)
+                let timestamp = row.cells[3].innerText;
+                let imageSrc = row.cells[5].querySelector("img") ? row.cells[5].querySelector("img").src : "";
+
+                // Populate the modal
+                document.getElementById("post_department").innerText = department;
+                document.getElementById("post_title").innerText = title;
+                document.getElementById("post_text").innerText = fullContent;
+                document.getElementById("post_time").innerText = timestamp;
+
+                // Handle image display
+                let modalImage = document.getElementById("post_image");
+                if (imageSrc) {
+                    modalImage.src = imageSrc;
+                    modalImage.style.display = "block";
+                } else {
+                    modalImage.style.display = "none";
+                }
+
+                // Show the modal
+                document.getElementById("myModal").style.display = "block";
+            });
+        });
+
+        // Close modal functionality
+        document.getElementById("closeModalBtn").addEventListener("click", function () {
+            document.getElementById("myModal").style.display = "none";
+        });
+
+        // Close modal when clicking outside the modal
+        window.addEventListener("click", function (event) {
+            let modal = document.getElementById("myModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', function () {
+        const tableRows = document.querySelectorAll('.arac2elTable tbody tr');
+        const dataToSend = [];
+
+        tableRows.forEach(row => {
+            const rowId = row.id;
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            const isChecked = checkbox.checked ? 1 : 0;
+
+            dataToSend.push({
+                id: rowId,
+                aktif_pasif: isChecked
+            });
+        });
+
+        fetch('/update_posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend),
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong');
+            }
+        })
+        .then(data => {
+            location.reload();
+        })
+        .catch(error => {
+            alert('An error occurred: ' + error.message); // Show error message
+            console.error(error);
+        });
+    });
+
+</script>
+{% endblock body %}

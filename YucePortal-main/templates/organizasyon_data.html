@@ -1,0 +1,803 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="rpaDescription">
+        <br>
+        <h3>Yüce Auto Organizasyon Bilgileri</h3>
+        <small>Şirketimizin organizasyon yapısını burada görüntülüyebilirsiniz.</small>
+        <br>
+        <hr>
+        <div class="right_side_btn" style="display: flex; justify-content: right; align-items: center; gap: 20px;">
+            <p style="margin-bottom: 10px;">Toplam Sayı: {{ population_skoda }}</p>
+        </div>
+        <div class="tabs" style="user-select: none;">
+            <button class="tablinks active" onclick="openTab(event, 'tableTab')">Organizasyon Tablosu</button>
+            <button class="tablinks" id="schematicTabButton" onclick="openTab(event, 'schemaTab')">Organizasyon Şeması</button>
+        </div>
+        <div id="tableTab" class="tabView">
+            <div class="right_side_btn" style="display: flex; justify-content: right; align-items: center; gap: 20px;">
+                {% if session["departman"] == "Bilgi Teknolojileri" or session["departman"] == "İnsan Kaynakları"  %}
+                    <button id="ExcelBtn" type="button" class="btn btn-primary"><i class="fa-regular fa-file-excel"></i>&nbsp;&nbsp;Excel'e Al</button>
+                {% endif %}
+            </div>
+            <div class="organization-view">
+                <div class="department">
+                    <p class="depName">Yönetim<br><small>({{ yonetim_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in yonetim_aslist %}
+                            <div class="profileCard {{ 'yonetimCard' if person.title in ['Yönetim Kurulu Başkanı', 'Yönetim Kurulu Üyesi', 'Yönetim Kurulu Başkanı ve Yönetim Kurulu Danışmanı'] else '' }} {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Yeni İş Modelleri <br><small>({{ yeniis_modelleri_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in yeniis_modelleri_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Mali ve İdari İşler<br><small>({{ maliVeIdari_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in maliVeIdari_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Dijital Dönüşüm ve Müşteri Deneyim Yönetimi<br><small>({{ musterideneyimi_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in musterideneyimi_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Stratejik Planlama ve Proje Yönetimi<br><small>({{ planlama_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in planlama_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Satış<br><small>({{ satis_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in satis_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Filo Satış <br><small>({{ filo_satis_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in filo_satis_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Ürün <br><small>({{ urun_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in urun_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Pazarlama<br><small>({{ pazarlama_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in pazarlama_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Satış Sonrası Hizmetler<br><small>({{ ssh_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in ssh_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Bayi Geliştirme <br><small>({{ bayigelistirme_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in bayigelistirme_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">İnsan Kaynakları <br><small>({{ ik_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in ik_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="department">
+                    <p class="depName">Bilgi Teknolojileri <br><small>({{ it_aslist|length }})</small></p>
+                    <div class="people">
+                        {% for person in it_aslist %}
+                            <div class="profileCard {{ 'mudurCard' if 'müdür' in person.title.lower() else '' }}">
+                                <img src="{{ url_for('static', filename='users_card_photos/' + person.username + '.jpg') }}" alt="Image" class="image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='SkodaLogo.png') }}';">
+                                <div class="text-area">{{ person.name }}</div>
+                                <div class="text-area"><small><i class="fa-solid fa-user-tie"></i>{{ person.title }}</small></div>
+                                <div class="text-area" onclick="copyToClipboard(event)" title="Kopyala"><small class="mailAddress"><i class="copyMail fa-solid fa-envelope"></i><span class="email-text">{{ person.mail }}</span></small></div>
+                                <div class="text-area"><small><i class="fa-solid fa-phone"></i>{{ person.phone_number }}<b>{{ person.phone_code }}</b></small></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="schemaTab" class="tabView" style="display: none;">
+            <div class="topRow" id="topView"></div>
+            <div class="horizontal-connector">
+            <div class="tree-container" id="schematicView"></div>
+        </div>
+    </div>
+</div>
+<br>
+<style>
+    .people::-webkit-scrollbar-thumb {
+        background-color: #0E3A2F;
+        border-radius: 10px;
+    }
+
+    .organization-view {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        margin: 20px;
+        margin-top: 0px;
+        padding: 2%;
+        border-radius: 9px;
+    }
+
+    .department {
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .department.dark-mode {
+        background-color: #333333 !important;
+        color: #78FAAE;
+    }
+
+    .profileCard {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 3px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 25px;
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    .profileCard .image {
+        grid-row: span 4;
+        grid-column: span 1;
+        width: 70px;
+        height: 70px;
+        border: 3px solid #0E3A2F;
+        border-radius: 50%;
+        object-fit: cover;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .dark-mode .profileCard {
+        box-shadow: none;
+        border: 1px solid #1f1f1f;
+    }
+
+    .profileCard i {
+        margin-right: 5px;
+    }
+    
+    .yonetimCard {
+        background-color: #A0A7A8;
+    }
+
+    .mudurCard {
+        background-color: #CACECF;
+    }
+
+    .dark-mode .yonetimCard {
+        background-color: black;
+    }
+
+    .dark-mode .mudurCard {
+        background-color: #1f1f1f;
+    }
+
+    .text-area {
+        grid-column: 2 / span 2;
+    }
+
+    .depName {
+        padding: 10px 0px;
+        background-color: #0E3A2F;
+        color: #78FFAE;
+        border-radius: 10PX;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .people {
+        padding: 0% 3% 2% 3%;
+        max-height: 300px;
+        overflow: auto;
+    }
+
+    small, span {
+        font-family: "SKODANextW02-Light", sans-serif;
+        transition: font-weight 0.3s ease;
+    }
+
+    span:hover {
+        color: #F7B046;
+        cursor: pointer;
+    }
+
+    #schemaTab {
+        overflow: auto;
+        max-height: 70vh;
+    }
+    
+    .tree-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    #tableTab {
+        display: grid;
+    }
+
+    .topRow {
+        align-items: center;
+    }
+
+    .yonetim-root {
+        width: 10%;
+        position: sticky;
+        left: 40%;
+        top: 0;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background-color: #F1F2F2;
+        text-align: center;
+    }
+
+    .dark-mode .yonetim-root {
+        background-color: #333333;
+    }
+
+    .secondary-yonetim-root {
+        margin-top: 60px;
+    }
+
+    .department-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        position: relative;
+        flex-wrap: nowrap;
+        max-height: 100%;
+    }
+
+    .deptName {
+        display: flex;
+        min-height: 70px;
+        justify-content: center;
+        align-items: center;
+        padding: 8px;
+        background-color: #0E3A2F;
+        color: #78FAAE;
+        border-radius: 5px;
+    }
+
+    .department-node {
+        text-align: center;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #F1F2F2;
+        width: 400px;
+        min-width: 150px;
+    }
+
+    .dark-mode .department-node {
+        background-color: #333333;
+    }
+
+    .member-node {
+        margin: 5px;
+        padding: 8px;
+        background-color: #CACECF;
+        border: 1px solid #CACECF;
+        border-radius: 5px;
+        transition: margin-left 0.3s ease; /* Smooth transition for visual effect */
+    }
+
+    .dark-mode .member-node {
+        background-color: #000000;
+        border: 1px solid #1f1f1f;
+        color: #78FFAE;
+    }
+
+    .connector-line {
+        position: absolute;
+        background-color: #0E3A2F;
+        border-collapse: collapse;
+    }
+
+    .vertical-connector {
+        width: 1px;
+        border: 1px solid #0E3A2F;
+    }
+
+    .horizontal-connector {
+        height: 1px;
+        border: 1px solid #0E3A2F;
+    }
+
+    .dark-mode .connector-line {
+        background-color: #78FAAE;
+        border: 1px solid #78FAAE;
+    }
+
+    .dark-mode .vertical-connector {
+        background-color: #78FAAE;
+        border: 1px solid #78FAAE;
+    }
+
+    .dark-mode .horizontal-connector {
+        background-color: #78FAAE;
+        border: 1px solid #78FAAE;
+    }
+
+    .member-stajyer {
+        background-color: #E3E5E6;
+    }
+
+    .dark-mode .member-stajyer {
+        background-color: #1f1f1f;
+    }
+
+    @media (max-width: 1500px) {
+        .organization-view {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .organization-view {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 1000px) {
+        .organization-view {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+<script>
+    function copyToClipboard(event) {
+        const emailElement = event.target.closest('.mailAddress').querySelector('.email-text');
+        if (emailElement) {
+            const email = emailElement.innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = email;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showPopUpModal('Mail adresi kopyalandı!', 'check');
+            } catch (error) {
+                console.error("Fallback: Failed to copy email: ", error);
+            }
+            document.body.removeChild(textArea);
+        }
+    }
+
+    function openTab(evt, tabName) {
+        var tabcontent = document.getElementsByClassName("tabView");
+        for (var i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        var tablinks = document.getElementsByClassName("tablinks");
+        for (var i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "grid";
+        evt.currentTarget.className += " active";
+    }
+    
+    const excelButton = document.getElementById("ExcelBtn");
+    if (excelButton) { 
+        document.getElementById("ExcelBtn").addEventListener("click", function () {
+            const data = {
+                yonetim_aslist: {{ yonetim_aslist|tojson }},
+                yonetim_primary_aslist: {{ yonetim_primary_aslist|tojson }},
+                yonetim_secondary_aslist: {{ yonetim_secondary_aslist|tojson }},
+                maliVeIdari_aslist: {{ maliVeIdari_aslist|tojson }},
+                musterideneyimi_aslist: {{ musterideneyimi_aslist|tojson }},
+                planlama_aslist: {{ planlama_aslist|tojson }},
+                satis_aslist: {{ satis_aslist|tojson }},
+                filo_satis_aslist: {{ filo_satis_aslist|tojson }},
+                urun_aslist: {{ urun_aslist|tojson }},
+                pazarlama_aslist: {{ pazarlama_aslist|tojson }},
+                ssh_aslist: {{ ssh_aslist|tojson }},
+                bayigelistirme_aslist: {{ bayigelistirme_aslist|tojson }},
+                ik_aslist: {{ ik_aslist|tojson }},
+                it_aslist: {{ it_aslist|tojson }},
+                yeniismodelleri_aslist: {{ yeniis_modelleri_aslist|tojson }},
+                population_skoda: {{ population_skoda|tojson }}
+            };
+
+            fetch("/download_organization_excel", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "Personel Listesi.xlsx";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error("Download error:", error));
+        });
+    }
+
+    function renderSchematic() {
+        const departments = [
+            { name: 'Mali ve İdari İşler', members: {{ maliVeIdari_aslist|tojson }} },
+            { name: 'Dijital Dönüşüm ve Müşteri Deneyim Yönetimi', members: {{ musterideneyimi_aslist|tojson }} },
+            { name: 'Stratejik Planlama ve Proje Yönetimi', members: {{ planlama_aslist|tojson }} },
+            { name: 'Satış', members: {{ satis_aslist|tojson }} },
+            { name: 'Filo Satış', members: {{ filo_satis_aslist|tojson }} },
+            { name: 'Ürün', members: {{ urun_aslist|tojson }} },
+            { name: 'Pazarlama', members: {{ pazarlama_aslist|tojson }} },
+            { name: 'Satış Sonrası Hizmetler', members: {{ ssh_aslist|tojson }} },
+            { name: 'Bayi Geliştirme', members: {{ bayigelistirme_aslist|tojson }} },
+            { name: 'İnsan Kaynakları', members: {{ ik_aslist|tojson }} },
+            { name: 'Bilgi Teknolojileri', members: {{ it_aslist|tojson }} },
+            { name: 'Yeni İş Modelleri', members: {{ yeniis_modelleri_aslist|tojson }} }
+        ];
+
+        const schematicView = document.getElementById('schematicView');
+        schematicView.innerHTML = '';
+        const topView = document.getElementById('topView');
+        topView.innerHTML = '';
+
+        // Create the root node for "Yönetim" (Management)
+        const yonetimNode = document.createElement('div');
+        yonetimNode.classList.add('yonetim-root');
+        yonetimNode.innerHTML = `<div class="deptName"><strong>Yönetim</strong></div>`;
+        topView.appendChild(yonetimNode);
+
+        // Create a node for "Primary Yönetim" (Management)
+        const primaryYonetimNode = document.createElement('div');
+        primaryYonetimNode.classList.add('primary-yonetim-root');
+        primaryYonetimNode.style.width = '100%'
+        yonetimNode.appendChild(primaryYonetimNode);
+        
+        const primaryYonetimData = { name: 'Yönetim', members: JSON.parse('{{ yonetim_primary_aslist|tojson }}') };
+        primaryYonetimData.members.forEach(member => {
+            const primaryYonetimMemberNode = document.createElement('div');
+            primaryYonetimMemberNode.classList.add('member-node');
+            primaryYonetimMemberNode.innerHTML = `${member.name}<br>${member.title}`;
+            primaryYonetimMemberNode.setAttribute('data-name', member.name);
+            primaryYonetimNode.appendChild(primaryYonetimMemberNode);
+        });
+
+        // Create a node for "Secondary Yönetim" (Management)
+        const secondaryYonetimNode = document.createElement('div');
+        secondaryYonetimNode.classList.add('secondary-yonetim-root');
+        secondaryYonetimNode.style.width = '100%'
+        yonetimNode.appendChild(secondaryYonetimNode);
+        const secondaryYonetimData = { name: 'Yönetim', members: JSON.parse('{{ yonetim_secondary_aslist|tojson }}') };
+        secondaryYonetimData.members.forEach(member => {
+            const secondaryYonetimMemberNode = document.createElement('div');
+            secondaryYonetimMemberNode.classList.add('member-node');
+            secondaryYonetimMemberNode.innerHTML = `${member.name}<br>${member.title}`;
+            secondaryYonetimMemberNode.setAttribute('data-name', member.name);
+            secondaryYonetimNode.appendChild(secondaryYonetimMemberNode);
+        });
+
+        const verticalLine = document.createElement('div');
+        verticalLine.classList.add('connector-line', 'vertical-connector');
+
+        verticalLine.style.position = 'absolute';
+        verticalLine.style.height = '50px';
+
+        console.log("Top: " + yonetimNode.offsetTop)
+        console.log("Left: " + yonetimNode.offsetLeft)
+        console.log("Height: " + yonetimNode.offsetHeight)
+        console.log("Width: " + yonetimNode.offsetWidth)
+
+
+        verticalLine.style.top = `${yonetimNode.offsetTop + yonetimNode.offsetHeight}px`;
+        verticalLine.style.left = `${yonetimNode.offsetLeft + (yonetimNode.offsetWidth / 2)}px`;
+
+        // Append the vertical line to the secondaryYonetimNode
+        yonetimNode.appendChild(verticalLine);
+
+        const departmentContainer = document.createElement('div');
+        departmentContainer.classList.add('department-container');
+        schematicView.appendChild(departmentContainer);
+
+        function buildHierarchy(department) {
+            const hierarchy = {};
+
+            department.members.forEach(person => {
+                const managerName = person.manager;
+
+                if (managerName) {
+                    if (!hierarchy[managerName]) {
+                        hierarchy[managerName] = [];
+                    }
+                    hierarchy[managerName].push(person);
+                }
+            });
+
+            return hierarchy;
+        }
+
+        function displayMembersInHierarchy(person, hierarchy, level = 0, membersContainer, visited) {
+            if (visited.has(person.name)) return;
+
+            visited.add(person.name);
+
+            const memberNode = document.createElement('div');
+            memberNode.classList.add('member-node');
+            memberNode.innerHTML = `${person.name}<br>${person.title}`;
+            memberNode.style.marginLeft = `${level * 50}px`;
+            if (person.title.includes("Stajyer")) {
+                memberNode.classList.add('member-stajyer');
+            }
+            memberNode.setAttribute('data-name', person.name);
+            membersContainer.appendChild(memberNode);
+
+            setTimeout(() => {
+                const subordinates = hierarchy[person.name];
+
+                if (person.title.includes("Müdür")) {
+                    // If the person is "Müdür", add only a vertical line
+                    subordinates.forEach(subordinate => {
+                        displayMembersInHierarchy(subordinate, hierarchy, level + 1, membersContainer, visited);
+                        const subordinateNode = membersContainer.querySelector(`[data-name="${subordinate.name}"]`);
+
+                        const verticalLine = document.createElement('div');
+                        verticalLine.classList.add('connector-line', 'vertical-connector');
+                        verticalLine.style.height = `${(subordinateNode.offsetTop + subordinateNode.offsetHeight / 2) - (memberNode.offsetTop + memberNode.offsetHeight)}px`;
+                        verticalLine.style.top = `${memberNode.offsetTop + memberNode.offsetHeight}px`;
+                        verticalLine.style.left = `${memberNode.offsetLeft}px`;
+                        membersContainer.appendChild(verticalLine);
+                    });
+                } else if (person.title.includes("Birim Yöneticisi") || person.title.includes("Yöneticisi")) {
+                    // If the person is "Birim Yöneticisi" or "Yönetici", add both vertical and horizontal lines
+                    if (subordinates) {
+                        subordinates.forEach(subordinate => {
+                            displayMembersInHierarchy(subordinate, hierarchy, level + 1, membersContainer, visited);
+                            const subordinateNode = membersContainer.querySelector(`[data-name="${subordinate.name}"]`);
+
+                            const verticalLine = document.createElement('div');
+                            verticalLine.classList.add('connector-line', 'vertical-connector');
+                            verticalLine.style.height = `${(subordinateNode.offsetTop + subordinateNode.offsetHeight / 2) - (memberNode.offsetTop + memberNode.offsetHeight)}px`;
+                            verticalLine.style.top = `${memberNode.offsetTop + memberNode.offsetHeight}px`;
+                            verticalLine.style.left = `${memberNode.offsetLeft}px`;
+                            membersContainer.appendChild(verticalLine);
+
+                            const horizontalLine = document.createElement('div');
+                            horizontalLine.classList.add('connector-line', 'horizontal-connector');
+                            horizontalLine.style.width = `${Math.abs(subordinateNode.offsetLeft - memberNode.offsetLeft)}px`;
+                            horizontalLine.style.top = `${memberNode.offsetTop + memberNode.offsetHeight / 2}px`;
+                            horizontalLine.style.left = `${(memberNode.offsetLeft - subordinateNode.marginLeft)}px`;
+                            membersContainer.appendChild(horizontalLine);
+                        });
+                    }
+                    else {
+                        // If the person does not have any subordinates add only horizontal lines
+                        const managerNode = document.querySelector(`[data-name="${person.manager}"]`);
+                        const managerOffsetLeft = managerNode.offsetLeft;
+                        const memberOffsetLeft = memberNode.offsetLeft;
+
+                        const horizontalLine = document.createElement('div');
+                        horizontalLine.classList.add('connector-line', 'horizontal-connector');
+                        horizontalLine.style.width = `${Math.abs(memberOffsetLeft - managerOffsetLeft)}px`;
+                        horizontalLine.style.top = `${memberNode.offsetTop + memberNode.offsetHeight / 2}px`;
+                        horizontalLine.style.left = `${Math.min(managerOffsetLeft, memberOffsetLeft)}px`;
+                        membersContainer.appendChild(horizontalLine);
+                    }
+                } else {
+                    // For other roles, add only a horizontal line connecting to the manager
+                    const horizontalLine = document.createElement('div');
+                    horizontalLine.classList.add('connector-line', 'horizontal-connector');
+
+                    const managerNode = document.querySelector(`[data-name="${person.manager}"]`);
+                    if (managerNode) {
+                        const managerOffsetLeft = managerNode.offsetLeft;
+                        const memberOffsetLeft = memberNode.offsetLeft;
+
+                        horizontalLine.style.width = `${Math.abs(memberOffsetLeft - managerOffsetLeft)}px`;
+                        horizontalLine.style.left = `${Math.min(managerOffsetLeft, memberOffsetLeft)}px`;
+                    }
+
+                    horizontalLine.style.height = '2px';
+                    horizontalLine.style.top = `${memberNode.offsetTop + memberNode.offsetHeight / 2}px`;
+                    membersContainer.appendChild(horizontalLine);
+                }
+            }, 0);
+        }
+
+        departments.forEach(department => {
+            const departmentNode = document.createElement('div');
+            departmentNode.classList.add('department-node');
+            departmentNode.innerHTML = `<div class="deptName"><strong>${department.name}</strong></div>`;
+
+            const hierarchy = buildHierarchy(department);
+            const membersContainer = document.createElement('div');
+            const visited = new Set();
+
+            // First, find the "Müdür" (top-level manager)
+            const mudur = department.members.find(person => person.title.includes("Müdür"));
+
+            if (mudur) {
+                // Display "Müdür" first with 0 margin
+                displayMembersInHierarchy(mudur, hierarchy, 0, membersContainer, visited);
+
+                // Display **Birim Yöneticisi** members that report to "Müdür" and their subordinates
+                department.members.forEach(person => {
+                    if (person.manager === mudur.name && person.title.includes("Birim Yöneticisi") && !visited.has(person.name)) {
+                        displayMembersInHierarchy(person, hierarchy, 1, membersContainer, visited);
+
+                        // Now display members that report directly to this **Birim Yöneticisi**
+                        const subordinates = hierarchy[person.name];
+                        if (subordinates) {
+                            subordinates.forEach(subordinate => {
+                                displayMembersInHierarchy(subordinate, hierarchy, 2, membersContainer, visited);
+                            });
+                        }
+                    }
+                });
+                
+                // Display **Yöneticisi** members that report to "Müdür" and their subordinates
+                department.members.forEach(person => {
+                    if (person.manager === mudur.name && (person.title.includes("Yöneticisi") && !person.title.includes("Birim")) && !visited.has(person.name)) {
+                        displayMembersInHierarchy(person, hierarchy, 1, membersContainer, visited);
+
+                        // Now display members that report directly to this **Birim Yöneticisi**
+                        const subordinates = hierarchy[person.name];
+                        if (subordinates) {
+                            subordinates.forEach(subordinate => {
+                                displayMembersInHierarchy(subordinate, hierarchy, 2, membersContainer, visited);
+                            });
+                        }
+                    }
+                });
+
+                // Now display all other members that report directly to "Müdür" but are not "Birim Yöneticisi"
+                department.members.forEach(person => {
+                    if (person.manager === mudur.name && !person.title.includes("Birim Yöneticisi") && !visited.has(person.name)) {
+                        displayMembersInHierarchy(person, hierarchy, 1, membersContainer, visited);
+                    }
+                });
+            }
+
+            departmentNode.appendChild(membersContainer);
+            departmentContainer.appendChild(departmentNode);
+
+            const deptNameNode = departmentNode.querySelector('.deptName');
+            const firstMemberNode = membersContainer.querySelector('.member-node');
+            
+            if (deptNameNode && firstMemberNode) {
+                const verticalLine = document.createElement('div');
+                verticalLine.classList.add('connector-line', 'vertical-connector');
+                
+                // Calculate height and position of the line
+                verticalLine.style.height = `50px`;
+                verticalLine.style.top = `${deptNameNode.offsetTop - 35}px`;
+                verticalLine.style.left = `${deptNameNode.offsetLeft + deptNameNode.offsetWidth / 2}px`;
+                
+                departmentNode.appendChild(verticalLine);
+            }
+        });
+    }
+
+    // Call the function to render the schematic when the tab is opened
+    document.getElementById('schematicTabButton').addEventListener('click', function() {
+        renderSchematic();
+    });
+
+</script>
+{% endblock body %}

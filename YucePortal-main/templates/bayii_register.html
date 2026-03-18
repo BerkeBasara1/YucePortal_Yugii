@@ -1,0 +1,38 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Kayıt Oluştur</h3>
+        <br>
+        <small>Bayi çalışanlarına buradan kullanıcı oluşturabilirsiniz.</small>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post">
+            <div class="side-by-side_between center_item">
+                <div style="width: 50%">
+                    {{ render_field(form.name, class = "form-control") }}
+                    {{ render_field(form.surname, class = "form-control") }}
+                </div>
+                <div style="width: 50%">
+                    {{ render_field(form.email, class = "form-control") }}
+                    {{ render_field(form.bayii, class = "form-control") }}
+                </div>
+            </div>
+            <br>
+            <div class="center_item" style="width: 60%;">
+                {{ render_field(form.password, class = "form-control") }}
+                {{ render_field(form.confirm, class = "form-control") }}
+            </div>     
+            <br>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+</div>
+<br>
+{% endblock body %}

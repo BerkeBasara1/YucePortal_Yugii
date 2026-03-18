@@ -1,0 +1,46 @@
+<table>
+                <tr>
+                    <th colspan="1" style="background-color:#F1F2F2; width:320px">Orijinal Parça Satış Raporu Kırılımı</th>
+                    <th colspan="1" style="background-color:#F1F2F2; width:120px">Gün</th>
+                    <th colspan="1" style="background-color:#F1F2F2; width:120px">Kümüle</th>
+                    <th colspan="1" style="background-color:#F1F2F2; width:120px">{} Gerçekleşen</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">İş Emri</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">Garanti</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">Banko</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">Servis Girişi</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                    <td style="text-align:center;">{}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center; background-color:#78FAAE"><b>Toplam</b></td>
+                    <td style="text-align:center; background-color:#78FAAE"><b>{}</b></td>
+                    <td style="text-align:center; background-color:#78FAAE"><b>{}</b></td>
+                    <td style="text-align:center; background-color:#78FAAE"><b>{}</b></td>
+                </tr>
+            </table>
+
+
+gecen_sene, format_with_period(isEmri_Gun), format_with_period(isEmri_Ay),
+format_with_period(isEmri_Gecensene), format_with_period(Garanti_Gun), format_with_period(Garanti_Ay),
+format_with_period(Garanti_Gecensene), format_with_period(Banko_son_gun), format_with_period(Banko_kumule_busene),
+format_with_period(Banko_kumule_gecensene), format_with_period(ServisGiris), format_with_period(ServisGiris_Ay),
+format_with_period(ServisGiris_Gecensene),format_with_period(Toplam_day), format_with_period(Toplam_kumule),
+format_with_period(Toplam_gecensene)

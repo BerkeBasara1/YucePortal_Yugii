@@ -1,0 +1,731 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<style>
+    * {
+        user-select: none;
+    }
+    
+    a:hover {
+        text-decoration: none;
+    }
+
+    a:focus {
+        outline: none;
+    }
+
+    .date-hr {
+        transition: background-color 1s ease;
+    }
+
+    .dark-mode  .date-hr {
+        background-color: rgba(120, 250, 174, 0.3);
+    }
+
+    .outer-div {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .calendar-div {
+        width: 75%;
+    }
+
+    .info-div {
+        width: 25%;
+        border-left: 1px solid rgba(200, 200, 200, 1);
+    }
+
+    .dark-mode .info-div {
+        border-left: 1px solid #78FAAE;
+    }
+
+    .calendar-container {
+        max-width: 1200px;
+        min-height: 900px;
+        margin: 20px auto;
+        padding: 30px;
+        border: 3px solid #0E3A2F;
+        border-radius: 20px;
+        background-image: url('/static/Elroq.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: background-image 1s ease-in-out;
+    }
+
+    .dark-mode .calendar-container {
+        background-image: url('/static/Enyaq2.jpg');
+        border: 3px solid #000000;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #0E3A2F;
+        transition: color 1s ease;
+    }
+
+    .dark-mode .calendar-header {
+        color: #78FAAE;
+    }
+
+    .calendar-header button {
+        border: none;
+        background-color: #78FAAE;
+        color: #0E3A2F;
+        border: 2px solid #0E3A2F;
+        padding: 5px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .calendar-header button:hover {
+        background-color: #F7B046;
+        color: #0E3A2F;
+    }
+
+    .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #0E3A2F;
+        transition: color 1s ease;
+    }
+
+    .dark-mode .calendar-weekdays {
+        color: #78FAAE;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+
+    .day-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-header {
+        text-align: center;
+        color: #0E3A2F;
+    }
+
+    .dark-mode .info-header {
+        color: #78FAAE;
+    }
+
+    .attendance-rectangle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 30px;
+        background-color: rgba(120, 250, 174, 0.7); /* Semi-transparent green */
+        border: 2px solid #0E3A2F;
+        border-radius: 5px;
+        margin-top: 5px; /* Adds space between the day box and rectangle */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .attendance-rectangle:hover {
+        background-color: rgba(120, 250, 174, 1); /* Darker green on hover */
+    }
+
+    .dark-mode #peopleCount {
+        color: #0E3A2F;
+    }
+
+    #peopleCount {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        margin: 0;
+        padding: 0px 10px;
+    }
+
+    #eyesIcon {
+        margin-left: auto;
+    }
+
+    .day-cell {
+        width: 100%;
+        border: 2px solid #0E3A2F;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: #78FAAE;
+        color: #0E3A2F;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .day-cell.disabled {
+        pointer-events: none; /* Prevent interaction */
+        opacity: 0.85; /* Make it visually distinct */
+        background-color: #a0a7a8; /* Light gray background */
+        color: #0E3A2F; /* Muted text color */
+        border: 2px solid #ccc; /* Light gray border */
+    }
+
+    .day-cell:hover:not(.disabled) {
+        background-color: #F7B046;
+        color: #0E3A2F;
+    }
+
+    .day-cell.selected {
+        background-color: #F7B046;
+        color: #0E3A2F;
+        border: 2px solid #78FAAE;
+    }
+
+    .day-cell.saved {
+        background-color: #0E3A2F;
+        color: #78FAAE;
+        border: 2px solid #78FAAE;
+    }
+
+    .day-cell.saved:hover {
+        background-color: #F15252;
+        color: #FFF;
+    }
+
+    .day-cell.saved:hover i {
+        color: #FFF;
+    }
+
+    .day-cell.remove {
+        background-color: #F15252;
+        color: #FFF;
+        border: 2px solid #FFF;
+    }
+
+    .dark-mode .day-cell.remove i {
+        color: #FFF;
+    }
+
+    /* Styling for weekends */
+    .day-cell.weekend {
+        background-color: rgba(120, 250, 174, 0.5); 
+        color: #0E3A2F;
+    }
+
+    .day-cell.weekend.disabled {
+        pointer-events: none; /* Prevent interaction */
+        opacity: 0.75; /* Make it visually distinct */
+        background-color: #e3e5e6; /* Light gray background */
+        color: #0E3A2F; /* Muted text color */
+        border: 2px solid #ccc; /* Light gray border */
+    }
+
+    .day-cell.weekend.selected {
+        background-color: #F7B046;
+        color: #0E3A2F;
+        border: 2px solid #78FAAE;
+    }
+
+    .day-cell.weekend.saved {
+        background-color: #0E3A2F;
+        color: #78FAAE;
+        border: 2px solid #78FAAE;
+    }
+
+    .day-cell.weekend.saved:hover {
+        background-color: #F15252;
+        color: #FFF;
+    }
+
+    .day-cell.weekend.remove {
+        background-color: #F15252;
+        color: #FFF;
+        border: 2px solid #FFF;
+    }
+
+    .profile-div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .profileCard {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        align-items: center;
+        margin-top: 10px;
+        width: 80%;
+    }
+
+    .profileCard .image {
+        width: 50px;
+        height: 50px;
+        border: 3px solid #0E3A2F;
+        border-radius: 50%;
+        object-fit: cover;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .right_side_btn button {
+        width: 10%;
+    }
+
+    #officeBtn:focus, #bayiBtn:focus, 
+    #officeBtn:hover, #bayiBtn:hover, 
+    #officeBtn:active, #bayiBtn:active {
+        background-color: #F7B046 !important;
+        color: #0E3A2F !important;
+        border: none !important;
+    }
+
+    #removeBtn:focus, #removeBtn:hover, #removeBtn:active {
+        background-color: #F15252 !important;
+        color: #FFF !important;
+        border: none !important;
+    }
+
+    @media screen and (max-width: 1000px) {
+        .outer-div {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 90%;
+        }
+    }
+</style>
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="rpaDescription">
+        <br>
+        <h3>Haftalık Takvim</h3>
+        <small>Ofiste olacağınız günleri seçtiğinizde kaydetmek için "<i class="fa-solid fa-building"></i> Ofis" butonuna basabilirsiniz.</small>
+        <br>
+        <small>Bayide olacağınız günleri seçtiğinizde kaydetmek için "<i class="fa-solid fa-car-side"></i> Bayi" butonuna basabilirsiniz.</small>
+        <br>
+        <br>
+        <small>Kimlerin ofiste olacağını görüntülemek için günün altındaki butonuna basabilirsiniz.</small>
+        <br>
+        <br>
+        <small>3 günden daha önceki tarihler için değişiklik yapmak mümkün olmayacaktır.</small>
+        <br>
+        <hr>
+    </div>
+    <div class="outer-div">
+        <div class="calendar-div">
+            <div class="right_side_btn" style="margin-right: 50px;">
+                <button id="officeBtn" type="button" class="btn btn-primary" style="background-color: #F7B046; border: none; color: #0E3A2F;"><i class="fa-solid fa-building" style="color: #0E3A2F;"></i>&nbsp;&nbsp;Ofis</button>
+                <button id="bayiBtn" type="button" class="btn btn-primary" style="background-color: #F7B046; border: none; color: #0E3A2F;"><i class="fa-solid fa-car-side" style="color: #0E3A2F;"></i>&nbsp;&nbsp;Bayi</button>
+                <button id="removeBtn" type="button" class="btn btn-primary" style="background-color: #F15252; border: none; color: fff;"><i class="fa-regular fa-circle-xmark" style="color: fff;"></i>&nbsp;&nbsp;Kaldır</button>
+            </div>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prev-month">&lt;</button>
+                    <div id="current-month"></div>
+                    <button id="next-month">&gt;</button>
+                </div>
+                <hr class="date-hr">
+                <div class="calendar-weekdays">
+                    <div>Pazartesi</div>
+                    <div>Salı</div>
+                    <div>Çarşamba</div>
+                    <div>Perşembe</div>
+                    <div>Cuma</div>
+                    <div>Cumartesi</div>
+                    <div>Pazar</div>
+                </div>
+                <hr class="date-hr">
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+        </div>
+        <div class="info-div" id="info-div">
+            <div class="info-header">
+                <h4 id="chosen-day"></h4>
+                <h5>Ofisteki Kişiler</h5>
+            </div>
+            <div class="profile-div" id="profile-div">
+                <!-- Dynamic user profiles will be appended here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const peopleCountByDate = JSON.parse('{{ people_count_by_date|tojson }}');
+        const savedDatesRaw = JSON.parse('{{ saved_dates|tojson }}');
+        const savedDatesBayiRaw = JSON.parse('{{ saved_dates_bayi|tojson }}');
+
+        // Convert savedDatesRaw to the desired format (YYYY-M-D)
+        const savedDates = savedDatesRaw.map(dateStr => {
+            const date = new Date(dateStr); // Convert to Date object
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1; // Months are 0-based in JavaScript
+            const day = date.getDate();
+            return `${year}-${month}-${day}`; // Format as "YYYY-M-D"
+        });
+
+        const chosenDay = document.getElementById('chosen-day');
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const turkishDate = today.toLocaleDateString('tr-TR', options);
+        chosenDay.innerHTML = turkishDate;
+
+        const savedDatesBayi = savedDatesBayiRaw.map(dateStr => {
+            const date = new Date(dateStr); // Convert to Date object
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1; // Months are 0-based in JavaScript
+            const day = date.getDate();
+            return `${year}-${month}-${day}`; // Format as "YYYY-M-D"
+        });
+
+        const calendarGrid = document.getElementById('calendar-grid');
+        const currentMonthLabel = document.getElementById('current-month');
+        const prevMonthButton = document.getElementById('prev-month');
+        const nextMonthButton = document.getElementById('next-month');
+        const officeButton = document.getElementById('officeBtn');
+        const bayiButton = document.getElementById('bayiBtn');
+        const removeButton = document.getElementById('removeBtn');
+
+        let currentDate = new Date();
+        let selectedDates = new Set(); // Store selected dates in a Set for uniqueness
+        let selectedDatesToRemove = new Set();
+
+        function renderCalendar(date) {
+            calendarGrid.innerHTML = ''; // Clear previous cells
+            const currentYear = date.getFullYear();
+            const currentMonth = date.getMonth();
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            const cutoffDate = new Date(today);
+            cutoffDate.setDate(today.getDate() - 4);
+            
+
+            // Update month label
+            const monthNames = [
+                'OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN',
+                'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'
+            ];
+            currentMonthLabel.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            // Adjust first day to start from Monday
+            const adjustedFirstDay = (firstDay === 0) ? 6 : firstDay - 1;
+
+            // Fill empty slots before the first day
+            for (let i = 0; i < adjustedFirstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'day-cell disabled';
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            // Fill the days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${currentYear}-${currentMonth + 1}-${day}`;
+
+                // Create wrapper
+                const dayWrapper = document.createElement('div');
+                dayWrapper.className = 'day-wrapper';
+
+                // Add day cell
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                dayCell.dataset.date = dateKey;
+                dayCell.textContent = day;
+
+                // Highlight weekends
+                const weekDay = (adjustedFirstDay + day - 1) % 7;
+                if (weekDay === 5 || weekDay === 6) { // Saturday or Sunday
+                    dayCell.classList.add('weekend');
+                }
+
+                const dayDate = new Date(currentYear, currentMonth, day);
+                if (dayDate < cutoffDate) {
+                    dayCell.classList.add('disabled');
+                }
+
+                // Check if the date is in `selectedDates`
+                if (selectedDates.has(dateKey)) {
+                    dayCell.classList.add('selected');
+                }
+
+                // Add rectangle below
+                const attendanceRectangle = document.createElement('div');
+                attendanceRectangle.className = 'attendance-rectangle';
+                const peopleCount = peopleCountByDate[dateKey] || 0; // Default to 0 if no data
+                attendanceRectangle.innerHTML = `<p id='peopleCount'>${peopleCount}<span id='eyesIcon'>👀</span></p>`;
+                attendanceRectangle.addEventListener('click', function () {
+                    const selectedDate = dateKey; // Assuming dateKey contains the selected date
+                    fetch('/return/whoat/offce/or/bayi', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ selected_date: selectedDate }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const users = data.users; // Get the list of users
+                            const profileDiv = document.getElementById('profile-div');
+                            profileDiv.innerHTML = ''; // Clear existing profiles
+
+                            if (users.length > 0) {
+                                users.forEach(user => {
+                                    // Create user profile card
+                                    const profileCard = document.createElement('div');
+                                    profileCard.className = 'profileCard';
+
+                                    const image = document.createElement('img');
+                                    image.className = 'image';
+                                    image.src = user.profile_picture || '/static/users_card_photos/' + user.username + '.jpg';
+                                    image.alt = user.name;
+
+                                    const userInfo = document.createElement('div');
+                                    userInfo.textContent = user.name + ' ' + user.surname;
+
+                                    profileCard.appendChild(image);
+                                    profileCard.appendChild(userInfo);
+
+                                    // Append the profile card to the profile-div
+                                    profileDiv.appendChild(profileCard);
+                                });
+                            
+                                const chosenDay = document.getElementById('chosen-day');
+                                const selectedDate = new Date(dateKey);
+                                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                                const updated_day = selectedDate.toLocaleDateString('tr-TR', options);
+                                console.log(updated_day);
+                                chosenDay.innerHTML = updated_day;
+
+                            } else {
+                                const noUsersMessage = document.createElement('p');
+                                noUsersMessage.textContent = 'Ofiste Kimse yok :(';
+                                profileDiv.appendChild(noUsersMessage);
+
+                                const chosenDay = document.getElementById('chosen-day');
+                                const selectedDate = new Date(dateKey);
+                                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                                const updated_day = selectedDate.toLocaleDateString('tr-TR', options);
+                                console.log(updated_day);
+                                chosenDay.innerHTML = updated_day;
+                            }
+                        } else {
+                            alert('Error: Unable to retrieve attendance data.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        alert('An error occurred while fetching attendance data.');
+                    });
+                });
+
+                // Restore selection if date is already selected
+                if (savedDates.includes(dateKey)) {
+                    dayCell.classList.add('saved');
+                    const iconElement = document.createElement('i');
+                    iconElement.className = 'fa solid fa-building';
+                    iconElement.style.marginLeft = '5px';
+                    dayCell.appendChild(iconElement);
+                }
+
+                // Restore selection if date is already selected
+                if (savedDatesBayi.includes(dateKey)) {
+                    dayCell.classList.add('saved');
+                    const iconElement = document.createElement('i');
+                    iconElement.className = 'fa solid fa-car';
+                    iconElement.style.marginLeft = '5px';
+                    dayCell.appendChild(iconElement);
+                }
+
+                // Add click event to toggle selection
+                dayCell.addEventListener('click', function () {
+                    if (this.classList.contains('disabled')) return;
+
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        selectedDates.delete(dateKey);
+                    } else if (this.classList.contains('saved')) {
+                        this.classList.replace('saved', 'remove');
+                        selectedDatesToRemove.add(dateKey);
+                    } else if (this.classList.contains('remove')) {
+                        this.classList.replace('remove', 'saved');
+                        selectedDatesToRemove.delete(dateKey);
+                    } else {
+                        this.classList.add('selected');
+                        selectedDates.add(dateKey);
+                    }
+                });
+
+                // Append day cell and rectangle to wrapper
+                dayWrapper.appendChild(dayCell);
+                dayWrapper.appendChild(attendanceRectangle);
+
+                // Add wrapper to grid
+                calendarGrid.appendChild(dayWrapper);
+            }
+        }
+
+        // Event listeners for navigation
+        prevMonthButton.addEventListener('click', function () {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar(currentDate);
+        });
+
+        nextMonthButton.addEventListener('click', function () {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar(currentDate);
+        });
+
+        // Event listener for the "Ofis" button
+        officeButton.addEventListener('click', function () {
+            const datesArray = Array.from(selectedDates);
+
+            fetch('/ofis_gunleri/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    selected_dates: datesArray
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Dates saved successfully!');
+
+                    // Update the class of each selected date
+                    datesArray.forEach(dateKey => {
+                        const dayCell = document.querySelector(`.day-cell[data-date="${dateKey}"]`);
+                        if (dayCell) {
+                            dayCell.classList.replace('selected', 'saved');
+                            
+                            // Create icon
+                            const iconElement = document.createElement('i');
+                            iconElement.className = 'fa solid fa-building';
+                            iconElement.style.marginLeft = '5px';
+                            dayCell.appendChild(iconElement);
+                        }
+                    });
+
+                    // Clear the selectedDates set
+                    selectedDates.clear();
+                    location.reload()
+                } else {
+                    alert('Failed to save dates.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        bayiButton.addEventListener('click', function () {
+            const datesArray = Array.from(selectedDates);
+
+            fetch('/bayi_gunleri/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    selected_dates: datesArray
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Dates saved successfully!');
+
+                    // Update the class of each selected date
+                    datesArray.forEach(dateKey => {
+                        const dayCell = document.querySelector(`.day-cell[data-date="${dateKey}"]`);
+                        if (dayCell) {
+                            dayCell.classList.replace('selected', 'saved');
+                            
+                            // Create icon
+                            const iconElement = document.createElement('i');
+                            iconElement.className = 'fa solid fa-car';
+                            iconElement.style.marginLeft = '5px';
+                            dayCell.appendChild(iconElement);
+                        }
+                    });
+
+                    // Clear the selectedDates set
+                    selectedDates.clear();
+                    location.reload()
+                } else {
+                    alert('Failed to save dates.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+        
+        removeButton.addEventListener('click', function () {
+            const datesArray = Array.from(selectedDatesToRemove);
+            console.log(selectedDatesToRemove);
+
+            fetch('/gunleri/kaldır/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    selected_dates: datesArray
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Dates sent successfully!');
+
+                    datesArray.forEach(dateKey => {
+                        const dayCell = document.querySelector(`.day-cell[data-date="${dateKey}"]`);
+                        if (dayCell) {
+                            dayCell.classList.remove('remove');
+
+                            const iconElement = dayCell.querySelector('i');
+                            if (iconElement) {
+                                iconElement.remove();
+                            }
+                        }
+                    });
+
+                    // Clear the selectedDates set
+                    selectedDates.clear();
+                    location.reload()
+                } else {
+                    alert('Failed to save dates.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+
+        // Initial render
+        renderCalendar(currentDate);
+    });
+</script>
+{% endblock body %}

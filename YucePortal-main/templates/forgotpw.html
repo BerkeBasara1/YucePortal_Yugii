@@ -1,0 +1,36 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+    <div class = "container" style="position:relative; padding:1%; border-radius:25px; opacity:1; margin-bottom: 3%; margin-top: 2%;">
+        <div style="width: 90%; margin: 3% auto;">
+            <h3>Şifremi Unuttum</h3>
+            <br>
+            <small>Yeni şifreniz mail adresinize iletilecektir.</small>
+            <br>
+                <br>
+                <form method="post">
+                    {{ render_field(form.email) }}
+                    <br>
+                    <div>
+                    <button type="submit" class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; border-radius:10px; border-width: 1px; border-color: #0E3A2F;"><b>Şifre Yenile</b></button>
+                </div>
+                </form>
+        </div>        
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var abc = '{{ erra }}';
+        console.log("Value of abc:", abc);
+        if (abc == "Yaah") {
+            showPopUpModal('Mail adresi için kayıt bulunmamaktadır.<br>Lütfen tekrar deneyiniz.', 'error');
+        }
+
+        if (abc == "Nope") {
+            showPopUpModal('Mail adresine yeni bir şifre gönderilmiştir', 'check');
+        }
+    });
+</script>
+    
+{% endblock body %}

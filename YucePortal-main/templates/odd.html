@@ -1,0 +1,32 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>ODD Verisini Yükleme</h3>
+        <br>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data">
+            <div class="side-by-side_between">
+                <div style="width: 50%;">
+                    {{ render_field(form.year, class = "form-control") }}
+                </div>
+                <div style="width: 50%;">
+                    {{ render_field(form.quarter, class = "form-control") }}
+                </div>
+            </div>
+            {{ render_field(form.file1, class = "form-control") }}
+            <br>
+            <br>
+            <button type="submit" class="btn btn-primary">Yükle</button>
+        </form>
+    </div>
+</div>
+<br>
+{% endblock body %}

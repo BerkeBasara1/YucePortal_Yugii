@@ -1,0 +1,361 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<style>
+    .carInfoBtn {
+        width: 80%;
+        background-color: #0E3A2F;
+        color: #78FAAE;
+        padding: 5% 10%;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .carInfoBtn:hover {
+        background-color: #78FAAE;
+        color: #0E3A2F;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+</style>
+
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="platformContainer">
+        <div class="rpaDescription">
+            <br>
+            <h3><a href="/YuceAutoUser/Arac_2El_Menu" class="returnBtn">2. El Araç Menü</a> >> Süreci Tamamlanmış Araçlar</h3>
+            <hr>
+        </div>
+    </div>
+    <br>
+    <div style="text-align: right;margin-right: 5%;">
+        <button id="ExcelBtn" type="button" class="btn btn-primary" style="min-width: 10%;"><i class="fa-regular fa-file-excel"></i>&nbsp;&nbsp;Excel'e Al</button>
+    </div>
+    <br>
+    <div id="rpaContent" style="margin-left: 3%;">
+        <div id="tableContainer" style="overflow: visible;">
+            <table class="arac2elTable" style="color: #0E3A2F; min-height: 10%;">
+                <thead>
+                    <tr>
+                        <th style="width: 7%;">Süreç No</th>
+                        <th>Plaka No</th>
+                        <th style="width: 23%;">Model</th>
+                        <th>Yıl</th>
+                        <th style="width: 10%;">Renk</th>
+                        <th>KM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>Süreç {{ result[13] }}</td>
+                        <td><button class="carInfoBtn" id="{{result[0]}}" type="button">{{ result[2] }}</button></td>
+                        <td>{{ result[3] }}</td>
+                        <td>{{ result[4] }}</td>
+                        <td>{{ result[5] }}</td>
+                        <td>{{ result[6] }} KM</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="pagination">
+            <ul>
+                {% if page > 1 %}
+                <li><a href="{{ url_for('YuceAutoUser_SurecTamamlanmisAraclar', page=page-1) }}">Önceki</a></li>
+                {% else %}
+                <li class="disabled"><a>Önceki</a></li>
+                {% endif %}
+                
+                {% for p in range(1, total_pages + 1) %}
+                <li class="{% if p == page %}active{% endif %}">
+                    <a href="{{ url_for('YuceAutoUser_SurecTamamlanmisAraclar', page=p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                
+                {% if page < total_pages %}
+                <li><a href="{{ url_for('YuceAutoUser_SurecTamamlanmisAraclar', page=page+1) }}">Sonraki</a></li>
+                {% else %}
+                <li class="disabled"><a>Sonraki</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div id="myModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width: 90%; min-height: 60vh;">
+            <div class="side-by-side_between">
+                <h4 id="carPlate_deadline" style="color: #0E3A2F;">PLAKA / TARİH</h4>
+                <button id="closeModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <br>
+    
+            <div class="tabs" style="user-select: none;">
+                <button class="tablinks active" onclick="openTab(event, 'bayiTeklifleriTab')">Bayi Teklifleri <span id="teklifler_adet"></span></button>
+                <button class="tablinks" onclick="openTab(event, 'yaTeklifleriTab')">Yüce Auto Teklifleri <span id="ilgileniyorum_adet"></span></button>
+                <button class="tablinks" onclick="openTab(event, 'aracBilgileriTab')">Araç Bilgileri</button>
+            </div>
+    
+            <div id="bayiTeklifleriTab" class="tabcontent" style="display: block;">
+                <div id="tableContainer" style="width: 100%; overflow-y: auto; max-height: 43vh">
+                    <table class="arac2elTable">
+                        <thead>
+                            <tr>
+                                <th>Bayi</th>
+                                <th>Fiyat</th>
+                                <th>Teklif Verdi</th>
+                                <th>Teklif Tarihi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div id="yaTeklifleriTab" class="tabcontent" style="display: none;">
+                <div id="tableContainer" style="width: 100%;">
+                    <table class="arac2elTable">
+                        <thead>
+                            <tr>
+                                <th>Personel</th>
+                                <th>Gösterilen Fiyat</th>
+                                <th>İlgileniyor</th>
+                                <th>Teklif Tarihi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div id="aracBilgileriTab" class="tabcontent" style="display: none;">
+                <div id="tableContainer" style="width: 100%;">
+                    <table class="arac2elTable">
+                        <thead>
+                            <tr>
+                                <th>Eksper Raporu</th>
+                                <th>Servis Geçmişi</th>
+                                <th>Araç Teklif Formu</th>
+                                <th>Fotoğraflar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="eksperRaporu"></td>
+                                <td id="servisGecmisi"></td>
+                                <td id="aracTeklifFormu"></td>
+                                <td id="fotograf"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
+<script>
+    document.getElementById("ExcelBtn").addEventListener("click", function () {
+        window.location.href = "/download_teklifler_excel";
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const modal = document.getElementById('myModal');
+        const openModalBtns = document.querySelectorAll('.carInfoBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const firstTabLink = document.querySelector('.tablinks');
+        const firstTabContent = document.querySelector('.tabcontent');
+
+        openModalBtns.forEach(function (button) {
+            button.onclick = function() {
+                const currentCarId = button.getAttribute('id');
+                fetch(`/YuceAutoUser/SurecTamamlanmisAraclar/carinfo/${currentCarId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('carPlate_deadline').textContent = data.Plaka + " / " + data.deadline;
+                    if(data.EksperRaporu == '-'){
+                        document.getElementById('eksperRaporu').innerHTML = "-";
+                    }
+                    else{
+                        document.getElementById('eksperRaporu').innerHTML = `<a href="{{ url_for('Display_EksperRaporu_PDF', filename='EksperRaporu_')}}${data.Plaka}" target="_blank"><b>Görüntüle&nbsp;</b></a>`;
+                    }
+                    if(data.ServisGecmisi == '-'){
+                        document.getElementById('servisGecmisi').innerHTML = "-";
+                    }
+                    else{
+                        document.getElementById('servisGecmisi').innerHTML = `<a href="{{ url_for('Display_ServisGecmisi_PDF', filename='ServisGecmisi_')}}${data.Plaka}" target="_blank"><b>Görüntüle&nbsp;</b></a>`;
+                    }
+                    if(data.AracTeklifForm == "-"){
+                        document.getElementById('aracTeklifFormu').innerHTML = "-";
+                    }
+                    else{
+                        document.getElementById('aracTeklifFormu').innerHTML = `<a href="{{ url_for('Display_AracTeklifForm', filename='AracTeklifFormu_')}}${data.Plaka}" target="_blank"><b>Görüntüle&nbsp;</b></a>`;
+                    }
+                    
+                    const photos = [data.photo1, data.photo2, data.photo3, data.photo4, data.photos5];
+                    const totalPhotos = photos.length;
+                    const availablePhotos = photos.filter(photo => photo !== "-").length;
+                    const photoCountDisplay = document.getElementById('fotograf');
+                    photoCountDisplay.innerHTML = `<a href="#" id="downloadPhotos"><b>${availablePhotos}/${totalPhotos}</b></a>`;
+
+                    document.getElementById('downloadPhotos').onclick = function(event) {
+                        event.preventDefault();
+                        photos.forEach((photo, index) => {
+                            if (photo !== "-") {
+                                fetch(`/static/Arac_foto_2ElArac/${photo}`)
+                                    .then(response => response.blob())
+                                    .then(blob => {
+                                        const link = document.createElement('a');
+                                        link.href = URL.createObjectURL(blob);
+                                        link.download = photo + ".jpeg";
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                        URL.revokeObjectURL(link.href);
+                                    })
+                                    .catch(error => console.error('Download error:', error));
+                            }
+                        });
+                    };
+                })
+
+                fetch(`/YuceAutoUser/SurecTamamlanmisAraclar/teklifler_bayii/${currentCarId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(dataList => {
+                    let tableBody = document.querySelector('#bayiTeklifleriTab .arac2elTable tbody');
+                    tableBody.innerHTML = '';
+                    let teklifli_rows_count = 0;
+                    // Iterate over each dictionary in the list and create table rows
+                    dataList.forEach(data => {
+                        let newRow = document.createElement('tr');
+                        let bayiCell = document.createElement('td');
+                        bayiCell.textContent = data.dealerName;
+                        newRow.appendChild(bayiCell);
+                        
+                        let fiyatCell = document.createElement('td');
+                        if(data.Teklif == null){
+                            fiyatCell.textContent == ""
+                        }
+                        else {
+                            fiyatCell.textContent = parseFloat(data.Teklif).toLocaleString('tr-TR') + ' TL';
+                            teklifli_rows_count = teklifli_rows_count + 1;
+
+                        }                            
+                        newRow.appendChild(fiyatCell);
+                        
+                        let teklifVerCell = document.createElement('td');
+                        teklifVerCell.textContent = data.TeklifVerClicked;
+                        newRow.appendChild(teklifVerCell);
+                        
+                        let teklifTarihiCell = document.createElement('td');
+                        teklifTarihiCell.textContent = data.Bidding_Date;
+                        newRow.appendChild(teklifTarihiCell);
+                        
+                        // Append the row to the table body
+                        tableBody.appendChild(newRow);
+                    });
+                    document.getElementById('teklifler_adet').innerText = '(' + teklifli_rows_count + '/' + dataList.length + ')';
+                })
+
+                fetch(`/YuceAutoUser/SurecTamamlanmisAraclar/teklifler_YuceAuto/${currentCarId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(dataList => {
+                    let yaTableBody = document.querySelector('#yaTeklifleriTab .arac2elTable tbody');
+                    yaTableBody.innerHTML = '';
+                    dataList.forEach(data => {
+                        let newRow = document.createElement('tr');
+                        let yaCell = document.createElement('td');
+                        yaCell.textContent = data.username;
+                        newRow.appendChild(yaCell);
+                        
+                        let yaFiyatCell = document.createElement('td');
+                        if(data.Fiyat == null){
+                            yaFiyatCell.textContent == ""
+                        }
+                        else {
+                            yaFiyatCell.textContent = parseFloat(data.Fiyat).toLocaleString('tr-TR') + ' TL';
+                        }                            
+                        newRow.appendChild(yaFiyatCell);
+                        
+                        let ilgileniyorumCell = document.createElement('td');
+                        ilgileniyorumCell.textContent = data.ilgileniyor;
+                        newRow.appendChild(ilgileniyorumCell);
+                        
+                        let gonderimTarihiCell = document.createElement('td');
+                        gonderimTarihiCell.textContent = data.Gonderme_Tarihi;
+                        newRow.appendChild(gonderimTarihiCell);
+                        
+                        // Append the row to the table body
+                        yaTableBody.appendChild(newRow);
+                    });
+                    document.getElementById('ilgileniyorum_adet').innerText = '(' + dataList.length + ')';
+                });
+            
+                modal.style.display = 'block';
+
+                closeModalBtn.onclick = function(event) {
+                    modal.style.display = 'none';
+                    document.getElementById('carPlate_deadline').textContent = "";
+                    document.querySelectorAll('.tablinks').forEach(link => link.classList.remove('active'));
+                    document.querySelectorAll('.tabcontent').forEach(content => content.style.display = 'none');
+                    firstTabLink.classList.add('active');
+                    firstTabContent.style.display = 'block';
+                }
+
+                window.onclick = function(event) {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                        document.getElementById('carPlate_deadline').textContent = "";
+                        document.querySelectorAll('.tablinks').forEach(link => link.classList.remove('active'));
+                        document.querySelectorAll('.tabcontent').forEach(content => content.style.display = 'none');
+                        firstTabLink.classList.add('active');
+                        firstTabContent.style.display = 'block';
+                    }
+                }
+            };
+        });
+    });
+
+    function openTab(evt, tabName) {
+        const tabContents = document.querySelectorAll('.tabcontent');
+        tabContents.forEach(content => content.style.display = 'none');
+
+        const tabLinks = document.querySelectorAll('.tablinks');
+        tabLinks.forEach(link => link.classList.remove('active'));
+
+        document.getElementById(tabName).style.display = 'block';
+        evt.currentTarget.classList.add('active');
+    }
+</script>
+{% endblock body %}

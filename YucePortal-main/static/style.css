@@ -1,0 +1,1842 @@
+.hidden-until-loaded {
+    display: none;
+}
+
+body, .navbar, .container, .dropdown-menu, .stock-box, .department, .form-control, #rpaPlatform {
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+* {
+    input[type="date"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        position: relative;
+        border-radius: 10px;
+    }
+    
+    /* Add a custom icon color */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        background-color: #FFF; /* Change this to your desired color */
+        border-radius: 5px;
+        opacity: 1; /* Ensure it is visible */
+        cursor: pointer;
+        padding: 5px 20px;
+    }
+}
+
+a {
+    text-decoration: none !important;
+    color: #0E3A2F;
+}
+
+a:hover {
+    color: #0E3A2F;
+}
+
+button:focus {
+    outline: none;
+}
+
+#badge {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #f15252;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    box-shadow: 0 0 3px #f15252, 0 0 6px #f15252, 0 0 8px #f15252, 0 0 10px #f15252;
+}
+/* -------------------- Common Elements --------------------*/
+.dark-mode .department {
+    border:1px solid black;
+}
+.depName {
+    border:1px solid black;
+}
+
+body.dark-mode {
+    background-color: #1f1f1f; /* Dark background */
+}
+
+body .dropdown-menu{
+    background-color: #0E3A2F;
+}
+body.dark-mode .dropdown-menu{
+    background-color: black;
+}
+body .dropdown-item {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+}
+body .dropdown-item:hover,
+body .dropdown-item:focus {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+}
+body.dark-mode .dropdown-item {
+    background-color: black;
+    color: #78FAAE;
+}
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+    background-color: black;
+    color: #78FAAE;
+}
+
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select {
+    color: #78FAAE; /* Set text color for dark mode */
+    background-color: black; /* Optional: dark background for input fields */
+    border-color: #78FAAE; /* Optional: border color */
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    color: #78FAAE; /* Placeholder color */
+}
+
+.dark-mode .form-control[readonly] {
+    border: none;
+    cursor: not-allowed;
+    color: #78FAAE;
+}
+
+.dark-mode .btn.btn-primary {
+    background-color: #78FAAE;
+    color: #0E3A2F;
+    border-color: #78FAAE; /* Optional: set border to match the background */
+}
+
+.dark-mode .btn.btn-primary:hover,
+.dark-mode .btn.btn-primary:focus {
+    background-color: #0E3A2F;
+    color: #78FAAE !important;
+    border-color: #0E3A2F; /* Optional: inverted colors on hover/focus */
+}
+
+.dark-mode #platformContainer {
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.dark-mode input {
+    color: #FFF;
+}
+
+.dark-mode h1, .dark-mode h2,  .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode p,
+.dark-mode span, .dark-mode i, .dark-mode small, .dark-mode label, .dark-mode #mainHeader, .dark-mode #modalText {
+    color: #78FAAE;
+}
+
+.dark-mode #rpaPlatform {
+    background-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), 0 4px 28px rgba(0, 0, 0, 0.6);
+}
+
+.dark-mode .alert-success{
+    background-color: #394748;
+    border-top: 1px solid #78FAAE;
+    border-bottom: 1px solid #78FAAE;
+    color:#78FAAE;
+}
+
+.dark-mode .alert-warning{
+    background-color: #394748;
+    border-top: 1px solid #F7B046;
+    border-bottom: 1px solid #F7B046;
+    color:#F7B046;
+}
+
+.dark-mode .navbar-nav a {
+    color: #78FAAE; /* Adjust navbar links for dark mode */
+}
+
+.dark-mode .dropdown-menu. {
+    background-color: #0E3A2F;
+}
+
+.dark-mode .nav-link {
+    color: #78FAAE;
+}
+
+.dark-mode .container {
+    background-color: transparent;
+    color: #ffffff;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.dark-mode .rpaDescription,
+.dark-mode .rpaContent {
+    color: #ffffff;
+}
+
+.dark-mode #backgroundContainer {
+    opacity: 0.10;
+}
+
+::selection.dark-mode {
+    background: #78FAAE;
+    color: #0E3A2F;
+}
+
+.dark-mode button i {
+    color: #0E3A2F;
+}
+
+.dark-mode button:hover i {
+    color: #78FAAE;
+}
+
+.dark-mode a:hover i {
+    color: #78FAAE;
+}
+
+.dark-mode #YA_Kapanis i {
+    color: #0E3A2F;
+}
+
+.dark-mode #YA_Kapanis:hover i {
+    color: #78FAAE;
+}
+
+.dark-mode table td a {
+    color: #78FAAE;
+    transition: color 0.3s ease;
+}
+
+.dark-mode table td a:hover {
+    color: #F7B046;
+}
+
+td, a, i {
+    transition: background-color 1s ease;
+}
+
+.selected-row td,
+.selected-row a,
+.selected-row i {
+    background-color: #CACECF;
+    color: #0E3A2F !important;
+}
+
+.dark-mode .selected-row td,
+.dark-mode .selected-row a,
+.dark-mode .selected-row i {
+    background-color: #F7B046;
+    color: #0E3A2F !important;
+}
+
+/* -------------------- Form Elements --------------------*/
+.dark-mode .choices__inner {
+    background-color: #2E2E2E; /* Dark background for the dropdown */
+    border-color: #78FAAE; /* Border color to match the dark theme */
+    color: #78FAAE; /* Text color */
+}
+
+.dark-mode .choices__list--single {
+    background-color: #2E2E2E; /* Dark background for the selected item */
+    color: #78FAAE;
+}
+
+.dark-mode .choices__input {
+    background-color: #2E2E2E; /* Dark background for the input field */
+    color: #78FAAE;
+    border-color: #78FAAE;
+}
+
+.dark-mode .choices__list--dropdown .choices__item {
+    background-color: #2E2E2E; /* Dark background for dropdown items */
+    color: #78FAAE;
+    border-color: #78FAAE;
+}
+
+.dark-mode .choices__list--dropdown .choices__item--selectable:hover {
+    background-color: #0E3A2F !important; /* Darker background on hover */
+    color: #78FAAE !important; /* Text color on hover */
+}
+
+.dark-mode .form-control{
+    background-color: black;
+    color: #ffffff;
+    border: 1px solid #78FAAE;
+}
+
+.dark-mode .form-control:focus {
+    box-shadow: 0 0 5px #78FAAE;
+    border: 1px solid #78FAAE;
+    background-color: black;
+    color: #FFF;
+}
+
+.form-control:disabled:focus {
+    border: none;
+}
+
+.dark-mode .rpaForm {
+    background-color: transparent;
+}
+
+.dark-mode .eye-icon {
+    color: #78FAAE;
+}
+
+.dark-mode input[type="checkbox"] {
+    background-color: #333333;
+    border-color: #78FAAE;
+}
+
+.dark-mode input[type="checkbox"]:checked::after {
+    color: #78FAAE; /* Adjust tick color */
+}
+
+.dark-mode .close-modal-btn {
+    color: #ffffff;
+}
+
+/* Styles for autofilled inputs in dark mode */
+.dark-mode .form-control:-webkit-autofill {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border: 1px solid #78FAAE !important;
+    box-shadow: 0 0 0px 1000px #333333 inset !important; /* Forces background to stay dark */
+}
+
+/* Remove yellow background on autocomplete for Firefox */
+input:-moz-autofill,
+textarea:-moz-autofill,
+select:-moz-autofill {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #78FAAE !important;
+}
+
+/* -------------------- Buttons --------------------*/
+.dark-mode .btn-primary {
+    background: #78FAAE;
+    color: #121212;
+    border-color: #78FAAE;
+}
+
+.dark-mode .btn-primary:hover {
+    background: #121212;
+    color: #78FAAE;
+}
+
+.dark-mode .btn-primary:focus {
+    box-shadow: 0 0 5px #78FAAE;
+    border-color: #78FAAE;
+}
+
+.dark-mode .disabled-button {
+    background-color: #555555;
+    color: #ffffff;
+    border-color: #555555;
+}
+
+/* -------------------- Scrollbar --------------------*/
+
+/* General scrollbars for dark mode */
+body.dark-mode::-webkit-scrollbar-track,
+body.dark-mode .scrollable-content::-webkit-scrollbar-track,
+.dark-mode #tableContainer::-webkit-scrollbar-track,
+.dark-mode #tableContainer .scrollable-content::-webkit-scrollbar-track,
+.dark-mode ::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+/* Scrollbar thumb for dark mode */
+body.dark-mode::-webkit-scrollbar-thumb,
+body.dark-mode .scrollable-content::-webkit-scrollbar-thumb,
+.dark-mode #tableContainer::-webkit-scrollbar-thumb,
+.dark-mode #tableContainer .scrollable-content::-webkit-scrollbar-thumb,
+.dark-mode ::-webkit-scrollbar-thumb {
+    background-color: #78FAAE !important;
+    border: 3px solid #78FAAE !important;
+}
+
+
+/* -------------------- Table Elements --------------------*/
+
+.dark-mode thead tr {
+    background-color: #0E3A2F;
+}
+
+.dark-mode tr:nth-child(even) {
+    background-color: #2E2E2E;
+}
+
+.dark-mode tr:nth-child(odd) {
+    background-color: #1C1C1C;
+}
+
+.dark-mode td {
+    color: #78FAAE;
+    border: 1px solid #000000;
+}
+
+/* -------------------- Modals --------------------*/
+.dark-mode .modal-content {
+    background-color: black;
+    color: #ffffff;
+    border: 1px solid #78FAAE;
+}
+
+.dark-mode #popUpModal,
+.dark-mode .PopUpModalContainer {
+    background-color: black;
+    color: #ffffff;
+    border: 1px solid #78FAAE;
+}
+
+.dark-mode #popUpText {
+    color: #78FAAE;
+}
+
+.dark-mode .editBtn,
+.dark-mode .close-modal-btn {
+    color: #78FAAE;
+    background-color: transparent;
+}
+
+.dark-mode button.editBtn i,
+.dark-mode button.close-modal-btn i {
+    color: #78FAAE;
+    background-color: transparent;
+}
+
+.dark-mode .editBtn:hover i,
+.dark-mode .close-modal-btn:hover i {
+    color: #F7B046;
+}
+
+.dark-mode #copyBtn {
+    background-color: #333333;
+    color: #78FAAE;
+}
+
+/* -------------------- Tab Elements --------------------*/
+.dark-mode .tabs button{
+    background-color: transparent;
+    color: #78FAAE;
+}
+
+.dark-mode .tabs button.active {
+    background-color: #78FAAE;
+    color: #121212;
+}
+
+.dark-mode .tabs {
+    border-bottom: 2px solid #78FAAE;
+}
+
+/* -------------------- Login and Index Page Elements --------------------*/
+.dark-mode #loginContainer {
+    background-color: #333333;
+    color: #78FAAE;
+}
+
+.dark-mode #loginBtn {
+    background: #78FAAE;
+    color: #121212;
+    border: 1px solid #78FAAE;
+}
+
+.dark-mode #loginBtn:hover {
+    background: #121212;
+    color: #78FAAE;
+}
+
+.dark-mode .rpaDescription a {
+    color: #78FAAE;
+}
+
+.dark-mode .rpaDescription a:hover {
+    color: #F7B046;
+}
+
+/* -------------------- Grid Layout --------------------*/
+.stock-container_index.dark-mode .stock-box {
+    background-color: #333333;
+}
+
+.dark-mode .stock-box {
+    background-color: transparent;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), 0 4px 28px rgba(0, 0, 0, 0.6);
+}
+
+.dark-mode .stock-box h5 {
+    color: #78FAAE;
+}
+
+.dark-mode .stock-box:hover {
+    background: radial-gradient(circle, #78FAAE, transparent);
+}
+
+.dark-mode .stock-box:hover p {
+    color: #0E3A2F;
+}
+
+.dark-mode .stock-box:hover i {
+    color: #0E3A2F;
+}
+
+/* -------------------- PCL modal items --------------------*/
+.dark-mode .PCL.modal-content {
+    background-color: black;
+    color: #ffffff;
+    border: 1px solid #78FAAE;
+}
+
+/* -------------------- Pagination Dark Mode--------------------*/
+.dark-mode .pagination a {
+    color: #78FAAE;
+    background-color: #333333;
+    border-color: #A0A7A8;
+}
+
+.dark-mode .pagination a:hover {
+    background-color: #F7B046;
+    color: #0E3A2F;
+}
+
+.dark-mode .pagination .active a {
+    background-color: #78FAAE;
+    color: #121212;
+}
+
+.dark-mode .pagination .disabled a {
+    color: #555555;
+    background-color: #333333;
+    border: 1px solid #555555;
+}
+
+/* -------------------- Checkbox and Selection --------------------*/
+.dark-mode input[type="checkbox"] {
+    background-color: #333333;
+    border-color: #78FAAE;
+}
+
+::selection.dark-mode {
+    background: #78FAAE;
+    color: #121212;
+}
+
+/* ---------------------------------------------------------------------------------------------- DARK MODE ENDS HERE -----------------------------------------------------------------------------------------*/
+
+* {
+    font-family: 'SKODANextW05-Regular', sans-serif;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #0E3A2F;
+    border: 3px solid #0E3A2F;
+    border-radius: 10px;
+}
+
+
+#backgroundContainer {
+    background-image: url("../static/YA_banner.png");
+    background-size: contain;
+    background-repeat: repeat;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.04;
+    top: 35;
+    blur: 20px;
+    z-index: -1; /* Push the background behind the form */
+}
+
+::selection {
+    background: #78FAAE;
+    color: #0E3A2F;
+}
+ 
+.container {
+    position:relative;
+    background-color:transparent;
+    padding:10px;
+    border-radius:25px;
+    opacity:0.95;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+ 
+.rpaDescription {
+    margin-left:30px;
+    color:#0E3A2F;
+    margin-right:30px;
+}
+ 
+.rpaContent {
+    display:flex;
+    justify-content:center;
+}
+ 
+#rpaForm {
+    text-align:center;
+}
+
+.rpaForm {
+    text-align: center;
+}
+
+.form-control {
+    border-radius: 10px;
+}
+ 
+.form-control:focus {
+    outline: none !important;
+    box-shadow: 0 0 5px #78FAAE !important;
+    border: 1px solid #78FAAE;
+}
+
+.center_item {
+    margin: 0 auto;
+}
+ 
+.twoColumnArea {
+    display: flex;
+    flex-wrap: wrap;
+}
+ 
+.twoColumnArea .column {
+    flex: 0 0 50%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.side-by-side {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.side-by-side_between {
+    display: flex;
+    justify-content: space-between;
+    gap: 3%;
+}
+
+.centered_div {
+    display: flex;
+    align-items: center;justify-content: center;
+}
+ 
+.pw-area {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+ 
+.password-input-container {
+    flex: 1;
+    margin-right: 10px;
+}
+ 
+.eye-icon {
+    margin-top: 8%;
+    color: #0E3A2F;
+}
+ 
+.pw-area i {
+    position: absolute;
+    right: 7%;
+    top: 72%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+ 
+.pw-area i:hover {
+    color: #78FAAE;
+}
+ 
+.password-toggle {
+    padding-right: 30px;
+}
+ 
+.btn-primary {
+    background:#0E3A2F;
+    color:#78FAAE;
+    border-radius:10px;
+    border-width:1px;
+    border-color: #0E3A2F;
+    font-weight:bold;
+}
+ 
+.btn-primary:hover {
+    background:#78FAAE;
+    color:#0E3A2F;
+    border: 1px solid #78FAAE;
+    cursor: pointer;
+}
+
+.btn-primary:focus {
+    background:#0E3A2F !important;
+    color:#78FAAE !important;
+    outline: none  !important;
+    box-shadow: 0 0 5px #78FAAE !important;
+    border: 1px solid #78FAAE !important;
+}
+
+.btn-primary:focus:hover {
+    background:#78FAAE !important;
+    color:#0E3A2F !important;
+    border: 1px solid #78FAAE !important;
+}
+
+.btn-primary:active {
+    background:#0E3A2F !important;
+    color:#78FAAE !important;
+}
+
+button.loading {
+    background: #78FAAE !important;
+    color: #0E3A2F !important;
+    border: 1px solid #78FAAE !important;
+}
+
+button.loading i {
+    color: #0E3A2F;
+}
+
+.btn-primary i {
+    color: #78FAAE;
+}
+
+.btn-primary:hover i {
+    color: #0E3A2F;
+}
+
+.dark-mode .btn-primary i {
+    color: #0E3A2F;
+}
+
+.dark-mode .btn-primary:hover i {
+    color: #78FAAE;
+}
+
+.disabled-button {
+    background-color: #CACECF !important;
+    color: #0E3A2F !important;
+    cursor: not-allowed !important;
+}
+
+#loading {
+    color: #0E3A2F;
+}
+
+.btn-primary:hover #loading {
+    color: #78FAAE;
+}
+
+.btn-primary:focus i {
+    color: #78FAAE;
+}
+
+.btn-primary:focus:hover i {
+    color: #0E3A2F !important;
+}
+
+.right_side_btn {
+    text-align: right;
+    margin-right: 3%;
+}
+
+.hidden {
+    display: none;
+}
+
+.disabled-button {
+    background-color: #CACECF !important;
+    color: #0E3A2F !important;
+    border: 1px solid #CACECF !important;
+    cursor: not-allowed !important;
+}
+
+.disabled-button i {
+    color: #0E3A2F !important;
+}
+
+.table_input_cell dt {
+    display: none;
+}
+
+dd {
+    padding: 0px 8px !important;
+    margin-bottom: 0;
+}
+
+.dark-mode dd label {
+    color: #fff;
+}
+
+ul {
+    list-style-type: none;
+}
+
+label {
+    color: #0E3A2F;
+}
+
+.loginContainer label {
+    color: #78FAAE;
+}
+
+#ys_faaliyet_form dd input {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(202, 206, 207, 0.4), 0 6px 20px rgba(202, 206, 207, 0.4);
+}
+
+input[type="radio"] {
+    border-radius: 50%; /* To make sure the radio button is round */
+    background-color: #78FAAE;
+}
+
+input[type="radio"]:checked {
+    accent-color: #78faae;
+}
+
+select option:hover {
+    background-color: #78FAAE !important;
+}
+
+.scroll_table_div {
+    overflow-y: auto;
+    max-height: 400px;
+    border-bottom: 1px solid #0E3A2F;
+    border-top: 1px solid #0E3A2F;
+}
+
+.close-modal-btn {
+    color: #0E3A2F !important;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.close-modal-btn:hover {
+    color: #F15252 !important;
+}
+
+.alert {
+    border: none;
+    border-radius: 0px;
+    margin-left: 2%;
+}
+
+/* -------------------- Checkboxes --------------------*/
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    background-color: #fff;
+    margin: 0 auto;
+}
+
+.modal input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+}
+
+table input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+}
+
+.nav-item input[type="checkbox"]:checked {
+    background-color: #0E3A2F;
+    border-color: #0E3A2F;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #0E3A2F;
+    border-color: #0E3A2F;
+}
+
+input[type="checkbox"]:checked::after {
+    content: "✓";
+    font-size: 14px;
+    color: #78FAAE; /* Tick color */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.checkbox_col {
+    width: 3% !important;
+}
+
+#ys_faaliyet_modal_form span {
+    font-weight: bold;
+}
+ 
+/* -------------------- login.html --------------------*/
+ 
+#loginContainer {
+    background-color: #0E3A2F;
+    text-align: center;
+    color: #78FAAE;
+}
+ 
+#loginContainer img {
+    max-width: 75%;
+    height: auto;
+}
+ 
+#loginBtn {
+    background:#78FAAE;
+    color:#0E3A2F;
+    border: 1px solid #0E3A2F;
+}
+ 
+#loginBtn:hover {
+    background:#0E3A2F;
+    color:#78FAAE;
+    border-radius:10px;
+    border: 1px solid #78FAAE;
+    font-weight:bold;
+}
+ 
+/* -------------------- index.html --------------------*/
+ 
+#rpaPlatform {
+    position: relative;
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 25px;
+    margin-left: 7%;
+    margin-right: 7%;
+    margin-top: 2%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+ 
+#platformContainer {
+    margin-left:10px;
+    margin-right:10px;
+}
+ 
+#mainHeader {
+    margin-left: 3%;
+    color: #0E3A2F;
+}
+ 
+.rpaItems {
+    color:#0E3A2F;
+}
+ 
+.rpaItems:hover {
+    text-decoration: none;
+    color:#0E3A2F;
+}
+ 
+.box7 {
+    margin-left: 3%;
+    cursor: pointer;
+    position: relative;
+    transition: transform 2s;
+}
+ 
+#newTag {
+    background-color:#0E3A2F;
+    color:#78FAAE;
+    border-radius:5px;
+}
+ 
+.box7:hover {
+    background-color: #E3E5E6;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 2s;
+    position: relative;
+    animation: jelly 6s ease infinite;
+    background: radial-gradient(circle, #E3E5E6, transparent);
+}
+ 
+@keyframes jelly {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25%, 75% {
+        transform: scale(1.10);
+    }
+    50% {
+        transform: scale(1);
+    }
+}
+
+/* -------------------- index.html GridView --------------------*/
+
+/* Grid layout for stock container */
+.stock-container_index {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 boxes per row by default */
+    gap: 20px; /* Space between the boxes */
+    width: 100%;
+}
+
+.stock-container_index a:hover {
+    text-decoration: none;
+}
+
+.stock-box {
+    position: relative;
+    text-align: center;
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* Centers content vertically */
+    height: 200px;  /* Set a fixed height for uniformity */
+}z
+
+.stock-container_index h2 {
+    color:#0E3A2F;
+    margin-bottom:20px;
+    margin-top:20px;
+}
+
+.stock-box .stock-box-icon {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.stock-box .stock-box-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow-wrap: break-word;
+    font-size: 23px;
+}
+
+.stock-box small {
+    font-size: 14px;
+    color: #777;
+}
+
+.stock-box:hover {
+    background-color: #FFF9F3;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 3s;
+    position: relative;
+    animation: jelly 6s ease infinite;
+    opacity: 0.80;
+    background: radial-gradient(circle, #78FAAE, transparent);
+}
+
+@media (max-width: 1200px) {
+    .stock-container_index {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .stock-container_index {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stock-container_index {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .stock-container_index {
+        grid-template-columns: 1fr;
+    }
+}
+ 
+/* -------------------- garanti imha table --------------------*/
+ 
+#tableContainer {
+    width: 95%;
+    overflow: auto;
+}
+ 
+#garantiListTable {
+    width: 100%;
+    text-align: center;
+}
+ 
+#garantiListTable thead {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+}
+ 
+#garantiListTable th {
+    border: 1px solid black;
+    padding: 8px;
+}
+ 
+#garantiListTable td {
+    border: 1px solid #0E3A2F;
+    padding: 8px;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f1f2f2;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: white;
+}
+
+.dark-mode #garantiListTable td {
+    border: 1px solid #000000;
+}
+ 
+/* -------------------- PCL modal items --------------------*/
+ 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+ 
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #F1F2F2;
+    padding: 20px;
+    border: 1px solid #cacecf;
+    border-radius: 25px;
+    width: 80%;
+    max-width: 55%;
+    max-height: 80vh;
+    box-sizing: border-box;
+    box-shadow: 0 5px 15px rgba(14, 58, 47, 0.8);
+    z-index: 2;
+}
+
+.modal-content img {
+    max-height: 70vh;
+}
+ 
+#modalText {
+    color: #0E3A2F;
+    text-wrap: wrap;
+    padding: 10px;
+}
+ 
+#copyBtn {
+    width: 25%;
+    border: none;
+    color: #0E3A2F;
+    text-align: left;
+}
+ 
+#copyBtn:hover,
+#copyBtn:focus {
+    color: #78faae;
+    cursor: pointer;
+}
+
+.editBtn {
+    color: #0E3A2F;
+    background-color: transparent;
+    border: none;
+}
+
+.editBtn:hover,
+.editBtn:focus {
+    color: #78FAAE;
+    cursor: pointer;
+}
+
+/* -------------------- Alert Modals --------------------*/
+
+#popUpModal {
+    z-index: 5;
+}
+
+.PopUpModalContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #F1F2F2;
+    padding: 20px;
+    border: 1px solid #cacecf;
+    border-radius: 25px;
+    width: 20%;
+    max-width: 50%;
+    max-height: 80vh;
+    box-sizing: border-box;
+    box-shadow: 0 5px 15px rgba(14, 58, 47, 0.8);
+    z-index: 2;
+}
+
+.PopUpModalContent {
+    text-align: center;
+}
+
+.PopUpModalButton {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#popUpIcon {
+    font-size: 50px;
+    color: #F7B046;
+}
+
+#popUpText {
+    font-size: 17px;
+    color: #0E3A2F;
+}
+
+.dark-mode .PopUpModalContainer {
+    background-color: black;
+}
+
+.dark-mode #popUpText {
+    color: #78FAAE;
+}
+ 
+@media (max-width: 1000px) {
+    .PopUpModalContainer {
+        width: 90%; /* Make the modal take more space on small screens */
+        max-width: 100%; /* Ensure it doesn't overflow */
+        padding: 15px; /* Reduce padding for a better fit */
+        font-size: 14px; /* Adjust font size */
+    }
+
+    #popUpText {
+        font-size: 14px; /* Smaller text */
+    }
+
+    #popUpIcon {
+        font-size: 40px; /* Slightly smaller icon */
+    }
+
+    .PopUpModalButton {
+        flex-direction: column; /* Stack buttons vertically */
+    }
+}
+/* ------------ 2. El Araç Satış items ------------*/
+ 
+.arac2elTable {
+    width: 100%;
+    text-align: center;
+    color: #0E3A2F;
+}
+ 
+.arac2elTable thead {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+}
+ 
+.arac2elTable th {
+    width: 8%;
+    border: 1px solid black;
+    padding: 8px;
+}
+ 
+.arac2elTable td {
+    border: 1px solid #0E3A2F;
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.dark-mode .arac2elTable td {
+    border: 1px solid #000000;
+}
+
+.arac2elTable a {
+    color: #0E3A2F;
+    text-decoration: none;
+}
+
+.arac2elTable a:hover {
+    color:#78FAAE;
+}
+
+.dark-mode .fileBtn .fa-trash-can {
+    color: #78FAAE;
+}
+
+.fileBtn .fa-trash-can {
+    color: #0E3A2F;
+    transition: color 0.3s ease;
+}
+
+.fileBtn:hover .fa-trash-can {
+    visibility: visible;
+    display: inline !important;
+    cursor: pointer;
+}
+
+.fa-trash-can:hover {
+    color: #F15252 !important;
+}
+
+.deleteBtn {
+    border: none !important;
+    background-color: #F15252;
+    color:white;
+    border: none;
+}
+
+.deleteBtn:hover {
+    background-color: #F7B046;
+}
+
+.deleteBtn i {
+    color: #0E3A2F;
+}
+
+.dark-mode #deleteBtn i {
+    color: #78FAAE;
+}
+
+.deleteBtn:hover i {
+    color: #F15252;
+}
+
+.returnBtn {
+    text-decoration: underline;
+    color: #0E3A2F;
+    transition: color 0.3s ease-in-out;
+}
+
+.dark-mode .returnBtn {
+    color: #78FAAE;
+}
+
+.returnBtn:hover {
+    color: #78FAAE;
+}
+
+.dark-mode .returnBtn:hover {
+    color: #F7B046;
+}
+
+/* ------------ MODAL WITH TABS ------------*/
+
+.pagination {
+    justify-content: center;
+}
+
+.pagination ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 10px;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 8px 16px;
+    color: #0E3A2F;
+    background-color: #F1F2F2;
+    border-radius: 5px;
+    border: 1px solid #CACECF;
+    user-select: none;
+}
+
+.pagination a:hover {
+    background-color: #78FAAE;
+}
+
+.pagination .active a {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+}
+
+.pagination .disabled a {
+    color: #CACECF;
+    background-color: #F1F2F2;
+    border: 1px solid #CACECF;
+}
+
+.pagination .disabled:hover {
+    color: #CACECF;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid #CACECF;
+    margin-bottom: 20px;
+}
+
+.tabs button {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: #0E3A2F;
+    border-radius: 10px 10px 0 0;
+}
+
+.tabs button.active {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+}
+
+.tabs button:hover {
+    background-color: #78FAAE;
+    color: #0E3A2F;
+}
+
+.UserOnHover {
+    position: relative;
+    display: inline-block;
+}
+
+.userTooltip {
+    display: none;
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    border: 2px solid #78FAAE;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 999;
+    min-width: 200px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    white-space: nowrap;
+}
+
+.userTooltip img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 2px solid #78FAAE;
+}
+
+.userTooltip .userDetails {
+    display: inline-block;
+    vertical-align: top;
+    font-family: "SKODANextW02-Light", sans-serif;
+}
+
+.UserOnHover:hover .userTooltip {
+    display: flex;
+    align-items: center;
+}
+
+.user-hover-box {
+    position: absolute;
+    background: #fff;
+    color: #333;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    font-size: 14px;
+    z-index: 9999;
+    width: 220px;
+    text-align: center;
+}
+
+.user-hover-box img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 6px;
+}
+
+.user-hover-box .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #78FAAE;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 0.8s linear infinite;
+}
+
+#user-tooltip {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    font-size: 0.9rem;
+    max-width: 250px;
+    color: #000;
+    pointer-events: none;
+    display: none;
+}
+
+.dark-mode #user-tooltip {
+    background: #1e1e1e;
+    color: #78FAAE;
+    border-color: #78FAAE;
+}
+
+.tooltip-spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #ccc;
+    border-top: 3px solid #78FAAE;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 5px auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    background-color: #78FAAE;
+    animation: bubble 0.6s ease-out forwards;
+}
+
+@keyframes bubble {
+    to {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+    }
+}
+.like-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+.bubble-container {
+    position: relative;
+    display: inline-block;
+}
+
+.line-with-text {
+    display: flex;
+    align-items: center;      /* vertically center the text */
+    text-align: center;
+    margin: 20px 0;
+}
+
+.line-with-text span {
+    padding: 0 20px;          /* space between text and lines */
+    white-space: nowrap;
+    font-size: 26px;
+    color: #0E3A2F
+}
+
+.line-with-text::before,
+.line-with-text::after {
+    content: "";
+    flex: 1;                  /* each line takes up remaining space */
+    border-top: 1px solid #0E3A2F;
+}
+
+.dark-mode .line-with-text span {
+    color: #78FAAE;
+}
+
+.dark-mode .line-with-text::before,
+.dark-mode .line-with-text::after {
+    border-top: 1px solid #78FAAE;
+}
+
+
+/* ------------ FONTS ------------*/
+@font-face{
+    font-family:"BahnschriftLightSemiCondensed";
+    src:url("/static/Fonts/bahnschrift.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face{
+    font-family:"SKODANextW05-Black";
+    src:url("/static/Fonts/SKODANextW05-Black.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-Black.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-BlackItalic";
+    src:url("/static/Fonts/SKODANextW01-BlackItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-BlackItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-BlackItalic";
+    src:url("/static/Fonts/SKODANextW05-BlackItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-BlackItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-BlackItalic";
+    src:url("/static/Fonts/SKODANextW02-BlackItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-BlackItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-BoldItalic";
+    src:url("/static/Fonts/SKODANextW01-BoldItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-BoldItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-Black";
+    src:url("/static/Fonts/SKODANextW01-Black.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-Black.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-Black";
+    src:url("/static/Fonts/SKODANextW02-Black.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-Black.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-BoldItalic";
+    src:url("/static/Fonts/SKODANextW05-BoldItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-BoldItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-BoldItalic";
+    src:url("/static/Fonts/SKODANextW02-BoldItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-BoldItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-Bold";
+    src:url("/static/Fonts/SKODANextW05-Bold.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-Bold.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-Regular";
+    src:url("/static/Fonts/SKODANextW01-Regular.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-Regular.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-Regular";
+    src:url("/static/Fonts/SKODANextW05-Regular.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-Regular.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-Italic";
+    src:url("/static/Fonts/SKODANextW02-Italic.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-Italic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-Italic";
+    src:url("/static/Fonts/SKODANextW05-Italic.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-Italic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-Bold";
+    src:url("/static/Fonts/SKODANextW02-Bold.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-Bold.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-Bold";
+    src:url("/static/Fonts/SKODANextW01-Bold.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-Bold.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-Italic";
+    src:url("/static/Fonts/SKODANextW01-Italic.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-Italic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-Regular";
+    src:url("/static/Fonts/SKODANextW02-Regular.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-Regular.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-Light";
+    src:url("/static/Fonts/SKODANextW02-Light.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-Light.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-Light";
+    src:url("/static/Fonts/SKODANextW01-Light.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-Light.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-Light";
+    src:url("/static/Fonts/SKODANextW05-Light.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-Light.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-LightItalic";
+    src:url("/static/Fonts/SKODANextW01-LightItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-LightItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-LightItalic";
+    src:url("/static/Fonts/SKODANextW02-LightItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-LightItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-LightItalic";
+    src:url("/static/Fonts/SKODANextW05-LightItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-LightItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-ThinItalic";
+    src:url("/static/Fonts/SKODANextW05-ThinItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-ThinItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-ThinItalic";
+    src:url("/static/Fonts/SKODANextW02-ThinItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-ThinItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-ThinItalic";
+    src:url("/static/Fonts/SKODANextW01-ThinItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-ThinItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW05-Thin";
+    src:url("/static/Fonts/SKODANextW05-Thin.woff2") format("woff2"),url("/static/Fonts/SKODANextW05-Thin.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW02-Thin";
+    src:url("/static/Fonts/SKODANextW02-Thin.woff2") format("woff2"),url("/static/Fonts/SKODANextW02-Thin.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW01-Thin";
+    src:url("/static/Fonts/SKODANextW01-Thin.woff2") format("woff2"),url("/static/Fonts/SKODANextW01-Thin.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-BlackItalic";
+    src:url("/static/Fonts/SKODANextW07-BlackItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-BlackItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-BlackItalic";
+    src:url("/static/Fonts/SKODANextW15-BlackItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-BlackItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-BlackItalic";
+    src:url("/static/Fonts/SKODANextW10-BlackItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-BlackItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-Black";
+    src:url("/static/Fonts/SKODANextW10-Black.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-Black.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-Black";
+    src:url("/static/Fonts/SKODANextW15-Black.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-Black.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-Black";
+    src:url("/static/Fonts/SKODANextW07-Black.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-Black.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-Bold";
+    src:url("/static/Fonts/SKODANextW15-Bold.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-Bold.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-BoldItalic";
+    src:url("/static/Fonts/SKODANextW10-BoldItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-BoldItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-BoldItalic";
+    src:url("/static/Fonts/SKODANextW15-BoldItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-BoldItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-BoldItalic";
+    src:url("/static/Fonts/SKODANextW07-BoldItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-BoldItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-Bold";
+    src:url("/static/Fonts/SKODANextW10-Bold.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-Bold.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-Bold";
+    src:url("/static/Fonts/SKODANextW07-Bold.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-Bold.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-Italic";
+    src:url("/static/Fonts/SKODANextW15-Italic.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-Italic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-Italic";
+    src:url("/static/Fonts/SKODANextW10-Italic.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-Italic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-Italic";
+    src:url("/static/Fonts/SKODANextW07-Italic.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-Italic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-Regular";
+    src:url("/static/Fonts/SKODANextW07-Regular.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-Regular.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-Regular";
+    src:url("/static/Fonts/SKODANextW15-Regular.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-Regular.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-Regular";
+    src:url("/static/Fonts/SKODANextW10-Regular.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-Regular.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-LightItalic";
+    src:url("/static/Fonts/SKODANextW07-LightItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-LightItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-LightItalic";
+    src:url("/static/Fonts/SKODANextW10-LightItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-LightItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-LightItalic";
+    src:url("/static/Fonts/SKODANextW15-LightItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-LightItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-Light";
+    src:url("/static/Fonts/SKODANextW07-Light.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-Light.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-Light";
+    src:url("/static/Fonts/SKODANextW10-Light.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-Light.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-Light";
+    src:url("/static/Fonts/SKODANextW15-Light.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-Light.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-Thin";
+    src:url("/static/Fonts/SKODANextW07-Thin.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-Thin.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-Thin";
+    src:url("/static/Fonts/SKODANextW10-Thin.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-Thin.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-Thin";
+    src:url("/static/Fonts/SKODANextW15-Thin.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-Thin.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW07-ThinItalic";
+    src:url("/static/Fonts/SKODANextW07-ThinItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW07-ThinItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW10-ThinItalic";
+    src:url("/static/Fonts/SKODANextW10-ThinItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW10-ThinItalic.woff") format("woff");
+}
+@font-face{
+    font-family:"SKODANextW15-ThinItalic";
+    src:url("/static/Fonts/SKODANextW15-ThinItalic.woff2") format("woff2"),url("/static/Fonts/SKODANextW15-ThinItalic.woff") format("woff");
+}

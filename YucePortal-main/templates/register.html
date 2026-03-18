@@ -1,0 +1,50 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Kayıt Oluştur</h3>
+        <br>
+        <small>Yüce Auto çalışanlarına buradan kullanıcı açabilirsiniz.</small>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post">
+            <div class="side-by-side_between center_item">
+                <div style="width: 50%">
+                    {{ render_field(form.name, class = "form-control") }}
+                    {{ render_field(form.surname, class = "form-control") }}
+                </div>
+                <div style="width: 50%;">
+                    {{ render_field(form.email, class = "form-control") }}
+                    {{ render_field(form.department, class = "form-control") }}
+                </div>    
+            </div>
+            <br>
+            <div class="side-by-side_between center_item">
+                <div style="width: 50%">
+                    {{ render_field(form.username, class = "form-control") }}
+                    {{ render_field(form.kidem_tarihi, class = "form-control") }}
+                </div>
+                <div style="width: 50%">
+                    {{ render_field(form.dogum_day, class = "form-control") }}
+                    {{ render_field(form.dogum_month, class = "form-control") }}
+                </div>    
+            </div>
+           <!--  <div class="center_item" style="width: 60%;">
+                {{ render_field(form.username, class = "form-control") }}
+                {{ render_field(form.dogum_day, class = "form-control") }}
+                {{ render_field(form.dogum_month, class = "form-control") }}
+                {{ render_field(form.kidem_tarihi, class = "form-control") }}
+            </div>  -->
+            <br>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+</div>
+<br>
+{% endblock body %}

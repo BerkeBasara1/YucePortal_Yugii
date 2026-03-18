@@ -1,0 +1,113 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="rpaDescription">
+        <br>
+        <h3>Yüce Portal Log Kaydı</h3>
+        <small>Yüce Portal üzerinde yapılan işlemlerin kayıtlarını burada görüntüleyebilirsiniz.</small>
+        <br>
+        <hr>
+    </div>
+    <!-- Filters -->
+    <div class="filterContainer" style="margin: 0 2%; margin-bottom: 20px;">
+        <form method="GET" action="{{ url_for('portal_log_kaydi') }}" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <!-- Existing filters -->
+            <input type="text" name="username" placeholder="Kullanıcı Adı" value="{{ request.args.get('username', '') }}" style="padding: 5px; width: 15%;">
+            <input type="text" name="requestedlink" placeholder="Requested Link" value="{{ request.args.get('requestedlink', '') }}" style="padding: 5px; width: 20%;">
+            <input type="date" name="date_from" placeholder="Başlangıç Tarihi" value="{{ request.args.get('date_from', '') }}" style="padding: 5px; width: 15%;">
+            <input type="date" name="date_to" placeholder="Bitiş Tarihi" value="{{ request.args.get('date_to', '') }}" style="padding: 5px; width: 15%;">
+    
+            <!-- New fields to exclude usernames -->
+            <input type="text" name="exclude_username1" placeholder="Hariç Tut 1" value="{{ request.args.get('exclude_username1', '') }}" style="padding: 5px; width: 15%;">
+            <input type="text" name="exclude_username2" placeholder="Hariç Tut 2" value="{{ request.args.get('exclude_username2', '') }}" style="padding: 5px; width: 15%;">
+            <input type="text" name="exclude_username3" placeholder="Hariç Tut 3" value="{{ request.args.get('exclude_username3', '') }}" style="padding: 5px; width: 15%;">
+    
+            <!-- Buttons -->
+            <button type="submit" class="btn btn-primary" style="padding: 5px 10px;">Filtrele</button>
+            <a href="{{ url_for('portal_log_kaydi') }}" class="btn btn-secondary" style="padding: 5px 10px;">Filtreleri Kaldır</a>
+        </form>
+    </div>
+
+    <!-- Logs Table -->
+    <div id="tableContainer" style="margin: 0 2%;">
+        <table class="arac2elTable" border="1" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Kullanıcı Adı</th>
+                    <th>Req Tipi</th>
+                    <th>Link</th>
+                    <th>Req Datetime</th>
+                    <th>Detaylar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        {% if log.Username == "None" %}
+                            <td>?</td>
+                        {% else %}
+                            <td>{{ log.Username }}</td>
+                        {% endif %}
+                        <td>{{ log.RequestType }}</td>
+                        <td>{{ log.RequestLink }}</td>
+                        <td>{{ log.RequestedDateTime }}</td>
+                        {% if log.Details == None %}
+                            <td>-</td>
+                        {% else %}
+                            <td>{{ log.Details }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination" style="margin-top: 20px; text-align: center;">
+        <ul style="list-style: none; padding: 0; display: inline-flex; gap: 5px;">
+            {% if current_page > 1 %}
+                <li>
+                    <a href="?page={{ current_page - 1 }}&username={{ request.args.get('username', '') }}&requestedlink={{ request.args.get('requestedlink', '') }}&date_from={{ request.args.get('date_from', '') }}&date_to={{ request.args.get('date_to', '') }}&exclude_username1={{ request.args.get('exclude_username1', '') }}&exclude_username2={{ request.args.get('exclude_username2', '') }}&exclude_username3={{ request.args.get('exclude_username3', '') }}" 
+                    class="btn btn-primary">Önceki</a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <span class="btn btn-secondary">Önceki</span>
+                </li>
+            {% endif %}
+
+            {% for p in visible_pages %}
+                {% if p == current_page %}
+                    <li>
+                        <span class="btn btn-success">{{ p }}</span>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="?page={{ p }}&username={{ request.args.get('username', '') }}&requestedlink={{ request.args.get('requestedlink', '') }}&date_from={{ request.args.get('date_from', '') }}&date_to={{ request.args.get('date_to', '') }}&exclude_username1={{ request.args.get('exclude_username1', '') }}&exclude_username2={{ request.args.get('exclude_username2', '') }}&exclude_username3={{ request.args.get('exclude_username3', '') }}" 
+                        class="btn btn-primary">{{ p }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if current_page < total_pages %}
+                <li>
+                    <a href="?page={{ current_page + 1 }}&username={{ request.args.get('username', '') }}&requestedlink={{ request.args.get('requestedlink', '') }}&date_from={{ request.args.get('date_from', '') }}&date_to={{ request.args.get('date_to', '') }}&exclude_username1={{ request.args.get('exclude_username1', '') }}&exclude_username2={{ request.args.get('exclude_username2', '') }}&exclude_username3={{ request.args.get('exclude_username3', '') }}" 
+                    class="btn btn-primary">Sonraki</a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <span class="btn btn-secondary">Sonraki</span>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<script>
+
+</script>
+
+{% endblock body %}

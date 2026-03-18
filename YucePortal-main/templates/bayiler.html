@@ -1,0 +1,78 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+
+<section class="map-section">
+  <div class="map-container">
+    <!-- This DIV will hold the Leaflet map -->
+    <div id="turkeyMap"></div>
+  </div>
+</section>
+
+<!-- 1. LEAFLET CSS (via CDN) -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+/>
+
+<!-- 2. LEAFLET JS (via CDN) -->
+<script
+  src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1) Initialize the map: center on Turkey ([lat, lon]) with a certain zoom level
+    const map = L.map('turkeyMap').setView([39.0, 35.0], 6);
+
+    // 2) Add OpenStreetMap tiles (free). Must keep attribution.
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution:
+        '© <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // 3) Define markers for your offices + attach popups
+    //    Istanbul Office
+    L.marker([41.0082, 28.9784])
+      .addTo(map)
+      .bindPopup('<b>Office: Istanbul</b><br>Address: Example Str. 123<br>Phone: +90 555 123 45 67');
+
+    //    Ankara Office
+    L.marker([39.92077, 32.85411])
+      .addTo(map)
+      .bindPopup('<b>Office: Ankara</b><br>Address: Another Str. 987<br>Phone: +90 555 987 65 43');
+
+    //    Izmir Office, etc... (just add more markers)
+    // L.marker([38.4237, 27.1428])
+    //   .addTo(map)
+    //   .bindPopup('<b>Office: Izmir</b><br>Address: Some Str. 100<br>Phone: +90 555 111 22 33');
+  });
+</script>
+
+<style>
+/* --- Basic Container & Layout Styles --- */
+.map-section {
+  padding: 2rem;
+  background-color: #f9f9f9; /* Slightly off-white for contrast */
+  display: flex;
+  justify-content: center;
+}
+
+.map-container {
+  /* Give the container a fixed height (e.g., 600px). */
+  height: 600px;
+  width: 100%;
+  max-width: 1000px; /* optional cap on width */
+}
+
+#turkeyMap {
+  /* Let the map fill the entire container. */
+  width: 100%;
+  height: 100%;
+  border: 2px solid #0e3a2f;
+  border-radius: 8px;
+}
+</style>
+
+{% endblock body %}

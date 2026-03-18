@@ -1,0 +1,3010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Yüce Portal</title>
+  <link rel="icon" type="image/png" href="../static/YP_Logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <style>
+  .main-container{justify-content:space-between;gap:20px;padding:0 20px;}
+  .right-container{position:fixed;top:65px;width:28%;right:calc(-28% + 62px);background:#F1F2F2;padding-top:20px;display:flex;flex-direction:column;gap:20px;align-items:center;height:calc(100vh - 65px);overflow:hidden;padding-bottom:0;border-radius:8px;box-shadow:0 10px 26px rgba(0,0,0,.22);transition:right .45s cubic-bezier(.22,1,.36,1),background-color .5s ease;cursor:pointer;z-index:1000;will-change:right;}
+  /* Sidechat open indicator (arrow) removed per request */
+  .right-container::before{content:"";display:none !important;}
+  .right-container:hover::before{display:none !important;}
+  .right-container:hover{right:0;background:#F1F2F2;}
+  .dark-mode .right-container{background:black;border-left:1px solid #78FAAE;}
+  .left-container{position:fixed;top:65px;left:-14%;width:16%;background:#F1F2F2;padding-top:20px;display:flex;flex-direction:column;gap:20px;align-items:center;height:100vh;overflow:auto;padding-bottom:5%;border-radius:5px;box-shadow:0 4px 8px rgba(0,0,0,.5),0 6px 20px rgba(0,0,0,.5);transition:left .3s ease,background-color .5s ease;cursor:pointer;z-index:90;}
+  .left-container::before{content:"›";position:absolute;right:5px;top:50%;transform:translateY(-50%);font-size:24px;color:#0E3A2F;background:#F1F2F2;border-radius:50%;width:28px;height:28px;text-align:center;line-height:28px;transition:color .3s ease,background-color .3s ease;}
+  .left-container:hover::before{transform:rotate(180deg);color:#78FAAE;transition:transform .3s ease;}
+  .left-container:hover{left:0;background:#F1F2F2;}
+  .dark-mode .left-container{background:black;border-right:1px solid #78FAAE;}
+  .dark-mode .left-container::before,.dark-mode .right-container::before{background:black;color:#78FAAE;}
+  .left_container_TabClass{display:flex;flex-direction:column;gap:20px;align-items:center;height:100vh;overflow:auto;padding-bottom:5%;border-radius:5px;}
+  .left_container_tabs{display:flex;justify-content:space-around;border-bottom:2px solid #CACECF;margin-bottom:20px;}
+  .left_container_tabs button{width:100%;background:#F1F2F2;border:none;outline:none;padding:10px 20px;cursor:pointer;transition:background-color .3s ease;color:#0E3A2F;border-radius:10px 10px 0 0;}
+  .left_container_tabs button.active{background:#0E3A2F;color:#78FAAE;}
+  .left_container_tabs button:hover{background:#78FAAE;color:#0E3A2F;}
+  .dark-mode .left_container_tabs button{background:#394748;color:#78FAAE;}
+  .dark-mode .left_container_tabs button:hover{background:#F7B046;}
+  .dark-mode .left_container_tabs button:hover i,.dark-mode .left_container_tabs button.active i{color:#0E3A2F;}
+  .dark-mode .left_container_tabs button i{color:#78FAAE;}
+  .dark-mode .left_container_tabs button.active{background:#78FAAE;color:#121212;}
+  .dark-mode .left_container_tabs{border-bottom:2px solid #78FAAE;}
+  .tooltip-button{position:relative;display:inline-block;}
+  .tooltip-button .tooltip-text{visibility:hidden;width:max-content;background:#0e3a2f;color:#78faae;text-align:center;padding:6px 8px;border-radius:4px;position:absolute;top:125%;left:50%;transform:translateX(-50%);z-index:10;opacity:0;transition:opacity .3s;font-size:13px;white-space:nowrap;}
+  .tooltip-button:hover .tooltip-text{visibility:visible;opacity:1;}
+  .shortcut-box{background:#0E3A2F;color:#78FAAE;text-align:center;font-size:18px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,.7);cursor:pointer;width:75%;padding:3px;transition:background-color .5s ease,width .5s ease;}
+  .shortcut-box:hover{background:#78FAAE;width:80%;color:#0E3A2F;}
+  a.shortcut-box{text-decoration:none;}
+  .dark-mode .shortcut-box:hover{background:#F7B046;}
+  .rightHeader{color:#0E3A2F;}
+  .dark-mode .rightHeader{color:#78FAAE;}
+  .card{background:transparent;}
+  .card img{height:120px;border-radius:10px;border:none;}
+  .menu-header{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:10px;font-weight:bold;font-size:18px;color:#0E3A2F;transition:color 1s ease;}
+  .dark-mode .menu-header{color:#78FAAE;}
+  .menu-header button{border:none;background:#0E3A2F;color:#78FAAE;border:1px solid #0E3A2F;padding:3px 15px;border-radius:10px;cursor:pointer;font-size:16px;transition:background-color .3s ease;}
+  .menu-header button:hover{background:#78FAAE;color:#0E3A2F;}
+  .dark-mode .menu-header button{background:#78FAAE;color:#0E3A2F;}
+  .dark-mode .menu-header button:hover{background:#0E3A2F;color:#78FAAE;}
+  .left-container p{margin-bottom:0;}
+  .left-container hr{width:130px;background:#0E3A2F;}
+  .dark-mode .left-container hr{background:#78FAAE;}
+  @media(max-width:1000px){.right-container,.left-container{display:none;}}
+
+  #portalchat-toast-stack{position:fixed;right:3%;bottom:90px;display:flex;flex-direction:column;gap:10px;z-index:501;pointer-events:none;}
+  .portalchat-toast{pointer-events:auto;width:420px;max-width:calc(100vw - 24px);background:#ffffff;border:1px solid #e6e8ea;border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.18);overflow:hidden;display:flex;gap:12px;padding:12px 12px;animation:toastIn .22s ease-out;cursor:pointer;}
+  @keyframes toastIn{from{transform:translateY(10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .dark-mode .portalchat-toast{background:#151515;border-color:#2b2b2b;box-shadow:0 10px 26px rgba(0,0,0,.45);color:#fff;}
+  .portalchat-toast-avatar{width:48px;height:48px;border-radius:999px;object-fit:cover;flex-shrink:0;border:2px solid #0E3A2F;background:#F1F2F2;}
+  .dark-mode .portalchat-toast-avatar{border-color:#78FAAE;background:#2B2B2B;}
+  .portalchat-toast-content{min-width:0;display:flex;flex-direction:column;gap:4px;flex:1;}
+  .portalchat-toast-title{font-weight:900;font-size:17px;color:#0E3A2F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .portalchat-toast-title{color:#78FAAE;}
+  .portalchat-toast-text{font-size:15px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .portalchat-toast-text{color:#cbd5e1;}
+  .portalchat-toast-time{font-size:13px;color:#9ca3af;flex-shrink:0;align-self:flex-start;margin-left:6px;margin-top:2px;}
+  .portalchat-toast-close{border:none;background:transparent;color:#9ca3af;font-size:18px;cursor:pointer;padding:0 6px;line-height:1;align-self:flex-start;}
+  .portalchat-toast-close:hover{color:#ef4444;}
+
+  .right-container{padding-top:10px;gap:0;cursor:default;}
+  .right-container.pc-pinned{right:0 !important;}
+  .right-container.pc-pinned::before{opacity:.35;}
+  body.pc-messages-page .right-container{right:0 !important;width:min(1080px, calc(100vw - 24px));top:78px;height:calc(100vh - 90px);border-radius:16px;}
+  body.pc-messages-page .right-container::before{display:none !important;}
+  body.pc-messages-page .main-container{padding-right:min(1100px, calc(100vw - 24px));}
+  body.pc-messages-page .pc-sidechat-threads{width:88px;}
+  body.pc-messages-page .pc-sidechat-chat{width:calc(100% - 88px);}
+  @media(max-width:1000px){
+    body.pc-messages-page .right-container{display:flex;width:100vw;top:65px;height:calc(100vh - 65px);border-radius:0;}
+    body.pc-messages-page .main-container{padding-right:0;}
+  }
+
+  /* Keep sidechat open while context menu is shown */
+  .right-container.pc-force-open{right:0 !important;}
+  .right-container.pc-force-open::before{opacity:.35;}
+
+  .pc-sidechat{width:100%;height:100%;display:flex;flex-direction:column;align-items:stretch;position:relative;}
+  .pc-sidechat-header{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 12px 8px 18px;position:sticky;top:0;z-index:2;background:inherit;border-bottom:1px solid rgba(0,0,0,.08);}
+  .dark-mode .pc-sidechat-header{border-bottom:1px solid rgba(120,250,174,.25);}
+  .pc-sidechat-title{display:flex;align-items:center;gap:10px;font-weight:900;color:#0E3A2F;}
+  .dark-mode .pc-sidechat-title{color:#78FAAE;}
+  .pc-sidechat-title i{font-size:16px;}
+  .pc-sidechat-unread{margin-left:2px;min-width:22px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:0 7px;font-size:12px;font-weight:900;background:#0E3A2F;color:#78FAAE;}
+  .dark-mode .pc-sidechat-unread{background:#78FAAE;color:#0E3A2F;}
+  .pc-sidechat-actions{display:flex;align-items:center;gap:8px;}
+  .pc-sidechat-btn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.35);color:#0E3A2F;text-decoration:none;cursor:pointer;transition:all .15s ease;}
+  .pc-sidechat-btn:hover{transform:translateY(-1px);background:#78FAAE;color:#0E3A2F;border-color:#78FAAE;}
+  .dark-mode .pc-sidechat-btn{border-color:rgba(120,250,174,.25);background:rgba(0,0,0,.25);color:#78FAAE;}
+  .dark-mode .pc-sidechat-btn:hover{background:#78FAAE;color:#0E3A2F;border-color:#78FAAE;}
+
+  .pc-sidechat-body{display:flex;flex:1;min-height:0;}
+  .pc-sidechat-threads{width:72px;border-right:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0;}
+  .dark-mode .pc-sidechat-threads{border-right:1px solid rgba(120,250,174,.25);}
+  .pc-sidechat-search{display:none;}
+  .pc-sidechat-threadlist{flex:1;min-height:0;overflow:auto;padding:6px 8px 10px 8px;}
+  .pc-sidechat-thread{position:relative;display:flex;align-items:center;justify-content:center;gap:0;padding:10px 6px;border-radius:16px;cursor:pointer;transition:background .15s ease, transform .12s ease;}
+  .pc-sidechat-thread:hover{background:rgba(120,250,174,.22);transform:translateY(-1px);}
+  .dark-mode .pc-sidechat-thread:hover{background:rgba(120,250,174,.12);}
+  .pc-sidechat-thread.active{background:rgba(120,250,174,.30);}
+  .dark-mode .pc-sidechat-thread.active{background:rgba(120,250,174,.16);}
+  .pc-sidechat-thread img{width:44px;height:44px;border-radius:999px;object-fit:cover;border:2px solid rgba(14,58,47,.25);background:#F1F2F2;flex-shrink:0;}
+  .dark-mode .pc-sidechat-thread img{border-color:rgba(120,250,174,.35);background:#2B2B2B;}
+  .pc-sidechat-thread::after{content:attr(data-title);position:absolute;left:-10px;top:50%;transform:translate(-100%,-50%);background:#0E3A2F;color:#78FAAE;padding:6px 10px;border-radius:10px;font-size:13px;font-weight:900;white-space:nowrap;opacity:0;pointer-events:none;box-shadow:0 10px 22px rgba(0,0,0,.22);transition:opacity .15s ease, transform .15s ease;}
+  .dark-mode .pc-sidechat-thread::after{background:#000;color:#78FAAE;box-shadow:0 10px 22px rgba(0,0,0,.45);}
+  .pc-sidechat-thread:hover::after{opacity:1;transform:translate(-100%,-50%) translateX(-6px);}
+  .pc-sidechat-avatar-badge{position:absolute;right:6px;top:6px;min-width:18px;height:18px;border-radius:999px;background:#0E3A2F;color:#78FAAE;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;padding:0 6px;box-shadow:0 6px 14px rgba(0,0,0,.18);}
+  .dark-mode .pc-sidechat-avatar-badge{background:#78FAAE;color:#0E3A2F;}
+  .pc-sidechat-verified{position:absolute;left:6px;bottom:6px;width:18px;height:18px;border-radius:999px;background:#0E3A2F;display:flex;align-items:center;justify-content:center;border:2px solid #F1F2F2;box-shadow:0 6px 14px rgba(0,0,0,.18);pointer-events:none;}
+  .pc-sidechat-verified i{font-size:10px;color:#78FAAE;text-shadow:0 0 1px #fff, 0 0 2px #fff;}
+  .dark-mode .pc-sidechat-verified{border-color:#000;box-shadow:0 6px 14px rgba(0,0,0,.45);}
+
+  .pc-sidechat-chat{width:calc(100% - 72px);display:flex;flex-direction:column;min-height:0;}
+  .pc-sidechat-chathead{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;gap:2px;}
+  .dark-mode .pc-sidechat-chathead{border-bottom:1px solid rgba(120,250,174,.25);}
+  .pc-sidechat-chatname{font-weight:900;font-size:15px;color:#0E3A2F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .pc-sidechat-chatname{color:#78FAAE;}
+  .pc-sidechat-chatmeta{font-weight:800;font-size:12px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:10px;align-items:center;}
+  .dark-mode .pc-sidechat-chatmeta{color:#cbd5e1;}
+  .pc-sidechat-lastseen{opacity:.95;}
+  .pc-sidechat-chatmeta-sep{opacity:.5;}
+
+  /* ===== Sidechat message bubbles: match messages_YP ===== */
+  @keyframes pc-messageSlide{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .pc-sidechat-messages{flex:1;min-height:0;overflow:auto;padding:14px 14px 12px 14px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;overflow-x:hidden;overflow-anchor:none;}
+
+  .pc-sidechat-msg{display:flex;gap:12px;max-width:86%;align-items:flex-end;position:relative;animation:pc-messageSlide .35s ease;}
+  .pc-sidechat-msg.me{align-self:flex-end;flex-direction:row-reverse;}
+  .pc-sidechat-msg.them{align-self:flex-start;}
+
+  .pc-sidechat-msg-avatar{width:36px;height:36px;border-radius:12px;object-fit:cover;flex:0 0 auto;border:2px solid rgba(14,58,47,.18);background:#e9f4ee;box-shadow:0 2px 10px rgba(14,58,47,.10);transition:transform .12s ease, box-shadow .12s ease;}
+  .dark-mode .pc-sidechat-msg-avatar{border-color:rgba(120,250,174,.35);background:#2B2B2B;box-shadow:0 2px 10px rgba(0,0,0,.35);}
+  .pc-sidechat-msg.me .pc-sidechat-msg-avatar{display:none;}
+
+  /* Clickable avatar -> profile */
+  .pc-sidechat-avatar-link{display:inline-flex;align-items:flex-end;cursor:pointer;text-decoration:none;}
+  .pc-sidechat-avatar-link:focus{outline:none;}
+  .pc-sidechat-avatar-link:hover .pc-sidechat-msg-avatar{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.18);}
+
+
+  .pc-sidechat-bubblewrap{max-width:100%;display:flex;flex-direction:column;gap:6px;position:relative;}
+  .pc-sidechat-msg.them .pc-sidechat-bubblewrap{max-width:calc(92% - 12px);}
+
+  .pc-sidechat-sender{font-size:12px;font-weight:900;color:#0E3A2F;opacity:.88;margin-left:6px;line-height:1.1;}
+  .dark-mode .pc-sidechat-sender{color:#78FAAE;opacity:.9;}
+
+  .pc-sidechat-bubble{padding:14px 18px;border-radius:16px;font-size:15px;line-height:1.5;box-shadow:0 2px 10px rgba(14,58,47,.10);position:relative;overflow:hidden;white-space:pre-wrap;word-break:break-word;}
+  .pc-sidechat-msg.them .pc-sidechat-bubble{background:rgba(255,255,255,.92);color:#0E3A2F;border:1px solid rgba(14,58,47,.10);border-bottom-left-radius:6px;}
+  .pc-sidechat-msg.me .pc-sidechat-bubble{background:linear-gradient(135deg,#0E3A2F,#08261F);color:#fff;border-bottom-right-radius:6px;}
+  .pc-sidechat-msg.me .pc-sidechat-bubble::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);pointer-events:none;}
+  .dark-mode .pc-sidechat-msg.them .pc-sidechat-bubble{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.10);}
+
+
+  .pc-sidechat-quote{padding:8px 10px;border-radius:12px;background:rgba(14,58,47,.10);border-left:3px solid rgba(14,58,47,.75);cursor:pointer;}
+  .pc-sidechat-msg.me .pc-sidechat-quote{background:rgba(14,58,47,.10);}
+  .dark-mode .pc-sidechat-quote{background:rgba(120,250,174,.10);border-left-color:rgba(120,250,174,.85);}
+  .pc-sidechat-quote-name{font-size:12px;font-weight:900;color:#0E3A2F;opacity:.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .pc-sidechat-quote-name{color:#78FAAE;}
+  .pc-sidechat-quote-text{font-size:12px;font-weight:800;color:#0E3A2F;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .pc-sidechat-quote-text{color:#fff;opacity:.8;}
+
+  /* ---- Sidechat media/file bubbles (Telegram-like) ---- */
+  .pc-sc-media{max-width:320px;border-radius:16px;overflow:hidden;border:1px solid rgba(0,0,0,.10);background:rgba(255,255,255,.85);box-shadow:0 2px 6px rgba(0,0,0,.10);}  
+  .pc-sidechat-msg.me .pc-sc-media{background:rgba(120,250,174,.20);border-color:rgba(14,58,47,.18);}  
+  .dark-mode .pc-sc-media{background:rgba(0,0,0,.35);border-color:rgba(120,250,174,.22);}  
+  .pc-sc-media img,.pc-sc-media video{display:block;width:100%;height:auto;}
+  .pc-sc-media-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;font-size:12px;color:#6b7280;font-weight:900;}
+  .dark-mode .pc-sc-media-meta{color:#cbd5e1;}
+  .pc-sc-caption{margin-top:6px;font-weight:800;font-size:13px;opacity:.92;white-space:pre-wrap;word-break:break-word;}
+
+  .pc-sc-file{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:16px;border:1px solid rgba(0,0,0,.10);background:rgba(255,255,255,.85);text-decoration:none;color:#0E3A2F;max-width:360px;box-shadow:0 2px 6px rgba(0,0,0,.10);}  
+  .pc-sidechat-msg.me .pc-sc-file{background:rgba(120,250,174,.20);border-color:rgba(14,58,47,.18);}  
+  .dark-mode .pc-sc-file{background:rgba(0,0,0,.35);border-color:rgba(120,250,174,.22);color:#fff;}  
+  .pc-sc-file-ic{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(14,58,47,.12);color:#0E3A2F;flex-shrink:0;}
+  .pc-sidechat-msg.me .pc-sc-file-ic{background:rgba(14,58,47,.14);}  
+  .dark-mode .pc-sc-file-ic{background:rgba(120,250,174,.16);color:#78FAAE;}
+  .pc-sc-file-meta{min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .pc-sc-file-name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pc-sc-file-size{font-weight:900;font-size:12px;opacity:.75;}
+  .pc-sc-file-open{margin-left:auto;flex-shrink:0;opacity:.8;}
+
+  .pc-sidechat-meta{display:flex;align-items:center;justify-content:flex-end;gap:8px;font-size:12px;color:#9ca3af;margin-top:0;padding:0 4px;}
+  .dark-mode .pc-sidechat-meta{color:#cbd5e1;}
+  .pc-sidechat-time{white-space:nowrap;font-weight:900;opacity:.9;}
+  .pc-sidechat-status{display:inline-flex;align-items:center;gap:4px;font-weight:900;user-select:none;}
+  .pc-sidechat-status i{font-size:12px;opacity:.95;}
+  .pc-sc-sending{opacity:.85;}
+  .pc-sc-delivered{opacity:.95;}
+  .pc-sc-read{color:#78FAAE;text-shadow:0 0 12px rgba(120,250,174,.25);}
+  .dark-mode .pc-sc-read{color:#78FAAE;}
+
+  .pc-sidechat-reactions-bar{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;padding:0 4px;}
+  .pc-sidechat-react-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(0,0,0,.06);color:#0E3A2F;cursor:pointer;user-select:none;}
+  .pc-sidechat-react-pill.me{background:rgba(120,250,174,.35);}
+  .dark-mode .pc-sidechat-react-pill{background:rgba(255,255,255,.10);color:#fff;}
+  .dark-mode .pc-sidechat-react-pill.me{background:rgba(120,250,174,.18);color:#78FAAE;}
+
+  .pc-sidechat-react-btn{position:absolute;right:-10px;top:-10px;width:28px;height:28px;border-radius:10px;border:1px solid rgba(0,0,0,.10);background:rgba(255,255,255,.8);display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.14);}
+  .pc-sidechat-bubblewrap.force-react .pc-sidechat-react-btn,
+  .pc-sidechat-bubblewrap:hover .pc-sidechat-react-btn{display:flex;}
+  .dark-mode .pc-sidechat-react-btn{border-color:rgba(120,250,174,.25);background:rgba(0,0,0,.45);color:#78FAAE;}
+  .pc-sidechat-react-btn:hover{transform:translateY(-1px);background:#78FAAE;color:#0E3A2F;border-color:#78FAAE;}
+  .pc-sidechat-react-picker{position:absolute;right:0;top:-44px;display:none;gap:6px;align-items:center;padding:6px 8px;border-radius:14px;background:#fff;border:1px solid rgba(0,0,0,.10);box-shadow:0 10px 22px rgba(0,0,0,.18);z-index:5;}
+  .dark-mode .pc-sidechat-react-picker{background:#0b0b0b;border-color:rgba(120,250,174,.25);}
+  .pc-sidechat-react-picker button{border:none;background:transparent;font-size:18px;cursor:pointer;line-height:1;padding:4px 6px;border-radius:10px;}
+  .pc-sidechat-react-picker button:hover{background:rgba(120,250,174,.25);}
+
+  /* Reactions disabled */
+  .pc-sidechat-no-reactions .pc-sidechat-react-btn,
+  .pc-sidechat-no-reactions .pc-sidechat-react-picker,
+  .pc-sidechat-no-reactions .pc-sidechat-reactions-bar{display:none !important;}
+
+  .pc-sidechat-composewrap{display:flex;flex-direction:column;border-top:1px solid rgba(0,0,0,.08);position:sticky;bottom:0;z-index:3;background:inherit;}
+  .dark-mode .pc-sidechat-composewrap{border-top:1px solid rgba(120,250,174,.25);}
+
+  /* Older messages loader (hidden by default; shown only while fetching) */
+  .pc-sidechat-toploader{display:none;align-items:center;justify-content:center;gap:8px;padding:10px 12px;font-weight:900;font-size:13px;color:#0E3A2F;background:rgba(255,255,255,.55);border-top:1px solid rgba(0,0,0,.06);}
+  .dark-mode .pc-sidechat-toploader{color:#78FAAE;background:rgba(0,0,0,.35);border-top-color:rgba(120,250,174,.18);}
+  .pc-sidechat-replybar{display:none;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;background:rgba(14,58,47,.10);border-left:4px solid #0E3A2F;}
+  .dark-mode .pc-sidechat-replybar{background:rgba(120,250,174,.10);border-left-color:#78FAAE;}
+  .pc-sidechat-replytext{min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .pc-sidechat-replyname{font-weight:900;font-size:12px;color:#0E3A2F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .pc-sidechat-replyname{color:#78FAAE;}
+  .pc-sidechat-replysnippet{font-weight:800;font-size:12px;color:#0E3A2F;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .pc-sidechat-replysnippet{color:#fff;opacity:.8;}
+  .pc-sidechat-replyclose{border:none;background:transparent;font-size:18px;cursor:pointer;color:#0E3A2F;opacity:.75;}
+  .dark-mode .pc-sidechat-replyclose{color:#78FAAE;}
+  .pc-sidechat-replyclose:hover{opacity:1;color:#ef4444;}
+
+  .pc-sidechat-compose{display:flex;gap:8px;align-items:center;padding:8px 10px calc(10px + env(safe-area-inset-bottom)) 10px;}
+  .dark-mode .pc-sidechat-compose{border-top:none;}
+  .pc-sidechat-compose textarea{flex:1;resize:none;max-height:110px;border:1px solid rgba(0,0,0,.10);border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.65);outline:none;font-weight:800;font-size:14px;color:#0E3A2F;}
+  .dark-mode .pc-sidechat-compose textarea{border-color:rgba(120,250,174,.25);background:rgba(0,0,0,.25);color:#78FAAE;}
+  .pc-sidechat-compose button{width:44px;height:44px;border-radius:14px;border:1px solid rgba(0,0,0,.10);background:#0E3A2F;color:#78FAAE;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease;flex-shrink:0;}
+  .pc-sidechat-compose button:hover{background:#78FAAE;color:#0E3A2F;border-color:#78FAAE;transform:translateY(-1px);}
+  .pc-sidechat-compose button:disabled,.pc-sidechat-compose textarea:disabled{opacity:.55;cursor:not-allowed;}
+
+  .pc-sidechat-unread-dot{position:absolute;left:8px;top:14px;width:10px;height:10px;border-radius:999px;background:#78FAAE;box-shadow:0 0 0 2px #0E3A2F, 0 0 12px rgba(120,250,174,.55);pointer-events:none;}
+  .dark-mode .pc-sidechat-unread-dot{box-shadow:0 0 0 2px #000, 0 0 12px rgba(120,250,174,.55);}
+
+  /* Context menu (right click) */
+  #pc-sidechat-msg-menu{position:fixed;z-index:20000;display:none;min-width:180px;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden;}
+  .dark-mode #pc-sidechat-msg-menu{background:#0b0b0b;border-color:rgba(120,250,174,.25);box-shadow:0 18px 44px rgba(0,0,0,.55);}
+  .pc-sidechat-menuitem{display:flex;align-items:center;gap:10px;padding:10px 12px;font-weight:900;font-size:13px;color:#0E3A2F;cursor:pointer;user-select:none;}
+  .dark-mode .pc-sidechat-menuitem{color:#78FAAE;}
+  .pc-sidechat-menuitem:hover{background:rgba(120,250,174,.22);}
+  .pc-sidechat-menudiv{height:1px;background:rgba(0,0,0,.10);}
+  .dark-mode .pc-sidechat-menudiv{background:rgba(120,250,174,.20);}
+  .pc-sidechat-menuitem.danger{color:#ef4444;}
+
+  /* Reaction submenu inside context menu */
+  .pc-sidechat-react-submenu{display:none;grid-template-columns:repeat(5,1fr);gap:6px;padding:8px 10px 10px 10px;}
+  .pc-sidechat-react-submenu button{border:none;background:transparent;font-size:18px;cursor:pointer;line-height:1;padding:6px 6px;border-radius:10px;}
+  .pc-sidechat-react-submenu button:hover{background:rgba(120,250,174,.25);}
+
+  
+  /* === FIX: Navbar dropdown should stay above side panels === */
+  .navbar{ z-index:20000 !important; }
+  .navbar .dropdown-menu{ z-index:20001 !important; }
+
+
+  /* === Yugii feedback (ONLY inside sidechat chatbot) === */
+  .pc-yugii-feedback{margin-top:6px;border-top:1px solid rgba(0,0,0,.10);padding-top:6px;}
+  .dark-mode .pc-yugii-feedback{border-top:1px solid rgba(120,250,174,.22);}
+  .pc-yugii-fb-buttons{display:flex;gap:10px;justify-content:flex-start;}
+  .pc-yugii-fb-buttons button{background:none;border:none;font-size:16px;color:#0E3A2F;cursor:pointer;transition:color .2s ease;line-height:1;padding:4px 6px;border-radius:10px;}
+  .pc-yugii-fb-buttons button:hover{color:#78FAAE;background:rgba(120,250,174,.18);}
+  .pc-yugii-fb-buttons button.active{color:#78FAAE;}
+  .dark-mode .pc-yugii-fb-buttons button{color:#78FAAE;}
+  .dark-mode .pc-yugii-fb-buttons button:hover{color:#0E3A2F;background:#78FAAE;}
+  .dark-mode .pc-yugii-fb-buttons button.active{color:#0E3A2F;background:#78FAAE;}
+
+  .pc-yugii-comment{margin-top:8px;}
+  .pc-yugii-comment textarea{width:100%;height:56px;resize:none;border-radius:10px;border:1px solid rgba(0,0,0,.18);padding:8px 10px;font-size:13px;box-sizing:border-box;background:rgba(255,255,255,.85);color:#0E3A2F;}
+  .dark-mode .pc-yugii-comment textarea{border-color:rgba(120,250,174,.25);background:rgba(0,0,0,.22);color:#78FAAE;}
+  .pc-yugii-comment button{background:#0E3A2F;color:#78FAAE;border:none;border-radius:10px;padding:6px 12px;margin-top:6px;cursor:pointer;font-weight:900;font-size:13px;}
+  .pc-yugii-comment button:hover{background:#78FAAE;color:#0E3A2F;}
+  .dark-mode button i {color:#78FAAE;}
+
+
+
+  /* === PortalChat Sidechat: New chat modal (DM + Group) === */
+  .pc-sc-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:25000;padding:18px;}
+  .pc-sc-modal{width:min(520px,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:hidden;border-radius:18px;background:#fff;border:1px solid rgba(0,0,0,.12);box-shadow:0 22px 70px rgba(0,0,0,.35);display:flex;flex-direction:column;}
+  .dark-mode .pc-sc-modal{background:#0b0b0b;border-color:rgba(120,250,174,.25);box-shadow:0 22px 74px rgba(0,0,0,.6);}
+  .pc-sc-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(0,0,0,.10);}
+  .dark-mode .pc-sc-modal-head{border-bottom:1px solid rgba(120,250,174,.18);}
+  .pc-sc-modal-title{font-weight:900;font-size:16px;color:#0E3A2F;}
+  .dark-mode .pc-sc-modal-title{color:#78FAAE;}
+  .pc-sc-close{border:none;background:transparent;font-size:22px;line-height:1;cursor:pointer;color:#6b7280;}
+  .dark-mode .pc-sc-close{color:#78FAAE;}
+  .pc-sc-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px;min-height:0;}
+  .pc-sc-pill-row{display:flex;gap:10px;}
+  .pc-sc-pill{flex:1;border:none;cursor:pointer;border-radius:999px;padding:10px 12px;font-weight:900;font-size:13px;background:rgba(14,58,47,.08);color:#0E3A2F;transition:all .15s ease;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .pc-sc-pill.active{background:#0E3A2F;color:#78FAAE;}
+  .pc-sc-pill:hover{transform:translateY(-1px);background:rgba(120,250,174,.25);}
+  .dark-mode .pc-sc-pill{background:rgba(120,250,174,.12);color:#78FAAE;}
+  .dark-mode .pc-sc-pill.active{background:#78FAAE;color:#0E3A2F;}
+  .pc-sc-input{width:100%;border-radius:14px;border:1px solid rgba(0,0,0,.12);padding:10px 12px;font-weight:800;font-size:14px;outline:none;background:rgba(255,255,255,.9);color:#0E3A2F;}
+  .pc-sc-input:focus{border-color:rgba(120,250,174,.7);box-shadow:0 0 0 4px rgba(120,250,174,.18);}
+  .dark-mode .pc-sc-input{background:rgba(0,0,0,.25);border-color:rgba(120,250,174,.22);color:#78FAAE;}
+  .pc-sc-userlist{overflow:auto;min-height:0;max-height:380px;padding-right:2px;}
+  .pc-sc-user{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 10px;border-radius:14px;border:1px solid transparent;cursor:pointer;transition:all .15s ease;}
+  .pc-sc-user:hover{background:rgba(120,250,174,.18);border-color:rgba(120,250,174,.25);transform:translateY(-1px);}
+  .pc-sc-user-left{display:flex;align-items:center;gap:12px;min-width:0;}
+  .pc-sc-user img{width:42px;height:42px;border-radius:999px;object-fit:cover;border:2px solid rgba(14,58,47,.18);background:#F1F2F2;flex-shrink:0;}
+  .dark-mode .pc-sc-user img{border-color:rgba(120,250,174,.35);background:#2B2B2B;}
+  .pc-sc-user-name{font-weight:900;color:#0E3A2F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .pc-sc-user-name{color:#78FAAE;}
+  .pc-sc-user-sub{font-weight:800;font-size:12px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dark-mode .pc-sc-user-sub{color:#cbd5e1;}
+  .pc-sc-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(0,0,0,.06);color:#0E3A2F;flex-shrink:0;}
+  .dark-mode .pc-sc-badge{background:rgba(255,255,255,.10);color:#fff;}
+  .pc-sc-badge.on{background:rgba(120,250,174,.35);color:#0E3A2F;}
+  .dark-mode .pc-sc-badge.on{background:rgba(120,250,174,.18);color:#78FAAE;}
+  .pc-sc-actions{display:none;gap:10px;margin-top:6px;}
+  .pc-sc-actions button{flex:1;height:44px;border-radius:14px;border:1px solid rgba(0,0,0,.12);background:#0E3A2F;color:#78FAAE;font-weight:900;cursor:pointer;transition:all .15s ease;}
+  .pc-sc-actions button:hover{background:#78FAAE;color:#0E3A2F;border-color:#78FAAE;transform:translateY(-1px);}
+  .dark-mode .pc-sc-actions button{border-color:rgba(120,250,174,.25);}
+</style>
+</head>
+<body class="hidden-until-loaded">
+  <br><br><br>
+  {% include "includes/messages.html" %}
+  <div id="backgroundContainer"></div>
+  <div class="main-container">
+    {% set is_messages_page = (request.path == '/messages_YP') %}
+    {% if session["YA_user"] == True and not is_messages_page %}
+      <div class="right-container">
+        <div class="pc-sidechat">
+          <div class="pc-sidechat-header">
+            <div class="pc-sidechat-title">
+              <i class="fa-solid fa-comments"></i>
+              <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mesajlar</span>
+              <span id="pc-sidechat-unread-pill" class="pc-sidechat-unread" style="display:none;">0</span>
+            </div>
+            <div class="pc-sidechat-actions">
+              <button type="button" class="pc-sidechat-btn" id="pc-sidechat-pin" title="Sabitle">
+                <i class="fa-solid fa-thumbtack"></i>
+              </button>
+        <button type="button" class="pc-sidechat-btn" id="pc-sidechat-newchat" title="Yeni Sohbet">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+              <a class="pc-sidechat-btn" href="/messages_YP" title="Tam ekran aç">
+                <i class="fa-solid fa-up-right-from-square"></i>
+              </a>
+            </div>
+          </div>
+          <div class="pc-sidechat-body">
+            <div class="pc-sidechat-threads">
+              <div class="pc-sidechat-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="pc-sidechat-search" type="text" placeholder="Sohbet ara..." autocomplete="off">
+              </div>
+              <div id="pc-sidechat-threadlist" class="pc-sidechat-threadlist"></div>
+            </div>
+            <div class="pc-sidechat-chat">
+              <div id="pc-sidechat-chathead" class="pc-sidechat-chathead">
+                <div class="pc-sidechat-chatname">Bir sohbet seç</div>
+                <div class="pc-sidechat-chatmeta" id="pc-sidechat-chatmeta"></div>
+              </div>
+              <div id="pc-sidechat-messages" class="pc-sidechat-messages">
+                <div class="pc-sidechat-empty">
+                  Soldan bir sohbet seçerek hızlıca yazışabilirsin 🙂
+                </div>
+              </div>
+              <div class="pc-sidechat-composewrap">
+                <div id="pc-sidechat-toploader" class="pc-sidechat-toploader"><i class="fa-solid fa-spinner fa-spin"></i> Eski mesajlar yükleniyor...</div>
+                <div id="pc-sidechat-replybar" class="pc-sidechat-replybar">
+                  <div class="pc-sidechat-replytext">
+                    <div id="pc-sidechat-replyname" class="pc-sidechat-replyname">Yanıt</div>
+                    <div id="pc-sidechat-replysnippet" class="pc-sidechat-replysnippet">...</div>
+                  </div>
+                  <button type="button" id="pc-sidechat-replyclose" class="pc-sidechat-replyclose" title="İptal">✖</button>
+                </div>
+                <div class="pc-sidechat-compose">
+                  <textarea id="pc-sidechat-input" rows="1" placeholder="Mesaj yaz..." disabled></textarea>
+                  <button type="button" id="pc-sidechat-send" disabled>
+                    <i class="fa-solid fa-paper-plane"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="pc-sidechat-unread-dot" class="pc-sidechat-unread-dot" style="display:none;"></div>
+        </div>
+      </div>
+    {% endif %}
+    {% if session["YA_user"] == True and not is_messages_page %}
+      <div class="left-container">
+        <div id="left_container_tab" style="width: 100%;">
+          <div class="left_container_tabs" style="user-select:none;width:100%;">
+            <div class="tooltip-button" style="width:100%">
+              <button class="left_container_tablinks active" onclick="openLayoutTab(event, 'menuTab')">
+                <i class="fa-solid fa-utensils"></i>
+              </button>
+              <div class="tooltip-text">Yemek Menüsü</div>
+            </div>
+            <div class="tooltip-button" style="width:100%">
+              <button class="left_container_tablinks" onclick="openLayoutTab(event, 'dr_dytTab')">
+                <i class="fa-solid fa-notes-medical"></i>
+              </button>
+              <div class="tooltip-text">Doktor ve Diyetisyen Günleri</div>
+            </div>
+            <div class="tooltip-button" style="width:100%">
+              <button class="left_container_tablinks" onclick="openLayoutTab(event, 'acil_durumTab')">
+                <i class="fa-solid fa-gamepad"></i>
+              </button>
+              <div class="tooltip-text">Oyunlar</div>
+            </div>
+          </div>
+          <div id="menuTab" class="left_container_tabcontent" style="display:block;">
+            <div class="left_container_TabClass">
+              {% if session["username"] in ["zeynepg","haticeg","celalettini","dogao","sevvalo","oguzt"] %}
+                <a href="/kafeterya_menu_ekleme" style="width:100%;text-align:center;">
+                  <button type="button" id="addMenu" class="btn btn-primary" style="width:75%;">
+                    <i class="fa fa-plus"></i>&nbsp;/&nbsp;&nbsp;<i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                </a>
+              {% endif %}
+              <a href="/kafeterya_siparis_ver" style="width:100%;text-align:center;">
+                <button type="button" id="addMenu" class="btn btn-primary" style="width:75%;">
+                  <i class="fa-solid fa-cart-shopping"></i>&nbsp;Vive Kafe Sipariş
+                </button>
+              </a>
+              <h3 class="leftHeader">Vive Cafe Menü</h3>
+              <div class="menu-header">
+                <button id="prev-day">&lt;</button>
+                <div id="current-day"></div>
+                <button id="next-day">&gt;</button>
+              </div>
+              <p id="menu-yemek1"></p>
+              <p id="menu-yemek1-fiyat"></p>
+              <hr id="hr-menu-yemek1">
+              <p id="menu-yemek2"></p>
+              <p id="menu-yemek2-fiyat"></p>
+              <hr id="hr-menu-yemek2">
+              <p id="menu-yemek3"></p>
+              <p id="menu-yemek3-fiyat"></p>
+              <hr id="hr-menu-yemek3">
+              <p id="menu-yemek6"></p>
+              <p id="menu-yemek6-fiyat"></p>
+              <hr id="hr-menu-yemek6">
+              <p id="menu-yemek4"></p>
+              <p id="menu-yemek4-fiyat"></p>
+              <hr id="hr-menu-yemek4">
+              <p id="menu-yemek5"></p>
+              <p id="menu-yemek5-fiyat"></p>
+              <hr id="hr-menu-yemek5">
+              <p id="label-menu-notlar">Notlar</p>
+              <p id="menu-notlar"></p>
+              <hr id="hr-menu-notlar">
+            </div>
+          </div>
+          <div id="dr_dytTab" class="left_container_tabcontent" style="display:none;">
+            <div class="left_container_TabClass">
+              <h4>Doktor</h4>
+              <p>Kamil Yalçın</p>
+              <p>k.yalcin@skoda.com.tr</p>
+              <p>Salı: 11:00 - 12:00</p>
+              <p>Perşembe: 11:00 - 12:00</p>
+              <hr>
+              <h4>Diyetisyen</h4>
+              <p>Abdullah Mollamemişoğlu</p>
+              <p>diyetisyen@skoda.com.tr</p>
+              <p>Çarşamba: 08:00 - 12:00</p>
+            </div>
+          </div>
+          <div id="acil_durumTab" class="left_container_tabcontent" style="display:none;">
+            <div class="left_container_TabClass">
+              <a href="/carkifelek" class="shortcut-box">
+                <div class="card">
+                  <img src="{{ url_for('static', filename='wheel.png') }}">
+                  <h5>Çark</h5>
+                </div>
+              </a>
+              {% if session["departman"] == "Bilgi Teknolojileri" or session["username"] in ["leylaa","asudek","elifk","aybukeo","dogam"] %}
+                <a href="/wordle" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='wordle.png') }}"><h5>Wordle</h5></div></a>
+                <a href="/snake" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='snake.png') }}"><h5>Snake</h5></div></a>
+                <a href="/maze" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='maze.png') }}"><h5>Labirentten Kaçış</h5></div></a>
+                <a href="/tas_kagit_makas" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='rps.png') }}"><h5>Taş Kağıt Makas</h5></div></a>
+                <a href="/jumping_dino" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='jumping_dino.png') }}"><h5>Zıp Zıp Dino</h5></div></a>
+                <a href="/queens" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='queens.png') }}"><h5>Queens</h5></div></a>
+                <a href="/pong" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='pong.png') }}"><h5>Pong</h5></div></a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% if not is_messages_page %}
+      <div id="portalchat-toast-stack"></div>
+    {% endif %}
+    {% block body %}{% endblock %}
+  </div>
+  {% if not is_messages_page %}
+    <div id="pc-sidechat-msg-menu">
+      <div class="pc-sidechat-menuitem" id="pc-sc-menu-reply"><i class="fa-solid fa-reply"></i> Yanıtla</div>
+      <div class="pc-sidechat-menuitem" id="pc-sc-menu-react"><i class="fa-regular fa-face-smile"></i> Tepki</div>
+      <div id="pc-sc-react-submenu" class="pc-sidechat-react-submenu" style="display:none;"></div>
+      <div class="pc-sidechat-menudiv"></div>
+      <div class="pc-sidechat-menuitem danger" id="pc-sc-menu-delete"><i class="fa-regular fa-trash-can"></i> Sil</div>
+    </div>
+    <div id="PopUpModal" class="modal" style="display:none;">
+      <div class="PopUpModalContainer">
+        <div class="PopUpModalContent">
+          <span id="popUpIcon"></span>
+          <br><br>
+          <span id="popUpText"></span>
+        </div>
+        <br>
+        <div class="PopUpModalButton">
+          <button type="button" id="okBtn" class="btn btn-primary">Tamam</button>
+        </div>
+      </div>
+    </div>
+    <div id="ChoicePopUpModal" class="modal" style="display:none;">
+      <div class="PopUpModalContainer">
+        <div class="PopUpModalContent">
+          <span id="popUpIcon"></span>
+          <br><br>
+          <span id="popUpText"></span>
+        </div>
+        <br>
+        <div class="PopUpModalButton">
+          <button type="button" class="btn btn-primary confirm">Evet</button>
+          <button type="button" class="btn btn-primary deny">Hayır</button>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- Sidechat NEW CHAT MODAL (DM + GROUP) -->
+    <div id="pc-sc-newchat" class="pc-sc-overlay" aria-hidden="true">
+      <div class="pc-sc-modal" role="dialog" aria-modal="true">
+        <div class="pc-sc-modal-head">
+          <div class="pc-sc-modal-title">Yeni Sohbet Başlat</div>
+          <button type="button" class="pc-sc-close" id="pc-sc-newchat-close" aria-label="Kapat">&times;</button>
+        </div>
+
+        <div class="pc-sc-body">
+          <div class="pc-sc-pill-row">
+            <button type="button" id="pc-sc-pill-dm" class="pc-sc-pill active"><i class="fa-solid fa-user"></i> DM</button>
+            <button type="button" id="pc-sc-pill-group" class="pc-sc-pill"><i class="fa-solid fa-users"></i> Grup</button>
+          </div>
+
+          <div id="pc-sc-group-title-wrap" style="display:none;">
+            <input id="pc-sc-group-title" class="pc-sc-input" placeholder="Grup adı (min 2 karakter)">
+          </div>
+
+          <input id="pc-sc-search" class="pc-sc-input" placeholder="Kişi ara...">
+
+          <div id="pc-sc-userlist" class="pc-sc-userlist"></div>
+          <div id="pc-sc-grouplist" class="pc-sc-userlist" style="display:none;"></div>
+
+          <div id="pc-sc-group-actions" class="pc-sc-actions">
+            <button type="button" id="pc-sc-group-create"><i class="fa-solid fa-circle-check" style="margin-right:8px;"></i>Grup Oluştur</button>
+            <button type="button" id="pc-sc-group-clear"><i class="fa-solid fa-broom" style="margin-right:8px;"></i>Temizle</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+          integrity="sha384-KJ3O2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+          integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+          integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+          crossorigin="anonymous"></script>
+
+  <!-- === FIX: Profile dropdown (username menu) works even if Bootstrap dropdown fails === -->
+  <script>
+    (function(){
+      function initProfileDropdownFix(){
+        var toggle = document.getElementById('profileDropdown');
+        if(!toggle) return;
+
+        // dropdown-menu is next sibling in your navbar markup
+        var menu = toggle.nextElementSibling;
+        if(!menu || !menu.classList.contains('dropdown-menu')) return;
+
+        // Ensure consistent initial state
+        if(menu.style.display === '') menu.style.display = 'none';
+
+        function close(){
+          menu.classList.remove('show');
+          toggle.classList.remove('show');
+          menu.style.display = 'none';
+          toggle.setAttribute('aria-expanded','false');
+        }
+        function open(){
+          menu.classList.add('show');
+          toggle.classList.add('show');
+          menu.style.display = 'block';
+          toggle.setAttribute('aria-expanded','true');
+        }
+
+        // Prevent duplicate binding
+        if(toggle.dataset.pdFixBound === '1') return;
+        toggle.dataset.pdFixBound = '1';
+
+        toggle.addEventListener('click', function(e){
+          // Stop the browser from appending "#" and jumping
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Toggle
+          var isOpen = (menu.style.display === 'block') || menu.classList.contains('show');
+          if(isOpen) close(); else open();
+        });
+
+        // Close when clicking elsewhere
+        document.addEventListener('click', function(e){
+          if(menu.style.display !== 'block') return;
+          if(toggle.contains(e.target) || menu.contains(e.target)) return;
+          close();
+        });
+
+        // Close on Esc
+        document.addEventListener('keydown', function(e){
+          if(e.key === 'Escape') close();
+        });
+      }
+
+      if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', initProfileDropdownFix);
+      } else {
+        initProfileDropdownFix();
+      }
+    })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+  {% if include_script is not defined or include_script %}
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  {% endif %}
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.classList.remove('hidden-until-loaded');
+    window.addEventListener('load', function() {
+      document.body.classList.remove('hidden-until-loaded');
+    }, { once: true });
+    setTimeout(function () {
+      document.body.classList.remove('hidden-until-loaded');
+    }, 1200);
+  });
+
+  {% if session["YA_user"] == True %}
+  document.addEventListener('DOMContentLoaded', function () {
+    const currentdateLabel = document.getElementById('current-day');
+    const prevdayButton = document.getElementById('prev-day');
+    const nextdayButton = document.getElementById('next-day');
+
+    let currentDate = new Date();
+
+    // UI label: DD.MM.YYYY
+    function formatDateTR(date) {
+      const d = String(date.getDate()).padStart(2,'0');
+      const m = String(date.getMonth() + 1).padStart(2,'0');
+      const y = date.getFullYear();
+      return `${d}.${m}.${y}`;
+    }
+
+    // API: YYYY-MM-DD
+    function formatISO(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2,'0');
+      const d = String(date.getDate()).padStart(2,'0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val || '';
+    }
+
+    function clearAll() {
+      [
+        'menu-yemek1','menu-yemek2','menu-yemek3','menu-yemek4','menu-yemek5','menu-yemek6',
+        'menu-yemek1-fiyat','menu-yemek2-fiyat','menu-yemek3-fiyat','menu-yemek4-fiyat','menu-yemek5-fiyat','menu-yemek6-fiyat',
+        'menu-notlar'
+      ].forEach(id => setText(id, ''));
+    }
+
+    async function updateMenuItems() {
+      const iso = formatISO(currentDate);
+
+      try {
+        const res = await fetch('/get_menu_for_date', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ menu_date: iso })
+        });
+
+        if (!res.ok) { clearAll(); return; }
+
+        const menuEntry = await res.json();
+        if (!menuEntry || Object.keys(menuEntry).length === 0) { clearAll(); return; }
+
+        setText('menu-yemek1', menuEntry.yemek1);
+        setText('menu-yemek2', menuEntry.yemek2);
+        setText('menu-yemek3', menuEntry.yemek3);
+        setText('menu-yemek4', menuEntry.yemek4);
+        setText('menu-yemek5', menuEntry.yemek5);
+        setText('menu-yemek6', menuEntry.yemek6);
+
+        setText('menu-yemek1-fiyat', menuEntry.yemek1_fiyat ? menuEntry.yemek1_fiyat + ' ₺' : '');
+        setText('menu-yemek2-fiyat', menuEntry.yemek2_fiyat ? menuEntry.yemek2_fiyat + ' ₺' : '');
+        setText('menu-yemek3-fiyat', menuEntry.yemek3_fiyat ? menuEntry.yemek3_fiyat + ' ₺' : '');
+        setText('menu-yemek4-fiyat', menuEntry.yemek4_fiyat ? menuEntry.yemek4_fiyat + ' ₺' : '');
+        setText('menu-yemek5-fiyat', menuEntry.yemek5_fiyat ? menuEntry.yemek5_fiyat + ' ₺' : '');
+        setText('menu-yemek6-fiyat', menuEntry.yemek6_fiyat ? menuEntry.yemek6_fiyat + ' ₺' : '');
+
+        // your API currently returns "Not" (recommended to change backend to "notlar")
+        setText('menu-notlar', menuEntry.notlar ?? menuEntry.Not ?? '');
+      } catch (e) {
+        console.error('Menu fetch error:', e);
+        clearAll();
+      }
+    }
+
+    function updateDateLabel() {
+      if (currentdateLabel) currentdateLabel.textContent = formatDateTR(currentDate);
+      updateMenuItems();
+    }
+
+    updateDateLabel();
+
+    if (prevdayButton) prevdayButton.addEventListener('click', function () {
+      currentDate.setDate(currentDate.getDate() - 1);
+      updateDateLabel();
+    });
+
+    if (nextdayButton) nextdayButton.addEventListener('click', function () {
+      currentDate.setDate(currentDate.getDate() + 1);
+      updateDateLabel();
+    });
+  });
+
+  function openLayoutTab(evt, tabName) {
+    const tabContents = document.querySelectorAll('.left_container_tabcontent');
+    tabContents.forEach(content => content.style.display = 'none');
+
+    const tabLinks = document.querySelectorAll('.left_container_tablinks');
+    tabLinks.forEach(link => link.classList.remove('active'));
+
+    const target = document.getElementById(tabName);
+    if (target) target.style.display = 'block';
+    evt.currentTarget.classList.add('active');
+  }
+  {% endif %}
+</script>
+
+
+  <script>
+    (function () {
+      const cursor = document.getElementById('yc-cursor');
+      if (!cursor) return;
+
+      const svg = cursor.querySelector('.cursor-glow');
+      let hideTimeout;
+
+      const isDark = () => document.body.classList.contains('dark-mode');
+      const showCursor = () => { if (isDark()) cursor.classList.remove('cursor-hidden'); };
+      const hideCursor = () => cursor.classList.add('cursor-hidden');
+
+      const resetHideTimer = () => {
+        clearTimeout(hideTimeout);
+        showCursor();
+        hideTimeout = setTimeout(hideCursor, 3000);
+      };
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDark()) {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+          resetHideTimer();
+        }
+      });
+
+      window.addEventListener('mouseout', (e) => { if (e.relatedTarget === null) hideCursor(); });
+      window.addEventListener('blur', hideCursor);
+      document.addEventListener('mouseenter', () => { showCursor(); resetHideTimer(); });
+
+      document.querySelectorAll('a, button, input, textarea, select, .clickable').forEach(el => {
+        el.addEventListener('mouseenter', () => { if (isDark()) svg.classList.add('cursor-hover'); });
+        el.addEventListener('mouseleave', () => svg.classList.remove('cursor-hover'));
+      });
+
+      document.addEventListener('click', (e) => {
+        const pulse = document.createElement('span');
+        pulse.className = 'cursor-pulse';
+        pulse.style.left = e.clientX + 'px';
+        pulse.style.top  = e.clientY + 'px';
+        document.body.appendChild(pulse);
+        pulse.addEventListener('animationend', () => pulse.remove());
+        resetHideTimer();
+      });
+
+      resetHideTimer();
+    })();
+  </script>
+
+  {% if session["YA_user"] == True and not is_messages_page %}
+  <script>
+    const ME = "{{ session['username'] }}";
+
+    // Emoticon shortcuts: bind to sidechat input (if present)
+    document.addEventListener('DOMContentLoaded', function(){
+      const _pcInputEl = document.getElementById('pc-sidechat-input');
+      if(_pcInputEl){
+        _pcInputEl.addEventListener('input', function(){ pcEmoticonOnInput(_pcInputEl); });
+      }
+    });
+    const CAN_SEE_YUGII = (ME === "dogao");
+
+    // ==== PortalChat notification sound (EV startup) ====
+    // Autoplay policies require a user gesture once; we "unlock" on first click/keydown/touch.
+    const PC_EV_SOUND_SRC = "/static/sounds/ev_start.wav";
+    let pcEvAudio = null;
+    let pcSoundUnlocked = false;
+
+    function pcInitEvSound(){
+      if (pcEvAudio) return;
+      pcEvAudio = new Audio(PC_EV_SOUND_SRC);
+      pcEvAudio.preload = "auto";
+      pcEvAudio.volume = 0.38; // premium EV cabin level
+    }
+
+    function pcUnlockEvSound(){
+      if (pcSoundUnlocked) return;
+      pcInitEvSound();
+      // Try a tiny play/pause to unlock audio on iOS/Chrome policies
+      pcEvAudio.play().then(() => {
+        pcEvAudio.pause();
+        pcEvAudio.currentTime = 0;
+        pcSoundUnlocked = true;
+      }).catch(() => {
+        // If blocked, we'll try again on the next user gesture.
+      });
+    }
+
+    ["click","keydown","touchstart"].forEach(evt => {
+      window.addEventListener(evt, pcUnlockEvSound, { once:true, passive:true });
+    });
+
+    function pcPlayEvSound(){
+      pcInitEvSound();
+      try { pcEvAudio.currentTime = 0; } catch(e){}
+      pcEvAudio.play().catch(()=>{});
+    }
+
+
+    const PC_PIN_KEY = "pc_pinned_threads_v1";
+    function getPinnedIds(){
+      try{
+        const raw = localStorage.getItem(PC_PIN_KEY) || "[]";
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr.map(String) : [];
+      }catch(e){
+        return [];
+      }
+    }
+
+    const STORAGE_KEY = `portalchat_last_seen_${ME}`;
+    let _threadLastSeen = {};
+    let _saveTimer = null;
+
+    function loadLastSeen(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        _threadLastSeen = raw ? JSON.parse(raw) : {};
+        if (typeof _threadLastSeen !== "object" || _threadLastSeen === null) _threadLastSeen = {};
+      }catch(e){
+        _threadLastSeen = {};
+      }
+    }
+
+    function saveLastSeenDebounced(){
+      clearTimeout(_saveTimer);
+      _saveTimer = setTimeout(() => {
+        try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(_threadLastSeen)); }catch(e){}
+      }, 150);
+    }
+
+    function avatarUrlFor(username){ return `/static/users_card_photos/${username}.jpg`; }
+
+    function getAvatarUsername(thread){
+      if (thread.thread_type === "dm") return thread.other_username || thread.created_by || "user";
+      if (thread.last_message && thread.last_message.sender_username) return thread.last_message.sender_username;
+      return thread.created_by || "user";
+    }
+    function safeText(s){ return String(s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    // =========================
+    // Emoticon -> Emoji shortcuts (Teams-like)
+    // Special rules:
+    // - "<3" must be GREEN HEART 💚
+    // - "(doa)" and "(eyes)" => 👀
+    // =========================
+    function pcApplyEmoticonShortcuts(str){
+      let s = String(str ?? "");
+
+      // (doa) / (eyes) => 👀
+      s = s.replace(/\((doa|eyes)\)/ig, "👀");
+
+      // "<3" => 💚 (green heart)  (token-like)
+      s = s.replace(/(^|\s)<3(?=\s|$|[.!?,;:])/g, "$1💚");
+
+      // Basic
+      s = s.replace(/(^|\s):\)(?=\s|$|[.!?,;:])/g, "$1🙂");
+      s = s.replace(/(^|\s):d(?=\s|$|[.!?,;:])/ig, "$1😄");
+      s = s.replace(/(^|\s):\((?=\s|$|[.!?,;:])/g, "$1🙁");
+
+      // Extra (common Teams-like)
+      s = s.replace(/(^|\s);\)(?=\s|$|[.!?,;:])/g, "$1😉");        // ;)
+      s = s.replace(/(^|\s):p(?=\s|$|[.!?,;:])/ig, "$1😛");        // :P
+      s = s.replace(/(^|\s):o(?=\s|$|[.!?,;:])/ig, "$1😮");        // :O
+      s = s.replace(/(^|\s):'\((?=\s|$|[.!?,;:])/g, "$1😢");       // :'(
+      s = s.replace(/(^|\s):\|(?=\s|$|[.!?,;:])/g, "$1😐");       // :|
+      s = s.replace(/(^|\s):\)\)(?=\s|$|[.!?,;:])/g, "$1😄");    // :))
+      s = s.replace(/(^|\s):thumbsup:(?=\s|$|[.!?,;:])/ig, "$1👍"); // :thumbsup:
+      s = s.replace(/(^|\s):clap:(?=\s|$|[.!?,;:])/ig, "$1👏");     // :clap:
+      s = s.replace(/(^|\s):fire:(?=\s|$|[.!?,;:])/ig, "$1🔥");     // :fire:
+      s = s.replace(/(^|\s):heart:(?=\s|$|[.!?,;:])/ig, "$1❤️");    // :heart:
+
+      return s;
+    }
+
+    function pcEmoticonOnInput(el){
+      try{
+        if(!el) return;
+        const v = String(el.value ?? "");
+        const lv = v.toLowerCase();
+
+        // fast path
+        if(
+          v.indexOf(":)") === -1 &&
+          lv.indexOf(":d") === -1 &&
+          v.indexOf("<3") === -1 &&
+          lv.indexOf("(doa)") === -1 &&
+          lv.indexOf("(eyes)") === -1 &&
+          v.indexOf(";)") === -1 &&
+          lv.indexOf(":p") === -1 &&
+          lv.indexOf(":o") === -1 &&
+          v.indexOf(":(") === -1 &&
+          v.indexOf(":'(") === -1 &&
+          v.indexOf(":|") === -1 &&
+          v.indexOf(":))") === -1 &&
+          lv.indexOf(":thumbsup:") === -1 &&
+          lv.indexOf(":clap:") === -1 &&
+          lv.indexOf(":fire:") === -1 &&
+          lv.indexOf(":heart:") === -1
+        ){
+          return;
+        }
+
+        const start = (typeof el.selectionStart === "number") ? el.selectionStart : null;
+        const end   = (typeof el.selectionEnd === "number") ? el.selectionEnd : null;
+
+        // preserve caret/selection
+        if(start !== null && end !== null){
+          const before = v.slice(0, start);
+          const sel    = v.slice(start, end);
+          const after  = v.slice(end);
+
+          const before2 = pcApplyEmoticonShortcuts(before);
+          const sel2    = pcApplyEmoticonShortcuts(sel);
+          const after2  = pcApplyEmoticonShortcuts(after);
+
+          const newV = before2 + sel2 + after2;
+          if(newV !== v){
+            el.value = newV;
+            el.selectionStart = before2.length;
+            el.selectionEnd   = before2.length + sel2.length;
+          }
+          return;
+        }
+
+        const v2 = pcApplyEmoticonShortcuts(v);
+        if(v2 !== v) el.value = v2;
+      }catch(e){
+        // ignore
+      }
+    }
+
+    function formatTime(ts){ if(!ts) return ""; try{return ts.substring(11,16);}catch(e){return "";} }
+
+    function getThreadTitle(thread){
+      if (thread.display_title && String(thread.display_title).trim()) return String(thread.display_title).trim();
+      if (thread.other_fullname && String(thread.other_fullname).trim()) return String(thread.other_fullname).trim();
+      if (thread.title && String(thread.title).trim()) return String(thread.title).trim();
+      return (String(thread.thread_type || "thread").toUpperCase() + " #" + thread.id);
+    }
+
+    function getToastText(thread){
+      const lm = thread.last_message || null;
+      if (!lm) return "Yeni mesaj";
+      const body = (lm.body || "").trim();
+      if (!body) return "Dosya paylaştı";
+      return pcApplyEmoticonShortcuts(body);
+    }
+
+    function showPortalChatToast(thread){
+      const stack = document.getElementById("portalchat-toast-stack");
+      if (!stack) return;
+
+      // Don't show toast (or play sound) for messages sent by me
+      try{
+        const sender = thread && thread.last_message && thread.last_message.sender_username ? String(thread.last_message.sender_username) : "";
+        if (sender && sender === ME) return;
+      }catch(e){}
+
+      const title = getThreadTitle(thread);
+      const avatarUser = getAvatarUsername(thread);
+      const text = getToastText(thread);
+      const time = thread.last_message ? formatTime(thread.last_message.created_at) : "";
+
+      const toast = document.createElement("div");
+      toast.className = "portalchat-toast";
+      toast.innerHTML = `
+        <img class="portalchat-toast-avatar" src="${avatarUrlFor(avatarUser)}" alt="${safeText(avatarUser)}"
+             onerror="this.onerror=null; this.src='/static/user_default.png';">
+        <div class="portalchat-toast-content">
+          <div class="portalchat-toast-title">${safeText(title)}</div>
+          <div class="portalchat-toast-text">${safeText(text)}</div>
+        </div>
+        <div class="portalchat-toast-time">${safeText(time)}</div>
+        <button class="portalchat-toast-close" title="Kapat">✖</button>
+      `;
+
+      toast.querySelector(".portalchat-toast-close").onclick = (e) => {
+        e.stopPropagation();
+        toast.remove();
+      };
+
+      toast.onclick = () => {
+        window.location.href = `/messages_YP?thread_id=${encodeURIComponent(thread.id)}`;
+      };
+
+      stack.appendChild(toast);
+
+      // Play EV startup notification sound
+      pcPlayEvSound();
+
+      const DURATION = 6500;
+      let remaining = DURATION;
+      let startedAt = Date.now();
+      let timerId = null;
+
+      function removeToast(){ if (toast && toast.parentNode) toast.remove(); }
+      function startTimer(){
+        if (timerId) return;
+        startedAt = Date.now();
+        timerId = setTimeout(removeToast, remaining);
+      }
+      function stopTimer(){
+        if (!timerId) return;
+        clearTimeout(timerId);
+        timerId = null;
+        const elapsed = Date.now() - startedAt;
+        remaining = Math.max(0, remaining - elapsed);
+      }
+
+      startTimer();
+
+      toast.addEventListener("mouseenter", () => stopTimer());
+      toast.addEventListener("mouseleave", () => {
+        remaining = DURATION;
+        startTimer();
+      });
+
+      while (stack.children.length > 4) stack.removeChild(stack.firstChild);
+    }
+
+    function pollPortalChatThreadsForToasts(){
+      fetch("/api/chat/threads", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({})
+      })
+      .then(r => r.json())
+      .then(d => {
+        if (d.status !== "success") return;
+        const threads = d.data || [];
+
+        threads.forEach(t => {
+          const lm = t.last_message || null;
+          if (!lm) return;
+
+          const lastId = Number(lm.id || 0);
+          const unread = Number(t.unread_count || 0);
+          const sender = lm.sender_username || "";
+          const prevSeen = Number(_threadLastSeen[t.id] || 0);
+
+          if (unread > 0 && sender && sender !== ME && lastId > prevSeen) {
+            showPortalChatToast(t);
+          }
+
+          if (lastId > prevSeen) {
+            _threadLastSeen[t.id] = lastId;
+            saveLastSeenDebounced();
+          }
+        });
+      })
+      .catch(() => {});
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadLastSeen();
+      pollPortalChatThreadsForToasts();
+      setInterval(pollPortalChatThreadsForToasts, 2000);
+    });
+  </script>
+  {% endif %}
+
+  {% if session["YA_user"] == True and not is_messages_page %}
+  <script>
+    (function(){
+      const ME = "{{ session['username'] }}";
+      const CAN_SEE_YUGII = (1 === 1);
+      const FORCE_MESSAGES_PAGE = {{ (request.path == '/messages_YP')|tojson }};
+      const INITIAL_CHAT_THREAD_ID = {{ request.args.get('thread_id')|tojson }};
+
+      const rightContainer = document.querySelector('.right-container');
+      const els = {
+        search: document.getElementById('pc-sidechat-search'),
+        list: document.getElementById('pc-sidechat-threadlist'),
+        messages: document.getElementById('pc-sidechat-messages'),
+        chatName: document.querySelector('#pc-sidechat-chathead .pc-sidechat-chatname'),
+        chatMeta: document.getElementById('pc-sidechat-chatmeta'),
+        input: document.getElementById('pc-sidechat-input'),
+        send: document.getElementById('pc-sidechat-send'),
+        pin: document.getElementById('pc-sidechat-pin'),
+        unreadPill: document.getElementById('pc-sidechat-unread-pill'),
+        unreadDot: document.getElementById('pc-sidechat-unread-dot'),
+        replyBar: document.getElementById('pc-sidechat-replybar'),
+        replyName: document.getElementById('pc-sidechat-replyname'),
+        replySnippet: document.getElementById('pc-sidechat-replysnippet'),
+        replyClose: document.getElementById('pc-sidechat-replyclose'),
+        topLoader: document.getElementById('pc-sidechat-toploader'),
+        menu: document.getElementById('pc-sidechat-msg-menu'),
+        menuReply: document.getElementById('pc-sc-menu-reply'),
+        menuReact: document.getElementById('pc-sc-menu-react'),
+        menuDelete: document.getElementById('pc-sc-menu-delete'),
+      };
+      if (!rightContainer || !els.list || !els.messages || !els.input || !els.send) return;
+
+      // Ensure loader is not visible unless we are actively fetching older messages
+      if (els.topLoader) els.topLoader.style.display = 'none';
+
+      const ENABLE_REACTIONS = true;
+      const REACTION_EMOJIS = ["👍","❤️","👀","😂","😮","😢","😡","👏","🎉"];
+
+      // ==== Yugii Chatbot (virtual thread in sidechat) ====
+      const PC_CHATBOT_ID = '__pc_chatbot__';
+      const PC_CHATBOT_TITLE = 'Yugii';
+      const PC_CHATBOT_AVATAR = '/static/yugii_avatar.png';
+      const PC_CHATBOT_STORAGE = `pc_chatbot_history_${ME}`;
+
+      function pcChatbotEscape(s){
+        return String(s||'')
+          .replace(/&/g,'&amp;')
+          .replace(/</g,'&lt;')
+          .replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;')
+          .replace(/'/g,'&#39;')
+          .replace(/\n/g,'<br>');
+      }
+
+      function pcChatbotLoad(){
+        try{
+          const raw = localStorage.getItem(PC_CHATBOT_STORAGE) || '[]';
+          const arr = JSON.parse(raw);
+          return Array.isArray(arr) ? arr : [];
+        }catch(e){
+          return [];
+        }
+      }
+
+      function pcChatbotSave(arr){
+        try{ localStorage.setItem(PC_CHATBOT_STORAGE, JSON.stringify(arr||[])); }catch(e){}
+      }
+
+      function pcSetSidechatMode(isChatbot){
+        const sc = document.querySelector('.pc-sidechat');
+        if(sc) sc.classList.toggle('pc-sidechat-no-reactions', !!isChatbot);
+      }
+
+
+      // === Yugii Like/Dislike (ONLY for chatbot bot messages) ===
+      function pcBindChatbotFeedbackHandlers(){
+        if (!els.messages || els.messages.dataset.pcYugiiFbBound === '1') return;
+        els.messages.dataset.pcYugiiFbBound = '1';
+
+        function postFeedback(recordId, liked, comment){
+          if(!recordId) return Promise.resolve();
+          return fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: recordId,
+              liked: liked,
+              comment: comment || ''
+            })
+          }).catch(()=>{});
+        }
+
+        els.messages.addEventListener('click', (e) => {
+          const likeBtn = e.target.closest('.pc-yugii-like-btn');
+          const dislikeBtn = e.target.closest('.pc-yugii-dislike-btn');
+          const sendBtn = e.target.closest('.pc-yugii-send-comment');
+          const fb = e.target.closest('.pc-yugii-feedback');
+          if(!fb) return;
+
+          const recordId = fb.getAttribute('data-rid');
+          const commentBox = fb.querySelector('.pc-yugii-comment');
+          const textarea = commentBox ? commentBox.querySelector('textarea') : null;
+          const _like = fb.querySelector('.pc-yugii-like-btn');
+          const _dislike = fb.querySelector('.pc-yugii-dislike-btn');
+
+          // 👍 Like
+          if(likeBtn){
+            const isActive = _like.classList.contains('active');
+            if(isActive){
+              _like.classList.remove('active');
+              if(_dislike) _dislike.classList.remove('active');
+              if(commentBox) commentBox.style.display = 'none';
+              postFeedback(recordId, null, '');
+              return;
+            }
+            _like.classList.add('active');
+            if(_dislike) _dislike.classList.remove('active');
+            if(commentBox) commentBox.style.display = 'none'; // ✅ sadece dislike'ta yorum
+            postFeedback(recordId, true, '');
+            return;
+          }
+
+          // 👎 Dislike
+          if(dislikeBtn){
+            const isActive = _dislike.classList.contains('active');
+            if(isActive){
+              _dislike.classList.remove('active');
+              if(_like) _like.classList.remove('active');
+              if(commentBox) commentBox.style.display = 'none';
+              postFeedback(recordId, null, '');
+              return;
+            }
+            _dislike.classList.add('active');
+            if(_like) _like.classList.remove('active');
+            if(commentBox) commentBox.style.display = 'block';
+            postFeedback(recordId, false, '');
+            return;
+          }
+
+          // 💬 Send comment (only meaningful for dislike)
+          if(sendBtn){
+            const comment = textarea ? String(textarea.value || '').trim() : '';
+            if(!comment) return;
+            postFeedback(recordId, false, comment).then(()=>{
+              if(commentBox){
+                commentBox.innerHTML = "<p style='color:#0E3A2F;font-weight:900;margin:6px 0 0 0;'>✅ Teşekkürler! Yorumun kaydedildi.</p>";
+              }
+            });
+            return;
+          }
+        });
+      }
+
+      function pcRenderChatbotMessages(){
+        const hist = pcChatbotLoad();
+        if(!hist.length){
+          els.messages.innerHTML = `
+            <div class=\"pc-sidechat-empty\" style=\"padding:14px 10px;\">
+              👋 Merhaba, ben <b>Yugii</b> 💚<br>
+              Sana nasıl yardımcı olabilirim?
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        for(const item of hist){
+          const isUser = item && item.role === 'user';
+          const roleCls = isUser ? 'me' : 'them';
+          const body = pcChatbotEscape(item && item.text ? item.text : '');
+          const rid = item && item.id ? String(item.id) : '';
+
+          const feedback = (!isUser && rid) ? `
+            <div class=\"pc-yugii-feedback\" data-rid=\"${pcChatbotEscape(rid)}\">
+              <div class=\"pc-yugii-fb-buttons\">
+                <button type=\"button\" class=\"pc-yugii-like-btn\" title=\"Beğendim\"><i class=\"fa fa-thumbs-up\"></i></button>
+                <button type=\"button\" class=\"pc-yugii-dislike-btn\" title=\"Beğenmedim\"><i class=\"fa fa-thumbs-down\"></i></button>
+              </div>
+              <div class=\"pc-yugii-comment\" style=\"display:none;\">
+                <textarea placeholder=\"Yorumunuzu yazın...\"></textarea>
+                <button type=\"button\" class=\"pc-yugii-send-comment\">Gönder</button>
+              </div>
+            </div>
+          ` : '';
+
+          html += `
+            <div class=\"pc-sidechat-msg ${roleCls}\">
+              <div class=\"pc-sidechat-bubblewrap\">
+                <div class=\"pc-sidechat-bubble\">${body}</div>
+                ${feedback}
+              </div>
+            </div>
+          `;
+        }
+        els.messages.innerHTML = html;
+        pcBindChatbotFeedbackHandlers();
+        scrollToBottom();
+      }
+
+      function pcOpenChatbotThread(){
+        if(!CAN_SEE_YUGII) return;
+        state._renderLockUntil = Date.now() + 400;
+        state.activeThreadId = PC_CHATBOT_ID;
+        state.activeThreadObj = { id: PC_CHATBOT_ID, thread_type: 'bot', title: PC_CHATBOT_TITLE };
+
+        if (state.pollTimer) { clearInterval(state.pollTimer); state.pollTimer = null; }
+        stopLastSeenPolling();
+        clearReply();
+        pcSetSidechatMode(true);
+
+        if (els.chatName) els.chatName.textContent = PC_CHATBOT_TITLE;
+        if (els.chatMeta) els.chatMeta.innerHTML = `<span>YücePortal Asistanı</span>`;
+
+        els.input.disabled = false;
+        els.send.disabled = false;
+        els.input.value = '';
+        els.input.style.height = 'auto';
+
+        renderThreads();
+        pcRenderChatbotMessages();
+        els.input.focus();
+      }
+
+      async function pcSendChatbotMessage(body){
+        if(!CAN_SEE_YUGII) return;
+        const msg = String(body||'').trim();
+        if(!msg) return;
+
+        els.send.disabled = true;
+
+        const hist = pcChatbotLoad();
+        hist.push({ role: 'user', text: msg, ts: new Date().toISOString() });
+        pcChatbotSave(hist);
+        pcRenderChatbotMessages();
+
+
+        try{
+          const r = await fetch('/chatbot', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify({ message: msg })
+          });
+          const d = await r.json().catch(()=>({}));
+          const reply = (d && (d.reply || d.message || d.text)) ? String(d.reply || d.message || d.text) : 'Bir hata oluştu. Lütfen tekrar dene.';
+
+          const hist2 = pcChatbotLoad();
+          const recordId = (d && (d.id || d.record_id || d.recordId)) ? (d.id || d.record_id || d.recordId) : null;
+          hist2.push({ role: 'bot', text: reply, ts: new Date().toISOString(), id: recordId });
+          pcChatbotSave(hist2);
+          pcRenderChatbotMessages();
+        }catch(e){
+          const hist2 = pcChatbotLoad();
+          hist2.push({ role: 'bot', text: 'Bir hata oluştu. Lütfen tekrar dene.', ts: new Date().toISOString(), id: null });
+          pcChatbotSave(hist2);
+          pcRenderChatbotMessages();
+        }finally{
+          els.send.disabled = false;
+          els.input.focus();
+        }
+      }
+
+      // ensure reactions class is in sync (do not override chatbot mode)
+      try{ const sc=document.querySelector('.pc-sidechat'); if(sc && !ENABLE_REACTIONS){ sc.classList.add('pc-sidechat-no-reactions'); } }catch(e){}
+
+
+      const state = {
+        pinned: false,
+        threads: [],
+        activeThreadId: null,
+        activeThreadObj: null,
+        lastMessageId: 0,
+        oldestMessageId: null,
+        hasMoreOlder: true,
+        isLoadingOlder: false,
+        ignoreOlderOnScroll: false,
+        replyTo: null,
+        lastVisibleMessageId: 0,
+        msgObserver: null,
+        markReadTimer: null,
+
+        pollTimer: null,
+        threadsTimer: null,
+        lastSeenPollTimer: null,
+        lastSeenUsername: null,
+        _lastSeenText: null,
+        _threadsHash: "",
+        _renderLockUntil: 0,
+        menuTargetEl: null
+      };
+
+      function avatarUrlFor(username){ return `/static/users_card_photos/${username}.jpg`; }
+      function safeText(s){ return String(s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+      function formatTime(ts){ if(!ts) return ""; try{return String(ts).substring(11,16);}catch(e){return "";} }
+      function getThreadTitle(t){
+        if (t.display_title && String(t.display_title).trim()) return String(t.display_title).trim();
+        if (t.other_fullname && String(t.other_fullname).trim()) return String(t.other_fullname).trim();
+        if (t.title && String(t.title).trim()) return String(t.title).trim();
+        return (String(t.thread_type || "thread").toUpperCase() + " #" + t.id);
+      }
+      function getAvatarUsername(t){
+        // DM: other user
+        if (t.thread_type === "dm") return t.other_username || t.created_by || "user";
+
+        // GROUP: show Skoda logo like messages_YP (use group_default bucket)
+        if (String(t.thread_type || "").toLowerCase() === "group") return "group_default";
+
+        // Fallback: last sender / creator
+        if (t.last_message && t.last_message.sender_username) return t.last_message.sender_username;
+        return t.created_by || "user";
+      }
+
+      // Avatar source override (group threads => Skoda logo)
+      function threadAvatarSrc(t){
+        if (String(t && t.thread_type || "").toLowerCase() === "group") return "/static/group_chat_logo.png";
+        const u = getAvatarUsername(t);
+        return avatarUrlFor(u);
+      }
+      function getLastPreview(t){
+        const lm = t.last_message || null;
+        if (!lm) return "";
+        const b = (lm.body || "").trim();
+        if (b) return b;
+        return "Dosya paylaşıldı";
+      }
+      function computeThreadsHash(threads){
+        try{
+          const slim = (threads || []).map(t => ([
+            String(t.id),
+            String(t.thread_type || "").toLowerCase(),
+            Number(t.unread_count || 0),
+            t.last_message ? Number(t.last_message.id || 0) : 0
+          ]));
+          return JSON.stringify(slim);
+        }catch(e){ return String(Date.now()); }
+      }
+
+      async function apiPost(url, payload){
+        const r = await fetch(url, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload || {})
+        });
+        const j = await r.json().catch(()=>({status:"error"}));
+        if (!r.ok) throw new Error(j.message || ("HTTP " + r.status));
+        return j;
+      }
+
+      function normalizeStatus(m){
+        if(!m) return "delivered";
+        const s = String(m.status || "").toLowerCase().trim();
+        if(s === "sending" || s === "delivered" || s === "read") return s;
+        if(m.is_read === true || m.read_at) return "read";
+        if(String(m.id || "").startsWith("tmp_")) return "sending";
+        return "delivered";
+      }
+      function statusHTML(status){
+        if(status === "sending"){
+          return `<span class="pc-sidechat-status pc-sc-sending" title="Gönderiliyor"><i class="fa-regular fa-clock"></i></span>`;
+        }
+        if(status === "delivered"){
+          return `<span class="pc-sidechat-status pc-sc-delivered" title="İletildi"><i class="fa-solid fa-check"></i></span>`;
+        }
+        return `<span class="pc-sidechat-status pc-sc-read" title="Okundu"><i class="fa-solid fa-check-double"></i></span>`;
+      }
+      function updateMessageStatusInDOM(messageId, status){
+        const el = els.messages.querySelector(`[data-mid="${CSS.escape(String(messageId))}"]`);
+        if(!el) return;
+        const slot = el.querySelector(".pc-sidechat-status-slot");
+        if(slot) slot.innerHTML = statusHTML(status);
+      }
+      function getMaxVisibleMessageId(){
+        let mx = 0;
+        els.messages.querySelectorAll("[data-mid]").forEach(el=>{
+          const id = String(el.dataset.mid || "");
+          if(id.startsWith("tmp_")) return;
+          const n = Number(id);
+          if(Number.isFinite(n) && n > mx) mx = n;
+        });
+        return mx;
+      }
+      function initVisibilityObserver(){
+        if(state.msgObserver) state.msgObserver.disconnect();
+        state.lastVisibleMessageId = 0;
+
+        state.msgObserver = new IntersectionObserver((entries)=>{
+          for(const e of entries){
+            if(!e.isIntersecting) continue;
+            const mid = e.target?.dataset?.mid ? String(e.target.dataset.mid) : "";
+            if(!mid || mid.startsWith("tmp_")) continue;
+            const n = Number(mid);
+            if(Number.isFinite(n) && n > state.lastVisibleMessageId){
+              state.lastVisibleMessageId = n;
+              markReadDebounced();
+            }
+          }
+        }, { root: els.messages, threshold: 0.25 });
+
+        els.messages.querySelectorAll("[data-mid]").forEach(el=>{
+          const mid = String(el.dataset.mid || "");
+          if(mid && !mid.startsWith("tmp_")) state.msgObserver.observe(el);
+        });
+      }
+      function observeNewNode(node){
+        if(!state.msgObserver || !node) return;
+        const mid = String(node.dataset?.mid || "");
+        if(!mid || mid.startsWith("tmp_")) return;
+        state.msgObserver.observe(node);
+      }
+      function markReadDebounced(){
+        clearTimeout(state.markReadTimer);
+        state.markReadTimer = setTimeout(()=> markReadBestEffort(), 220);
+      }
+      async function markReadBestEffort(threadIdOverride=null){
+        const tid = threadIdOverride || state.activeThreadId;
+        if(!tid) return;
+
+        const lastSeen = Math.max(
+          Number(state.lastVisibleMessageId || 0),
+          Number(getMaxVisibleMessageId() || 0)
+        );
+        if(!lastSeen) return;
+
+        try{
+          await apiPost("/api/chat/mark_read", {thread_id: tid, last_read_message_id: lastSeen});
+        }catch(e){}
+      }
+
+      function stopLastSeenPolling(){
+        if(state.lastSeenPollTimer){
+          clearInterval(state.lastSeenPollTimer);
+          state.lastSeenPollTimer = null;
+        }
+        state.lastSeenUsername = null;
+        state._lastSeenText = null;
+        renderChatMeta();
+      }
+      function formatLastSeen(ts){
+        if(!ts) return null;
+        let d = null;
+        try{
+          if(typeof ts === "string"){
+            const s = ts.trim();
+            if(/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/.test(s)){
+              d = new Date(s.replace(" ", "T"));
+            } else {
+              d = new Date(s);
+            }
+          } else if(ts instanceof Date){
+            d = ts;
+          }
+        }catch(e){ d = null; }
+        if(!d || isNaN(d.getTime())) return null;
+
+        const now = new Date();
+        const sameDay =
+          d.getFullYear() === now.getFullYear() &&
+          d.getMonth() === now.getMonth() &&
+          d.getDate() === now.getDate();
+
+        const pad = (n)=> String(n).padStart(2,"0");
+        const hhmm = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        if(sameDay) return `Son görülme ${hhmm}`;
+        const ddmmyyyy = `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
+        return `Son görülme ${ddmmyyyy} ${hhmm}`;
+      }
+      async function fetchLastSeenOnce(){
+        if(!state.activeThreadObj || state.activeThreadObj.thread_type !== "dm") return;
+        if(!state.lastSeenUsername) return;
+        try{
+          const d = await apiPost("/api/users/last_seen", { username: state.lastSeenUsername });
+          if(!d || d.status !== "success") return;
+          const raw = (d.data && (d.data.last_seen || d.data.last_seen_at || d.data.last_seen_time)) || d.last_seen;
+          const txt = formatLastSeen(raw);
+          state._lastSeenText = txt || null;
+          renderChatMeta();
+        }catch(e){}
+      }
+      function startLastSeenPolling(username){
+        stopLastSeenPolling();
+        const u = String(username || "").trim();
+        if(!u) return;
+        state.lastSeenUsername = u;
+        state._lastSeenText = null;
+
+        fetchLastSeenOnce();
+        state.lastSeenPollTimer = setInterval(()=>{
+          if(!state.activeThreadObj || String(state.activeThreadObj.thread_type||"").toLowerCase() !== "dm"){
+            stopLastSeenPolling();
+            return;
+          }
+          fetchLastSeenOnce();
+        }, 3500);
+      }
+      function renderChatMeta(){
+        if(!els.chatMeta) return;
+        const t = state.activeThreadObj;
+        if(!t){ els.chatMeta.textContent = ""; return; }
+
+        const typeText = t.thread_type ? String(t.thread_type).toUpperCase() : "";
+        const isDM = String(t.thread_type || "").toLowerCase() === "dm";
+        const parts = [];
+        if(typeText) parts.push(`<span>${safeText(typeText)}</span>`);
+        if(isDM && state._lastSeenText){
+          parts.push(`<span class="pc-sidechat-chatmeta-sep">•</span>`);
+          parts.push(`<span class="pc-sidechat-lastseen">${safeText(state._lastSeenText)}</span>`);
+        }
+        els.chatMeta.innerHTML = parts.join(" ");
+      }
+
+      function setPinned(on){
+        state.pinned = !!on;
+        rightContainer.classList.toggle('pc-pinned', state.pinned);
+        if (state.pinned) rightContainer.style.right = '0';
+        else rightContainer.style.right = '';
+      }
+      if (FORCE_MESSAGES_PAGE){
+        document.body.classList.add('pc-messages-page');
+        setPinned(true);
+      }
+      els.pin.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setPinned(!state.pinned);
+      });
+      document.addEventListener('click', (e) => {
+        if (!state.pinned) return;
+        if (rightContainer.contains(e.target)) return;
+        setPinned(false);
+      });
+
+      function createThreadRow(){
+        const row = document.createElement("div");
+        row.className = "pc-sidechat-thread";
+        row.innerHTML = `<img src="/static/user_default.png" alt="user" onerror="this.onerror=null; this.src='/static/user_default.png';">`;
+        return row;
+      }
+      function updateThreadRow(row, t){
+        const tid = String(t.id);
+        const title = getThreadTitle(t);
+        const avatarUser = getAvatarUsername(t);
+        const unread = Number(t.unread_count || 0);
+
+        row.dataset.threadId = tid;
+        row.setAttribute("data-title", title);
+        row.classList.toggle("active", (String(state.activeThreadId) === tid));
+
+        const img = row.querySelector("img");
+        const avatarSrc = (typeof threadAvatarSrc === "function") ? threadAvatarSrc(t) : avatarUrlFor(avatarUser);
+        if(img){
+          // Group chats: always show Skoda logo
+          const isGroup = String(t.thread_type || "").toLowerCase() === "group";
+          if(isGroup){
+            img.setAttribute("onerror", "this.onerror=null; this.src='/static/group_chat_logo.png';");
+          }else{
+            img.setAttribute("onerror", "this.onerror=null; this.src='/static/user_default.png';");
+          }
+          if(img.getAttribute("src") !== avatarSrc) img.setAttribute("src", avatarSrc);
+          const alt = safeText(avatarUser);
+          if(img.getAttribute("alt") !== alt) img.setAttribute("alt", alt);
+        }
+
+        let badge = row.querySelector(".pc-sidechat-avatar-badge");
+        if(unread > 0){
+          const val = unread > 99 ? "99+" : String(unread);
+          if(!badge){
+            badge = document.createElement("div");
+            badge.className = "pc-sidechat-avatar-badge";
+            row.appendChild(badge);
+          }
+          if(badge.textContent !== val) badge.textContent = val;
+        } else {
+          if(badge) badge.remove();
+        }
+
+        if(!row.dataset.bound){
+          row.dataset.bound = "1";
+          row.addEventListener("click", () => {
+            state._renderLockUntil = Date.now() + 400;
+            openThread(t.id, title);
+          });
+        }
+      }
+      function renderThreads(){
+        const q = (els.search && els.search.value ? els.search.value : "").toLowerCase().trim();
+        const baseList = !q ? state.threads : state.threads.filter(t =>
+          (getThreadTitle(t)+" "+getLastPreview(t)).toLowerCase().includes(q)
+        );
+
+        const showChatbot = CAN_SEE_YUGII && ((!q) || (PC_CHATBOT_TITLE.toLowerCase().includes(q)));
+
+        const pinnedIds = (typeof getPinnedIds === "function") ? getPinnedIds() : [];
+        const filtered = baseList
+          .map((t, idx) => ({ t, idx }))
+          .sort((A, B) => {
+            const aId = String(A.t.id), bId = String(B.t.id);
+            const aPinned = pinnedIds.includes(aId);
+            const bPinned = pinnedIds.includes(bId);
+            if (aPinned && bPinned) return pinnedIds.indexOf(aId) - pinnedIds.indexOf(bId);
+            if (aPinned !== bPinned) return aPinned ? -1 : 1;
+            return A.idx - B.idx;
+          })
+          .map(x => x.t);
+
+        if (!filtered.length){
+          els.list.replaceChildren();
+          if(showChatbot){
+            const only = document.createDocumentFragment();
+            const row = document.createElement('div');
+            row.className = 'pc-sidechat-thread pc-sidechat-thread-chatbot' + (String(state.activeThreadId) === PC_CHATBOT_ID ? ' active' : '');
+            row.dataset.threadId = PC_CHATBOT_ID;
+            row.setAttribute('data-title', PC_CHATBOT_TITLE);
+            row.innerHTML = `
+              <img src="${PC_CHATBOT_AVATAR}" alt="yugii" onerror="this.onerror=null; this.src='/static/user_default.png';">
+              <div class="pc-sidechat-verified"><i class="fa-solid fa-check"></i></div>
+            `;
+            row.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); pcOpenChatbotThread(); });
+            only.appendChild(row);
+            els.list.replaceChildren(only);
+          } else {
+            els.list.innerHTML = `<div class="pc-sidechat-empty" style="padding:14px 10px;">Sohbet bulunamadı</div>`;
+          }
+          return;
+        }
+
+        const existing = new Map();
+        Array.from(els.list.children).forEach(ch => {
+          const tid = ch && ch.dataset ? ch.dataset.threadId : null;
+          if (tid) existing.set(String(tid), ch);
+        });
+
+        const frag = document.createDocumentFragment();
+
+        // Insert Yugii Chatbot under pinned section (virtual thread)
+        const pinnedCount = (()=>{
+          let c = 0;
+          for(const t of filtered){
+            if(pinnedIds.includes(String(t.id))) c++; else break;
+          }
+          return c;
+        })();
+
+        function createChatbotRow(){
+          const row = document.createElement('div');
+          row.className = 'pc-sidechat-thread pc-sidechat-thread-chatbot' + (String(state.activeThreadId) === PC_CHATBOT_ID ? ' active' : '');
+          row.dataset.threadId = PC_CHATBOT_ID;
+          row.setAttribute('data-title', PC_CHATBOT_TITLE);
+          row.innerHTML = `
+            <img src="${PC_CHATBOT_AVATAR}" alt="yugii" onerror="this.onerror=null; this.src='/static/user_default.png';">
+            <div class="pc-sidechat-verified"><i class="fa-solid fa-check"></i></div>
+          `;
+          row.addEventListener('click', (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            pcOpenChatbotThread();
+          });
+          return row;
+        }
+
+        filtered.forEach((t, i) => {
+          if(showChatbot && i === pinnedCount){
+            frag.appendChild(createChatbotRow());
+          }
+          const tid = String(t.id);
+          let row = existing.get(tid);
+          if(!row) row = createThreadRow();
+          updateThreadRow(row, t);
+          frag.appendChild(row);
+        });
+
+        if(showChatbot && filtered.length === pinnedCount){
+          frag.appendChild(createChatbotRow());
+        }
+
+        els.list.replaceChildren(frag);
+      }
+      function setUnreadIndicators(){
+        const totalUnread = state.threads.reduce((a,t) => a + Number(t.unread_count || 0), 0);
+        if (totalUnread > 0){
+          els.unreadPill.style.display = 'inline-flex';
+          els.unreadPill.textContent = totalUnread > 99 ? "99+" : String(totalUnread);
+          if (!state.pinned) els.unreadDot.style.display = 'block';
+        } else {
+          els.unreadPill.style.display = 'none';
+          els.unreadDot.style.display = 'none';
+        }
+      }
+      async function refreshThreads(){
+        try{
+          const d = await apiPost("/api/chat/threads", {});
+          if (d.status !== "success") return;
+          const incoming = d.data || [];
+          const newHash = computeThreadsHash(incoming);
+
+          state.threads = incoming;
+          setUnreadIndicators();
+
+          if (!state.activeThreadId){
+            if (incoming.length){
+              let firstThread = incoming[0];
+              if (INITIAL_CHAT_THREAD_ID != null){
+                const requestedThread = incoming.find(t => String(t.id) === String(INITIAL_CHAT_THREAD_ID));
+                if (requestedThread) firstThread = requestedThread;
+              }
+              if (firstThread && firstThread.id != null){
+                await openThread(String(firstThread.id), getThreadTitle(firstThread));
+                return;
+              }
+            } else if (CAN_SEE_YUGII){
+              pcOpenChatbotThread();
+              return;
+            }
+          }
+
+          if (state.activeThreadId){
+            const active = state.threads.find(t => String(t.id) === String(state.activeThreadId));
+            state.activeThreadObj = active || state.activeThreadObj;
+          }
+
+          if(Date.now() < state._renderLockUntil) return;
+
+          const q = (els.search && els.search.value ? els.search.value : "").trim();
+          if(newHash === state._threadsHash && !q) return;
+          state._threadsHash = newHash;
+
+          if (state.activeThreadId){
+            const active = state.threads.find(t => String(t.id) === String(state.activeThreadId));
+            if(active){
+              state.activeThreadObj = active;
+              if (els.chatName) els.chatName.textContent = getThreadTitle(active);
+              renderChatMeta();
+            }
+          }
+          renderThreads();
+        }catch(e){}
+      }
+
+      function ensureReactionData(m){
+        if(!m.reactions || typeof m.reactions !== "object") m.reactions = {};
+        return m.reactions;
+      }
+      function renderReactionsForMessage(mid, reactions){
+        const row = els.messages.querySelector(`[data-mid="${CSS.escape(String(mid))}"]`);
+        if(!row) return;
+        const bar = row.querySelector(".pc-sidechat-reactions-bar");
+        if(!bar) return;
+
+        bar.innerHTML = "";
+        const keys = Object.keys(reactions || {});
+        if(!keys.length) return;
+
+        const ordered = REACTION_EMOJIS.filter(e => reactions[e] && Number(reactions[e].count || 0) > 0);
+        ordered.forEach(emoji => {
+          const info = reactions[emoji] || {};
+          const count = Number(info.count || 0);
+          if(count <= 0) return;
+          const iReacted = !!info.i_reacted;
+
+          const pill = document.createElement("div");
+          pill.className = "pc-sidechat-react-pill" + (iReacted ? " me" : "");
+          pill.innerHTML = `<span>${emoji}</span><span>${count}</span>`;
+          pill.addEventListener("click", (e)=>{
+            e.stopPropagation();
+            toggleReaction(mid, emoji);
+          });
+          bar.appendChild(pill);
+        });
+      }
+      async function hydrateReactionsForIds(ids){
+        if(!state.activeThreadId) return;
+        const list = (ids || []).map(x=>Number(x)).filter(n=>Number.isFinite(n) && n>0);
+        if(!list.length) return;
+
+        try{
+          const d = await apiPost("/api/chat/reactions_summary", { thread_id: state.activeThreadId, message_ids: list });
+          if(!d || d.status !== "success" || !d.data) return;
+
+          Object.keys(d.data).forEach(midStr=>{
+            const mid = Number(midStr);
+            const arr = d.data[midStr] || [];
+            const msg = state._msgCache.get(mid);
+            if(!msg) return;
+
+            const obj = {};
+            arr.forEach(x=>{
+              if(!x || !x.emoji) return;
+              obj[x.emoji] = { count: Number(x.count || 0), i_reacted: !!x.i_reacted };
+            });
+            msg.reactions = obj;
+            renderReactionsForMessage(mid, obj);
+          });
+        }catch(e){}
+      }
+
+      const reactionPending = new Map();
+      function findMsg(mid){
+        const n = Number(mid);
+        if(!Number.isFinite(n)) return null;
+        return state._msgCache.get(n) || null;
+      }
+      async function toggleReaction(messageId, emoji){
+        if(!state.activeThreadId) return;
+        const mid = Number(messageId);
+        const key = `${mid}:${emoji}`;
+        if(reactionPending.get(key)) return;
+        reactionPending.set(key, true);
+
+        const m = findMsg(mid);
+        if(!m){ reactionPending.delete(key); return; }
+
+        const reactions = ensureReactionData(m);
+        const cur = reactions[emoji] || { count: 0, i_reacted: false };
+
+        // optimistic
+        if(cur.i_reacted){
+          cur.i_reacted = false;
+          cur.count = Math.max(0, Number(cur.count||0)-1);
+        } else {
+          cur.i_reacted = true;
+          cur.count = Number(cur.count||0)+1;
+        }
+        if(cur.count <= 0) delete reactions[emoji];
+        else reactions[emoji] = cur;
+
+        m.reactions = reactions;
+        renderReactionsForMessage(mid, reactions);
+
+        try{
+          const d = await apiPost("/api/chat/reaction_toggle", { thread_id: state.activeThreadId, message_id: mid, emoji });
+          if(!d || d.status !== "success"){
+            hydrateReactionsForIds([mid]);
+          } else {
+            hydrateReactionsForIds([mid]);
+          }
+        }catch(e){
+          hydrateReactionsForIds([mid]);
+        }finally{
+          reactionPending.delete(key);
+        }
+      }
+      function closeAllReactionPickers(){ /* no-op: hover reactions removed */ }
+      function bindReactionEvents(row){ /* reactions now via right-click menu */ }
+
+      function messageNodeHTML(msg){
+        const mine = (msg.sender_username === ME);
+        const body = (msg.body || "").trim();
+        const t = msg.created_at ? formatTime(msg.created_at) : "";
+        const status = mine ? normalizeStatus(msg) : null;
+
+        const rp = msg.reply_preview || null;
+        const quoteHTML = rp ? `
+          <div class="pc-sidechat-quote" data-jump="${safeText(rp.id)}">
+            <div class="pc-sidechat-quote-name">${safeText(rp.sender_fullname || rp.sender_name || "Yanıt")}</div>
+            <div class="pc-sidechat-quote-text">${safeText(rp.snippet || "")}</div>
+          </div>` : "";
+
+        // --- Attachment/media rendering (inline) ---
+        function scAttr(s){
+          return String(s||"")
+            .replace(/&/g,"&amp;")
+            .replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;")
+            .replace(/\"/g,"&quot;")
+            .replace(/'/g,"&#39;");
+        }
+        function scGetAttachment(m){
+          if(!m) return { url: "", name: "", mime: "", size: "" };
+
+          // 1) common nested object
+          const a = (m.attachment && typeof m.attachment === "object") ? m.attachment : null;
+          let url  = a?.url || a?.download_url || a?.file_url || a?.path || "";
+          let name = a?.name || a?.filename || a?.original_name || "";
+          let mime = a?.mime || a?.mime_type || a?.content_type || "";
+          let size = a?.size || a?.size_str || a?.filesize || "";
+
+          // 2) flat fields (API variants)
+          url  = url  || m.attachment_url || m.file_url || m.download_url || m.url || "";
+          name = name || m.attachment_name || m.file_name || m.filename || m.original_filename || "";
+          mime = mime || m.attachment_mime || m.file_mime || m.mime_type || m.content_type || "";
+          size = size || m.attachment_size || m.file_size || m.size || m.size_str || "";
+
+          // fallback: body might contain filename for file messages
+          if(!name && (m.message_type === "file")) name = (m.body || "") || "Dosya";
+          if(typeof size === "number") size = (size > 1024*1024)
+            ? (Math.round((size/(1024*1024))*10)/10) + " MB"
+            : (Math.round((size/1024)*10)/10) + " KB";
+
+          return { url: String(url||""), name: String(name||""), mime: String(mime||""), size: String(size||"") };
+        }
+        function scExt(name){
+          const s = String(name||"");
+          const i = s.lastIndexOf(".");
+          return i>=0 ? s.slice(i+1).toLowerCase() : "";
+        }
+        function scIsImage(mime, name){
+          const ext = scExt(name);
+          if(String(mime||"").toLowerCase().startsWith("image/")) return true;
+          return ["png","jpg","jpeg","webp","gif","bmp","svg"].includes(ext);
+        }
+        function scIsVideo(mime, name){
+          const ext = scExt(name);
+          if(String(mime||"").toLowerCase().startsWith("video/")) return true;
+          return ["mp4","webm","ogg","mov"].includes(ext);
+        }
+        function scBodyHTML(m){
+          if(!m) return "";
+          if(m.message_type === "deleted") return safeText("🗑️ Mesaj silindi");
+
+          const { url, name, mime, size } = scGetAttachment(m);
+          const hasFile = !!url && (m.message_type === "file" || !!m.attachment || !!m.attachment_url || !!m.file_url || !!m.download_url);
+
+          // Plain text
+          if(!hasFile){
+            return safeText((m.body || "").trim());
+          }
+
+          // Caption: show only if user wrote something (and it isn't just the filename)
+          const cap = (m.body || "").trim();
+          const showCap = !!cap && !!name ? (cap !== name) : !!cap;
+          const capHTML = showCap ? `<div class="pc-sc-caption">${safeText(cap)}</div>` : ``;
+
+          // Image / GIF
+          if(scIsImage(mime, name)){
+            return `
+              <div class="pc-sc-media">
+                <a href="${scAttr(url)}" target="_blank" rel="noopener" style="display:block; text-decoration:none; color:inherit;">
+                  <img src="${scAttr(url)}" alt="${scAttr(name||'Görsel')}" loading="lazy">
+                </a>
+                <div class="pc-sc-media-meta">
+                  <span style="min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">${safeText(name||'Görsel')}</span>
+                  <span>${safeText(size||'')}</span>
+                </div>
+              </div>
+              ${capHTML}
+            `;
+          }
+
+          // Video
+          if(scIsVideo(mime, name)){
+            return `
+              <div class="pc-sc-media">
+                <video src="${scAttr(url)}" controls playsinline style="width:100%; height:auto;"></video>
+                <div class="pc-sc-media-meta">
+                  <span style="min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">${safeText(name||'Video')}</span>
+                  <span>${safeText(size||'')}</span>
+                </div>
+              </div>
+              ${capHTML}
+            `;
+          }
+
+          // Generic file
+          return `
+            <a class="pc-sc-file" href="${scAttr(url)}" target="_blank" rel="noopener">
+              <div class="pc-sc-file-ic"><i class="fa-solid fa-file"></i></div>
+              <div class="pc-sc-file-meta">
+                <div class="pc-sc-file-name">${safeText(name||'Dosya')}</div>
+                <div class="pc-sc-file-size">${safeText(size||'')}</div>
+              </div>
+              <div class="pc-sc-file-open"><i class="fa-solid fa-up-right-from-square"></i></div>
+            </a>
+            ${capHTML}
+          `;
+        }
+
+        const senderFull = (msg.sender_fullname || msg.sender_name || msg.sender_username || "");
+        const ttype = String((state.activeThreadObj && state.activeThreadObj.thread_type) || "").toLowerCase();
+        const showSender = (!mine && ttype && ttype !== "dm");
+        const avatarHTML = (!mine && msg.sender_username) ? `
+          <a class="pc-sidechat-avatar-link" href="/user_profile_view/${encodeURIComponent(msg.sender_username)}" title="Profili Aç" onclick="event.stopPropagation();">
+            <img class="pc-sidechat-msg-avatar" src="${avatarUrlFor(msg.sender_username)}" alt="">
+          </a>` : "";
+
+        return `
+          ${avatarHTML}
+          <div class="pc-sidechat-bubblewrap">
+            ${showSender ? `<div class="pc-sidechat-sender">${safeText(senderFull)}</div>` : ``}
+            ${quoteHTML}
+            <div class="pc-sidechat-bubble">${scBodyHTML(msg) || safeText(body || (msg.message_type === "file" ? "📎 Dosya" : ""))}</div>
+            <div class="pc-sidechat-reactions-bar"></div>
+
+            <div class="pc-sidechat-meta">
+              <span class="pc-sidechat-time">${safeText(t)}</span>
+              ${mine ? `<span class="pc-sidechat-status-slot">${statusHTML(status)}</span>` : ``}
+            </div>
+          </div>
+        `;
+      }
+
+      function appendMessage(msg){
+        const mine = (msg.sender_username === ME);
+        const wrap = document.createElement('div');
+        wrap.className = 'pc-sidechat-msg ' + (mine ? 'me' : 'them');
+        wrap.dataset.mid = String(msg.id || "");
+        wrap.innerHTML = messageNodeHTML(msg);
+        els.messages.appendChild(wrap);
+
+        const midNum = Number(msg.id||0);
+        if(Number.isFinite(midNum) && midNum>0){
+          state._msgCache.set(midNum, Object.assign({}, msg));
+        }
+        observeNewNode(wrap);
+
+        if(midNum>0){
+          const m = findMsg(midNum);
+          if(m && m.reactions) renderReactionsForMessage(midNum, m.reactions);
+        }
+        return wrap;
+      }
+
+      function prependMessages(msgs){
+        if(!msgs || !msgs.length) return;
+
+        const box = els.messages;
+        const prevScrollHeight = box.scrollHeight;
+        const prevScrollTop = box.scrollTop;
+
+        const frag = document.createDocumentFragment();
+        const inserted = [];
+
+        msgs.forEach(msg=>{
+          const mine = (msg.sender_username === ME);
+          const row = document.createElement('div');
+          row.className = 'pc-sidechat-msg ' + (mine ? 'me' : 'them');
+          row.dataset.mid = String(msg.id || "");
+          row.innerHTML = messageNodeHTML(msg);
+
+          // cache
+          const midNum = Number(msg.id||0);
+          if(Number.isFinite(midNum) && midNum>0){
+            state._msgCache.set(midNum, Object.assign({}, msg));
+          }
+          inserted.push(row);
+          frag.appendChild(row);
+        });
+
+        if(box.firstChild){
+          box.insertBefore(frag, box.firstChild);
+        } else {
+          box.appendChild(frag);
+        }
+
+        state.ignoreOlderOnScroll = true;
+        const newScrollHeight = box.scrollHeight;
+        box.scrollTop = prevScrollTop + (newScrollHeight - prevScrollHeight);
+        setTimeout(()=>{ state.ignoreOlderOnScroll = false; }, 200);
+        inserted.forEach(n=> observeNewNode(n));
+        const ids = msgs.map(m=>Number(m.id||0)).filter(n=>Number.isFinite(n) && n>0);
+        hydrateReactionsForIds(ids);
+      }
+
+      function replaceTempWithReal(tempId, realMsg){
+        const tempNode = els.messages.querySelector(`[data-mid="${CSS.escape(String(tempId))}"]`);
+        if(!tempNode) return false;
+
+        const mine = (realMsg.sender_username === ME);
+        tempNode.dataset.mid = String(realMsg.id);
+        tempNode.className = 'pc-sidechat-msg ' + (mine ? 'me' : 'them');
+        tempNode.innerHTML = messageNodeHTML(realMsg);
+
+        bindReactionEvents(tempNode);
+        observeNewNode(tempNode);
+
+        const midNum = Number(realMsg.id||0);
+        if(Number.isFinite(midNum) && midNum>0){
+          state._msgCache.set(midNum, Object.assign({}, realMsg));
+        }
+        return true;
+      }
+
+      function scStorageKey(threadId){ return "pc_sc_scroll_v1_" + String(threadId); }
+
+      function scIsNearBottom(){
+        const box = els.messages;
+        const gap = box.scrollHeight - (box.scrollTop + box.clientHeight);
+        return gap < 40; // px
+      }
+
+      function scSaveScroll(threadId){
+        if(!threadId) return;
+        try{
+          const box = els.messages;
+          const payload = {
+            top: Math.max(0, Math.floor(box.scrollTop || 0)),
+            atBottom: scIsNearBottom(),
+            ts: Date.now()
+          };
+          sessionStorage.setItem(scStorageKey(threadId), JSON.stringify(payload));
+        }catch(e){}
+      }
+
+      function scRestoreScroll(threadId){
+        // Restore last position if exists; otherwise jump to bottom.
+        const box = els.messages;
+
+        let saved = null;
+        try{
+          const raw = sessionStorage.getItem(scStorageKey(threadId));
+          if(raw) saved = JSON.parse(raw);
+        }catch(e){ saved = null; }
+
+        const wantBottom = !saved || saved.atBottom === true || (typeof saved.top !== "number");
+        const targetTop = wantBottom ? box.scrollHeight : Math.max(0, Number(saved.top || 0));
+
+        // "Hard" jump: disable smooth behavior for this positioning to avoid half-scroll.
+        const prev = box.style.scrollBehavior;
+        box.style.scrollBehavior = "auto";
+
+        // Wait for DOM paint + any synchronous layout before setting.
+        requestAnimationFrame(()=>{
+          box.scrollTop = targetTop;
+          requestAnimationFrame(()=>{
+            if(wantBottom){
+              box.scrollTop = box.scrollHeight;
+              scEnsureBottomAfterMediaLoad();
+            }
+          });
+        });
+
+        setTimeout(()=>{ box.style.scrollBehavior = prev || ""; }, 0);
+      }
+
+      function scEnsureBottomAfterMediaLoad(){
+        // Images/videos can change scrollHeight after load; keep us pinned to bottom if we're already near it.
+        try{
+          const box = els.messages;
+          const media = box.querySelectorAll("img, video");
+          if(!media || !media.length) return;
+
+          const onLoad = ()=>{
+            // Only auto-pin if user is still near bottom
+            if(scIsNearBottom()){
+              const prev = box.style.scrollBehavior;
+              box.style.scrollBehavior = "auto";
+              box.scrollTop = box.scrollHeight;
+              setTimeout(()=>{ box.style.scrollBehavior = prev || ""; }, 0);
+            }
+          };
+
+          media.forEach(el=>{
+            // If already loaded (img.complete), skip; otherwise attach once
+            if(el.tagName === "IMG"){
+              if(el.complete) return;
+              el.addEventListener("load", onLoad, {once:true});
+              el.addEventListener("error", onLoad, {once:true});
+            } else {
+              // video
+              if(el.readyState >= 2) return;
+              el.addEventListener("loadeddata", onLoad, {once:true});
+              el.addEventListener("error", onLoad, {once:true});
+            }
+          });
+        }catch(e){}
+      }
+
+      function scrollToBottom(){
+        const box = els.messages;
+        const prev = box.style.scrollBehavior;
+        box.style.scrollBehavior = "auto";
+        box.scrollTop = box.scrollHeight;
+        setTimeout(()=>{ box.style.scrollBehavior = prev || ""; }, 0);
+      }
+
+      function clearMessagesUI(showEmpty){
+        els.messages.innerHTML = showEmpty ? `<div class="pc-sidechat-empty">Soldan bir sohbet seçerek hızlıca yazışabilirsin 🙂</div>` : "";
+      }
+
+      async function loadMessages(threadId){
+        const d = await apiPost("/api/chat/messages", {thread_id: threadId, limit: 30});
+        if (d.status !== "success") return [];
+
+        const msgs = d.data || [];
+        els.messages.innerHTML = "";
+        state._msgCache = new Map();
+
+        state.oldestMessageId = null;
+        state.hasMoreOlder = true;
+        state.isLoadingOlder = false;
+
+        if (!msgs.length){
+          els.messages.innerHTML = `<div class="pc-sidechat-empty">Bu sohbette henüz mesaj yok.</div>`;
+          state.lastMessageId = 0;
+          initVisibilityObserver();
+          return [];
+        }
+
+        msgs.forEach(m => appendMessage(m));
+        state.lastMessageId = Number(msgs[msgs.length - 1].id || 0);
+
+        const firstId = Number(msgs[0].id || 0);
+        state.oldestMessageId = Number.isFinite(firstId) && firstId>0 ? firstId : null;
+
+        scrollToBottom();
+        initVisibilityObserver();
+        markReadDebounced();
+
+        hydrateReactionsForIds(msgs.map(m=>Number(m.id||0)));
+
+        return msgs;
+      }
+
+      async function loadOlderMessages(){
+        if(!state.activeThreadId) return;
+        if(state.isLoadingOlder || !state.hasMoreOlder || !state.oldestMessageId) return;
+
+        state.isLoadingOlder = true;
+        if(els.topLoader) els.topLoader.style.display = "flex";
+
+        try{
+          const d = await apiPost("/api/chat/messages", {
+            thread_id: state.activeThreadId,
+            before_id: state.oldestMessageId,
+            limit: 30
+          });
+          if(d && d.status === "success"){
+            const older = d.data || [];
+            if(!older.length){
+              state.hasMoreOlder = false;
+            } else {
+              const first = Number(older[0].id || 0);
+              if(Number.isFinite(first) && first>0) state.oldestMessageId = first;
+              prependMessages(older);
+            }
+          } else {
+            state.hasMoreOlder = false;
+          }
+        }catch(e){
+          state.hasMoreOlder = false;
+        }finally{
+          state.isLoadingOlder = false;
+          if(els.topLoader) els.topLoader.style.display = "none";
+        }
+      }
+
+      function setReplyTo(message){
+        const mid = Number(message.id || message.message_id || 0);
+        if(!Number.isFinite(mid) || mid<=0) return;
+
+        const senderName = message.sender_fullname || message.sender_name || message.sender_username || "Mesaj";
+        const text = (message.body || "").toString().replace(/\s+/g," ").trim().slice(0, 140);
+
+        state.replyTo = { message_id: mid, sender_name: senderName, text_snippet: text };
+        if(els.replyName) els.replyName.textContent = senderName;
+        if(els.replySnippet) els.replySnippet.textContent = text || ".";
+        if(els.replyBar) els.replyBar.style.display = "flex";
+        els.input.focus();
+      }
+      function clearReply(){
+        state.replyTo = null;
+        if(els.replyBar) els.replyBar.style.display = "none";
+      }
+      if(els.replyClose) els.replyClose.addEventListener("click", clearReply);
+
+      els.messages.addEventListener("click", (e)=>{
+        const q = e.target.closest(".pc-sidechat-quote");
+        if(!q) return;
+        const targetId = q.getAttribute("data-jump");
+        if(!targetId) return;
+        const el = els.messages.querySelector(`[data-mid="${CSS.escape(String(targetId))}"]`);
+        if(el){
+          el.scrollIntoView({block:"center", behavior:"smooth"});
+        } else {
+          let tries = 0;
+          const loop = async ()=>{
+            tries++;
+            if(tries>6) return;
+            await loadOlderMessages();
+            const el2 = els.messages.querySelector(`[data-mid="${CSS.escape(String(targetId))}"]`);
+            if(el2){
+              el2.scrollIntoView({block:"center", behavior:"smooth"});
+              return;
+            }
+            if(state.hasMoreOlder) setTimeout(loop, 50);
+          };
+          loop();
+        }
+      });
+
+      function hideContextMenu(){
+        if(els.menu) els.menu.style.display = "none";
+        const sub = document.getElementById('pc-sc-react-submenu');
+        if(sub) sub.style.display = 'none';
+        state.menuTargetEl = null;
+        if(!state.pinned && rightContainer) rightContainer.classList.remove("pc-force-open");
+      }
+      function showContextMenu(x,y,row){
+        state.menuTargetEl = row;
+        if(!els.menu) return;
+
+        if(rightContainer) rightContainer.classList.add("pc-force-open");
+
+        const isMine = row.classList.contains("me");
+        if(els.menuDelete) els.menuDelete.style.display = isMine ? "flex" : "none";
+
+        els.menu.style.display = "block";
+        const pad = 8;
+        const rect = els.menu.getBoundingClientRect();
+        const nx = Math.min(x, window.innerWidth - rect.width - pad);
+        const ny = Math.min(y, window.innerHeight - rect.height - pad);
+        els.menu.style.left = nx + "px";
+        els.menu.style.top  = ny + "px";
+      }
+
+      els.messages.addEventListener("contextmenu", (e)=>{
+        const row = e.target.closest(".pc-sidechat-msg");
+        if(!row) return;
+        e.preventDefault();
+        showContextMenu(e.clientX, e.clientY, row);
+
+      // Double click to reply
+      els.messages.addEventListener("dblclick", (e)=>{
+        const row = e.target.closest(".pc-sidechat-msg");
+        if(!row) return;
+        const mid = row.dataset.mid;
+        if(!mid) return;
+        if(String(mid).startsWith('tmp_')) return;
+        const msg = findMsg(mid);
+        if(msg) setReplyTo(msg);
+      });
+      });
+
+      // close menu when clicking elsewhere
+      document.addEventListener("click", (e)=>{
+        if(e.target.closest('#pc-sidechat-msg-menu')) return;
+        hideContextMenu();
+      });
+
+
+      if(els.menuReply) els.menuReply.addEventListener("click", ()=>{
+        const row = state.menuTargetEl;
+        hideContextMenu();
+        if(!row) return;
+        const mid = row.dataset.mid;
+        const msg = findMsg(mid);
+        if(msg) setReplyTo(msg);
+      });
+
+      if(els.menuReact) els.menuReact.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const row = state.menuTargetEl;
+        if(!row) return;
+        const mid = row.dataset.mid;
+        if(!mid || String(mid).startsWith('tmp_')) return;
+
+        // build submenu buttons once
+        const sub = document.getElementById('pc-sc-react-submenu');
+        if(!sub) return;
+        if(!sub.dataset.built){
+          sub.dataset.built = '1';
+          sub.style.display = 'none';
+          sub.innerHTML = REACTION_EMOJIS.map(em =>
+            `<button type=\"button\" data-emoji=\"${em}\" title=\"${em}\">${em}</button>`
+          ).join('');
+
+          sub.querySelectorAll('button[data-emoji]').forEach(btn=>{
+            btn.addEventListener('click', (ev)=>{
+              ev.stopPropagation();
+              const emoji = btn.getAttribute('data-emoji');
+              const useMid = sub.getAttribute('data-mid') || '';
+              hideContextMenu();
+              if(emoji && useMid && !String(useMid).startsWith('tmp_')) toggleReaction(useMid, emoji);
+            });
+          });
+        }
+
+        sub.setAttribute('data-mid', String(mid));
+
+        // toggle submenu visibility
+        const isOpen = sub.style.display === 'grid';
+        sub.style.display = isOpen ? 'none' : 'grid';
+
+        // If submenu opens, ensure menu stays in viewport
+        if(els.menu){
+          const pad = 8;
+          const rect = els.menu.getBoundingClientRect();
+          const nx = Math.min(parseFloat(els.menu.style.left||'0'), window.innerWidth - rect.width - pad);
+          const ny = Math.min(parseFloat(els.menu.style.top||'0'),  window.innerHeight - rect.height - pad);
+          els.menu.style.left = nx + 'px';
+          els.menu.style.top  = ny + 'px';
+        }
+      });
+
+      if(els.menuDelete) els.menuDelete.addEventListener("click", async ()=>{
+        const row = state.menuTargetEl;
+        hideContextMenu();
+        if(!row) return;
+        if(!row.classList.contains("me")) return;
+
+        const mid = Number(row.dataset.mid || 0);
+        if(!Number.isFinite(mid) || mid<=0) return;
+        const ok = confirm("Mesajı silmek istediğinize emin misiniz?");
+        if(!ok) return;
+
+        try{
+          const d = await apiPost("/api/chat/message/delete", { message_id: mid, delete_for: "me" });
+          if(!d || d.status !== "success") return;
+
+          // cache cleanup
+          state._msgCache.delete(mid);
+          row.remove();
+          refreshThreads();
+        }catch(e){}
+      });
+
+      async function openThread(threadId, title){
+        // if leaving chatbot, restore normal sidechat mode
+        if(state.activeThreadId === PC_CHATBOT_ID && threadId !== PC_CHATBOT_ID){
+          pcSetSidechatMode(false);
+        }
+
+        // Save scroll position for the previous thread before switching
+        const __prevThreadId = state.activeThreadId;
+        if(__prevThreadId && String(__prevThreadId) !== String(threadId)){
+          scSaveScroll(__prevThreadId);
+        }
+
+        state.activeThreadId = threadId;
+        state.activeThreadObj = state.threads.find(t => String(t.id) === String(threadId)) || null;
+
+        if (els.chatName) els.chatName.textContent = title || getThreadTitle(state.activeThreadObj || {id:threadId});
+        renderChatMeta();
+        els.input.disabled = false;
+        els.send.disabled = false;
+
+        clearReply();
+        renderThreads();
+
+        try{
+          const t = state.activeThreadObj;
+          if(t && String(t.thread_type||"").toLowerCase() === "dm"){
+            const other = t.other_username || "";
+            if(other) startLastSeenPolling(other);
+          } else {
+            stopLastSeenPolling();
+          }
+        }catch(e){ stopLastSeenPolling(); }
+
+        try{
+          const msgs = await loadMessages(threadId);
+          scRestoreScroll(threadId);
+          if (msgs.length) await markReadBestEffort(threadId);
+          refreshThreads();
+        }catch(e){
+          els.messages.innerHTML = `<div class="pc-sidechat-empty">Mesajlar alınamadı.</div>`;
+        }
+
+        if (state.pollTimer) clearInterval(state.pollTimer);
+        state.pollTimer = setInterval(async () => {
+          if (!state.activeThreadId) return;
+          try{
+            const d = await apiPost("/api/chat/messages", {
+              thread_id: state.activeThreadId,
+              after_id: state.lastMessageId,
+              limit: 50
+            });
+            if (d.status !== "success") return;
+
+            const news = d.data || [];
+            if (news.length){
+              news.forEach(m => appendMessage(m));
+              state.lastMessageId = Number(news[news.length - 1].id || state.lastMessageId);
+              scrollToBottom();
+              markReadDebounced();
+              refreshThreads();
+            }
+          }catch(e){}
+        }, 1500);
+      }
+
+      async function sendMessage(){
+        const threadId = state.activeThreadId;
+        if (!threadId) return;
+
+        const body = (els.input.value || '').trim();
+        if (!body) return;
+
+        // Chatbot virtual thread uses /chatbot and its own local history
+        if(threadId === PC_CHATBOT_ID){
+          els.input.value = '';
+          els.input.style.height = 'auto';
+          await pcSendChatbotMessage(body);
+          return;
+        }
+
+        els.send.disabled = true;
+
+        const tmpId = "tmp_" + Date.now();
+        const tmpMsg = {
+          id: tmpId,
+          sender_username: ME,
+          body: body,
+          message_type: "text",
+          created_at: new Date().toISOString(),
+          status: "sending",
+          reply_preview: state.replyTo ? {
+            id: state.replyTo.message_id,
+            sender_fullname: state.replyTo.sender_name || "",
+            snippet: state.replyTo.text_snippet || ""
+          } : null
+        };
+        appendMessage(tmpMsg);
+        scrollToBottom();
+
+
+        try{
+          const payload = { thread_id: threadId, body: body };
+          if(state.replyTo && state.replyTo.message_id){
+            payload.reply_to_message_id = state.replyTo.message_id;
+          }
+
+          const d = await apiPost("/api/chat/send", payload);
+          if (d.status === "success"){
+            const real = d.data || {sender_username: ME, body: body, message_type: "text"};
+            replaceTempWithReal(tmpId, real);
+
+            els.input.value = "";
+            els.input.style.height = "auto";
+            scrollToBottom();
+
+            if (real && real.id) state.lastMessageId = Number(real.id) || state.lastMessageId;
+            if (real && real.id) updateMessageStatusInDOM(real.id, normalizeStatus(real));
+
+            clearReply();
+            markReadDebounced();
+            refreshThreads();
+          }
+        }catch(e){
+        }finally{
+          els.send.disabled = false;
+          els.input.focus();
+        }
+      }
+
+      function autosize(){
+        els.input.style.height = "auto";
+        els.input.style.height = Math.min(110, els.input.scrollHeight) + "px";
+      }
+      els.input.addEventListener('input', autosize);
+
+      els.input.addEventListener('keydown', (e) => {
+        if (e.key === "Enter" && !e.shiftKey){
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      els.send.addEventListener('click', sendMessage);
+
+      if (els.search) els.search.addEventListener('input', () => renderThreads());
+
+      els.messages.addEventListener("scroll", ()=>{
+        markReadDebounced();
+
+        // Remember last scroll position per thread (so switching chats returns to where you left off)
+        if(state.activeThreadId){
+          if(state._scrollSaveTimer) clearTimeout(state._scrollSaveTimer);
+          state._scrollSaveTimer = setTimeout(()=>{
+            scSaveScroll(state.activeThreadId);
+          }, 120);
+        }
+
+        if(state.ignoreOlderOnScroll) return;
+        if(els.messages.scrollTop < 50){
+          loadOlderMessages();
+        }
+      });
+
+      clearMessagesUI(true);
+      try{ pcSetSidechatMode(false); }catch(e){}
+      refreshThreads();
+      if (state.threadsTimer) clearInterval(state.threadsTimer);
+      state.threadsTimer = setInterval(refreshThreads, 2500);
+      rightContainer.addEventListener('mouseenter', refreshThreads);
+
+      // =========================
+      // NEW CHAT (Sidechat) - DM + Group (copied/adjusted from messages_YP)
+      // =========================
+      const scNewChat = {
+        mode: 'dm',
+        users: [],
+        groupSelected: new Set()
+      };
+
+      function scOpenNewChat(){
+        const overlay = document.getElementById('pc-sc-newchat');
+        if(!overlay) return;
+        overlay.style.display = 'flex';
+        overlay.setAttribute('aria-hidden','false');
+
+        const s = document.getElementById('pc-sc-search');
+        if(s) s.value = '';
+
+        const ul = document.getElementById('pc-sc-userlist');
+        const gl = document.getElementById('pc-sc-grouplist');
+        if(ul) ul.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Yükleniyor...</div>';
+        if(gl) gl.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Yükleniyor...</div>';
+
+        scSetMode(scNewChat.mode);
+        scLoadUsers();
+      }
+
+      function scCloseNewChat(){
+        const overlay = document.getElementById('pc-sc-newchat');
+        if(!overlay) return;
+        overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden','true');
+      }
+
+      function scSetMode(mode){
+        scNewChat.mode = (mode === 'group') ? 'group' : 'dm';
+        const pillDM = document.getElementById('pc-sc-pill-dm');
+        const pillG  = document.getElementById('pc-sc-pill-group');
+        const wrapTitle = document.getElementById('pc-sc-group-title-wrap');
+        const ul = document.getElementById('pc-sc-userlist');
+        const gl = document.getElementById('pc-sc-grouplist');
+        const actions = document.getElementById('pc-sc-group-actions');
+        const s = document.getElementById('pc-sc-search');
+
+        if(pillDM) pillDM.classList.toggle('active', scNewChat.mode === 'dm');
+        if(pillG)  pillG.classList.toggle('active', scNewChat.mode === 'group');
+
+        if(wrapTitle) wrapTitle.style.display = (scNewChat.mode === 'group') ? 'block' : 'none';
+        if(ul) ul.style.display = (scNewChat.mode === 'dm') ? 'block' : 'none';
+        if(gl) gl.style.display = (scNewChat.mode === 'group') ? 'block' : 'none';
+        if(actions) actions.style.display = (scNewChat.mode === 'group') ? 'flex' : 'none';
+
+        if(s) s.placeholder = (scNewChat.mode === 'group') ? 'Üye ara...' : 'Kişi ara...';
+        scFilterUsers();
+      }
+
+      async function scLoadUsers(){
+        try{
+          const d = await apiPost('/api/chat/users', {});
+          if(d && d.status === 'success'){
+            scNewChat.users = d.data || [];
+            scRenderUsers(scNewChat.users);
+            scRenderGroupUsers(scNewChat.users);
+            scFilterUsers();
+          } else {
+            const ul = document.getElementById('pc-sc-userlist');
+            const gl = document.getElementById('pc-sc-grouplist');
+            if(ul) ul.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Kullanıcı listesi alınamadı.</div>';
+            if(gl) gl.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Kullanıcı listesi alınamadı.</div>';
+          }
+        }catch(e){
+          const ul = document.getElementById('pc-sc-userlist');
+          const gl = document.getElementById('pc-sc-grouplist');
+          if(ul) ul.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Kullanıcı listesi alınamadı.</div>';
+          if(gl) gl.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Kullanıcı listesi alınamadı.</div>';
+        }
+      }
+
+      function scUserFullname(u){
+        const fn = `${u?.name||''} ${u?.surname||''}`.trim();
+        return fn || (u?.username || 'Kullanıcı');
+      }
+
+      function scRenderUsers(list){
+        const wrap = document.getElementById('pc-sc-userlist');
+        if(!wrap) return;
+        wrap.innerHTML = '';
+
+        const filtered = (list || []).filter(u => u && u.username);
+        if(!filtered.length){
+          wrap.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Kullanıcı bulunamadı.</div>';
+          return;
+        }
+
+        filtered.forEach(u => {
+          const row = document.createElement('div');
+          row.className = 'pc-sc-user';
+          row.addEventListener('click', ()=> scStartDM(u.username));
+
+          row.innerHTML = `
+            <div class="pc-sc-user-left">
+              <img src="${avatarUrlFor(u.username)}" onerror="this.src='/static/group_chat_logo.png'">
+              <div style="min-width:0;">
+                <div class="pc-sc-user-name">${safeText(scUserFullname(u))}${u.username===ME ? ' <span style=\"opacity:.6; font-weight:900;\">(Ben)</span>' : ''}</div>
+                <div class="pc-sc-user-sub">${safeText(u.title || u.department || u.username)}</div>
+              </div>
+            </div>
+            <span class="pc-sc-badge">${safeText(u.username)}</span>
+          `;
+          wrap.appendChild(row);
+        });
+      }
+
+      function scRenderGroupUsers(list){
+        const wrap = document.getElementById('pc-sc-grouplist');
+        if(!wrap) return;
+        wrap.innerHTML = '';
+
+        const filtered = (list || []).filter(u => u && u.username && u.username !== ME);
+        if(!filtered.length){
+          wrap.innerHTML = '<div style="padding:12px; opacity:.75; font-weight:800;">Kullanıcı bulunamadı.</div>';
+          return;
+        }
+
+        filtered.forEach(u => {
+          const checked = scNewChat.groupSelected.has(u.username);
+          const row = document.createElement('div');
+          row.className = 'pc-sc-user';
+          row.addEventListener('click', ()=> {
+            if(scNewChat.groupSelected.has(u.username)) scNewChat.groupSelected.delete(u.username);
+            else scNewChat.groupSelected.add(u.username);
+            scRenderGroupUsers(scNewChat.users);
+            scFilterUsers();
+          });
+
+          row.innerHTML = `
+            <div class="pc-sc-user-left">
+              <img src="${avatarUrlFor(u.username)}" onerror="this.src='/static/group_chat_logo.png'">
+              <div style="min-width:0;">
+                <div class="pc-sc-user-name">${safeText(scUserFullname(u))}</div>
+                <div class="pc-sc-user-sub">${safeText(u.title || u.department || u.username)}</div>
+              </div>
+            </div>
+            <span class="pc-sc-badge ${checked ? 'on' : ''}"><i class="fa-solid ${checked ? 'fa-check' : 'fa-plus'}"></i>${checked ? 'Seçildi' : 'Ekle'}</span>
+          `;
+
+          wrap.appendChild(row);
+        });
+      }
+
+      function scFilterUsers(){
+        const q = (document.getElementById('pc-sc-search')?.value || '').toLowerCase().trim();
+        const base = scNewChat.users || [];
+
+        const match = (u)=>{
+          if(!u || !u.username) return false;
+          const fullname = `${u.name||''} ${u.surname||''}`.toLowerCase();
+          const username = String(u.username||'').toLowerCase();
+          const dept = String(u.department||'').toLowerCase();
+          const title = String(u.title||'').toLowerCase();
+          return fullname.includes(q) || username.includes(q) || dept.includes(q) || title.includes(q);
+        };
+
+        if(scNewChat.mode === 'dm'){
+          if(!q){ scRenderUsers(base.filter(u=>u && u.username)); return; }
+          scRenderUsers(base.filter(match));
+          return;
+        }
+
+        // group
+        if(!q){ scRenderGroupUsers(base.filter(u=>u && u.username)); return; }
+        scRenderGroupUsers(base.filter(match));
+      }
+
+      async function scStartDM(username){
+        try{
+          const d = await apiPost('/api/chat/start_dm', { username });
+          if(!d || d.status !== 'success') return;
+
+          const tid = d.thread_id || (d.data && d.data.id) || (d.data && d.data.thread_id) || null;
+          scCloseNewChat();
+
+          if(!tid) return;
+
+          await refreshThreads();
+          await openThread(String(tid));
+        }catch(e){}
+      }
+
+      function scClearGroup(){
+        scNewChat.groupSelected = new Set();
+        const gt = document.getElementById('pc-sc-group-title');
+        if(gt) gt.value = '';
+        scRenderGroupUsers(scNewChat.users);
+      }
+
+      async function scCreateGroup(){
+        const title = (document.getElementById('pc-sc-group-title')?.value || '').trim();
+        const members = Array.from(scNewChat.groupSelected || []);
+
+        if(!title || title.length < 2) return;
+        if(title.length > 80) return;
+        if(!members.length) return;
+
+        try{
+          const d = await apiPost('/api/chat/create_group', { title, members });
+          if(!d || d.status !== 'success') return;
+
+          const tid = (d.data && (d.data.thread_id || d.data.id)) || d.thread_id || null;
+          scCloseNewChat();
+          scClearGroup();
+
+          await refreshThreads();
+          if(tid) await openThread(String(tid));
+        }catch(e){}
+      }
+
+      // Bindings
+      try{
+        const btn = document.getElementById('pc-sidechat-newchat');
+        if(btn) btn.addEventListener('click', scOpenNewChat);
+
+        const closeBtn = document.getElementById('pc-sc-newchat-close');
+        if(closeBtn) closeBtn.addEventListener('click', scCloseNewChat);
+
+        const overlay = document.getElementById('pc-sc-newchat');
+        if(overlay) overlay.addEventListener('click', (e)=>{ if(e.target === overlay) scCloseNewChat(); });
+
+        const pillDM = document.getElementById('pc-sc-pill-dm');
+        const pillG  = document.getElementById('pc-sc-pill-group');
+        if(pillDM) pillDM.addEventListener('click', ()=> scSetMode('dm'));
+        if(pillG)  pillG.addEventListener('click', ()=> scSetMode('group'));
+
+        const s = document.getElementById('pc-sc-search');
+        if(s) s.addEventListener('input', scFilterUsers);
+
+        const gc = document.getElementById('pc-sc-group-create');
+        const gclr = document.getElementById('pc-sc-group-clear');
+        if(gc) gc.addEventListener('click', scCreateGroup);
+        if(gclr) gclr.addEventListener('click', scClearGroup);
+      }catch(e){}
+
+
+      document.addEventListener("visibilitychange", ()=>{
+        if(document.hidden) stopLastSeenPolling();
+      });
+    })();
+  </script>
+  {% endif %}
+  <!-- === Global shortcut: Ctrl+M opens Messages in a new tab === -->
+  <script>
+    (function(){
+      const TARGET_URL = "/messages_YP";
+
+      function isTypingContext(target){
+        if (!target) return false;
+        const tag = (target.tagName || "").toLowerCase();
+        if (tag === "input" || tag === "textarea" || tag === "select") return true;
+        if (target.isContentEditable) return true;
+        // Quill editor and similar rich text areas
+        if (target.closest && target.closest('.ql-editor')) return true;
+        return false;
+      }
+
+      document.addEventListener('keydown', function(e){
+        // Ctrl+M (Windows/Linux) or Cmd+M (Mac)
+        const key = e.key || "";
+        const isM = (key === 'm' || key === 'M');
+        const isShortcut = isM && (e.ctrlKey || e.metaKey);
+        if (!isShortcut) return;
+
+        // Don’t hijack while user is typing in a field/editor
+        if (isTypingContext(e.target)) return;
+
+        // Prevent any default browser behavior
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Open in new tab (keep current page)
+        const w = window.open(TARGET_URL, '_blank', 'noopener');
+        if (w) {
+          try { w.opener = null; } catch (_) {}
+        } else {
+          // Popup blocked: do nothing (keep current page).
+          // If you want, you can show a toast/notification here.
+        }
+      }, true);
+    
+
+})();
+  </script>
+</body>
+</html>

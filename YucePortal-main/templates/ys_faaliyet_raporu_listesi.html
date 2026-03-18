@@ -1,0 +1,565 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="rpaDescription">
+        <br>
+        <h3><a href="/YuceAutoUser/YS_Faaliyet_Menu" class="returnBtn">YS Faaliyet Menü</a> >> YS Faaliyet Raporu Aday Listesi</h3>
+        <small>Adayların listesini buradan görüntülüyebilir ve excel'e çekebilirsiniz.</small>
+        <br>
+        <hr>
+    </div>
+    <div id="filters" style="margin-bottom:10px; margin-top:1%; margin-left: 2%;">
+        <div class="side-by-side_between" style="width: 100%; display: flex; align-items: center;">
+            <div style="width: 100%;">
+                <label for="aday_ismi" style="margin-left:20px;">Personel:&nbsp;</label>
+                <input type="text" id="searchInput" placeholder="Aday ismi ara..." style="width: 20%;">
+                <label for="bayi_adi" style="margin-left:20px">Bayi:&nbsp;</label>
+                <select id="bayi_adi" style="width: 15%;">
+                    <option value="">Tümü</option>
+                    {% for bayi in bayi_aslist %}
+                        <option value="{{ bayi }}">{{ bayi }}</option>
+                    {% endfor %}
+                </select>
+                <button id="searchBtn" type="button" class="btn btn-primary" style="margin-left: 20px;" onclick="applyFilter()"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button id="clearFilters" type="button" class="btn btn-primary" onclick="resetFilters()"><i class="fa-regular fa-circle-xmark"></i></button>
+            </div>
+            <div class="right_side_btn" style="display: flex; gap: 3%;">
+                <button id="ExcelBtn" type="button" class="btn btn-primary" style="min-width: 10%;"><i class="fa-regular fa-file-excel"></i>&nbsp;&nbsp;Excel'e Al</button>
+            </div>
+        </div>    
+    </div>
+    <div id="rpaContent" style="margin: 0 2%;">
+        <div id="tableContainer" style="width: 100%;">
+            <table class="arac2elTable">
+                <thead>
+                    <tr>
+                        <th style="width: 2%;"></th>
+                        <th>Görüşme Tarihi</th>
+                        <th>Aday Adı</th>
+                        <th>Bayi</th>
+                        <th>Cinsiyet</th>
+                        <th>Satış/Servis</th>
+                        <th>Pozisyon</th>
+                        <th>Terfi/İşe Alım</th>
+                        <th>İK Bölgeci</th>
+                        <th colspan="3">Sınav Sonuçları<br>Sayısal/Sözel/Envanter</th>
+                        <th>Olumlu<br>Olumsuz</th>
+                        <th>İşe Başlangıç Tarihi</th>
+                        <th>İşten Çıkış Tarihi</th>
+                        <th style="width: 5%;">CV</th>
+                        <th>Bilgilendirme Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr class="{% if result[15] != '-' %}notified_row{% endif %}">
+                            <td><button class="editBtn" id="{{result[16]}}" type="button"><i class="fa-regular fa-pen-to-square"></i></button></td>
+                            <td>{{ result[0] }}</td>
+                            <td>{{ result[1] }}</td>
+                            <td>{{ result[2] }}</td>
+                            <td>{{ result[3] }}</td>
+                            <td>{{ result[4] }}</td>
+                            <td>{{ result[5] }}</td>
+                            <td>{{ result[6] }}</td>
+                            <td>{{ result[14] }}</td>
+                            <td>{{ result[7] }}</td>
+                            <td>{{ result[8] }}</td>
+                            <td>{{ result[13] }}</td>
+                            <td>{{ result[9] }}</td>
+                            <td>{{ result[10] }}</td>
+                            <td>{{ result[11] }}</td>
+                            <td class="fileBtn">
+                                {% if result[17] != "-" %}
+                                <div class="side-by-side">
+                                    <a href="{{ url_for('Display_CV', filename=result[17]) }}" target="_blank"><b><i class="fa-solid fa-file" style="padding: 5px 15px;"></i></b></a>
+                                    <button style="border:none; background:none;" class="deleteCV" data-cvid="{{ result[16] }}{{ result[17] }}">
+                                        <i class="fa-regular fa-trash-can" title="Eki kaldır"></i>
+                                    </button>
+                                </div>
+                                {% else %}
+                                    <form action="/ys_faaliyet/upload/cv/{{ result[16] }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+                                        <input type="file" name="cvFile" style="display:none;" class="fileInput">
+                                        <a href="#" class="addFileBtn">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </a>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            <td>{{ result[15] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination" style="margin-top: 20px;">
+            <ul>
+                {% if current_page > 1 %}
+                    <li>
+                        <a href="?page={{ current_page - 1 }}">Önceki</a>
+                    </li>
+                {% else %}
+                    <li class="disabled">
+                        <a>Önceki</a>
+                    </li>
+                {% endif %}
+        
+                {% for p in visible_pages %}
+                    {% if p == "..." %}
+                        <li class="disabled">
+                            <a>...</a>
+                        </li>
+                    {% elif p == current_page %}
+                        <li class="active">
+                            <a href="?page={{ p }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="?page={{ p }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+        
+                {% if current_page < total_pages %}
+                    <li>
+                        <a href="?page={{ current_page + 1 }}">Sonraki</a>
+                    </li>
+                {% else %}
+                    <li class="disabled">
+                        <a>Sonraki</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>      
+        
+        <div id="myModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div style="text-align: right;">
+                    <button id="closeModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form method="post" id="ys_faaliyet_form" enctype="multipart/form-data" style="width: 100%; overflow-y: auto; max-height: 70%;">
+                    <div id="ys_faaliyet_modal_form" class="side-by-side_between">
+                        <div style="width: 50%;">
+                            <p>Aday Adı: <span id="aday_adi"></span></p>
+                            <p>Bayi: <span id="bayi"></span></p>
+                            <p>Cinsiyet: <span id="cinsiyet"></span></p>
+                            <p>Satış/Servis: <span id="satis_servis"></span></p>
+                            {{ render_field(form.gorusme_tarihi, class = "form-control", id="gorusme_tarihi") }}
+                            {{ render_field(form.aday_durumu, class="form-control", id="aday_durumu") }}
+                            <div id="aday_durumu_diger_container" style="display:none;">
+                                {{ render_field(form.aday_durumu_diger, class="form-control", id="aday_durumu_diger") }}
+                            </div>
+                            <hr>
+                            <p>Sınav Sonuçları</p>
+                            {{ render_field(form.sinav_sayisal, class = "form-control") }}
+                            {{ render_field(form.sinav_sozel, class = "form-control") }}
+                            {{ render_field(form.sinav_envanter, class = "form-control") }}
+                            <hr>
+                        </div>
+                        <div style="width: 50%;">
+                            <p>Pozisyon: <span id="pozisyon"></span></p>
+                            <p>Terfi/İşe Alım: <span id="terfi_isealim"></span></p>
+                            <p>Bölgeci: <span id="bolgeci"></span></p>
+                            {{ render_field(form.ik_bolgeci, class="form-control", id="ik_bolgeci") }}
+                            <br>
+                            <div class="side-by-side">
+                                <div>
+                                    {{ render_field(form.ise_baslama_tarihi, class = "form-control") }}
+                                </div>
+                                <div>
+                                    {{ render_field(form.isten_cikis_tarihi, class = "form-control") }}
+                                </div>
+                            </div>
+                            <br>
+                            <div class="d-flex flex-column align-items-center">
+                                {{ render_field(form.bildirme_tarihi, class = "form-control") }}
+                            </div>
+                            {{ render_field(form.notlar, class = "form-control") }}
+                            <br>
+                            <div class="right_side_btn">
+                                <button type="submit" class="btn btn-primary" id="submitBtn" style="min-width: 15%;">Kaydet</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+<br>
+<style>
+    #ys_faaliyet_form dd input {
+        box-shadow:none;
+    }
+
+    .notified_row {
+        background-color: #78FAAE !important;
+        transition: background-color 1s ease;
+    }
+
+    .dark-mode .notified_row {
+        background-color: #F7B046 !important;
+    }
+
+    .notified_row td {
+        color: #0E3A2F;
+    }
+
+    .notified_row .editBtn i {
+        color: #0E3A2F !important;
+    }
+
+    .fileBtn a:hover {
+        color: #0E3A2F;
+    }
+
+    .fileBtn a:hover .fa-eye {
+        color: #78FAAE;
+    }
+
+    .notified_row .fileBtn a,
+    .notified_row .fileBtn i {
+        color: #0E3A2F;
+    }
+
+    .notified_row .fileBtn a:hover i {
+        color: white;
+    }
+
+    .dark-mode .fileBtn a:hover i {
+        color: white;
+    }
+
+    .dark-mode .notified_row .fileBtn a,
+    .dark-mode .notified_row .fileBtn i {
+        color: #0E3A2F;
+    }
+</style>
+<script>
+    document.querySelectorAll(".deleteCV").forEach(function(button) {
+        button.addEventListener("click", function() {
+            const cvID = this.getAttribute("data-cvid");
+            //console.log(cvID);
+            // 1258/static/ys_faaliyet_cv/ARDEN_2025-02-17 10-27-29.pdf
+
+            showChoicePopUpModal('CV silinecektir.<br>Devam etmek istiyor musunuz? ', 'question', function() {
+                fetch(`/delete/aday_cv/${cvID}`, {
+                    method: "GET",
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Refresh the page on success
+                    } else {
+                        console.error("Failed to delete CV");
+                        console.log(cvID);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    });
+
+    document.querySelectorAll(".addFileBtn").forEach(function(button) {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            this.closest("form").querySelector(".fileInput").click();
+        });
+    });
+
+    document.querySelectorAll(".fileInput").forEach(function(input) {
+        input.addEventListener("change", function() {
+            this.closest("form").submit(); 
+        });
+    });
+
+    document.getElementById("ExcelBtn").addEventListener("click", function () {
+        window.location.href = "/download_adaylar_excel";
+    });
+
+    document.getElementById('searchInput').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            document.getElementById('searchBtn').click();
+        }
+    });
+
+    let modal;
+    let currentAdayId;
+	
+	submitBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        // Get the checked radio button for aday_durumu
+        const adayDurumuElement = document.querySelector('input[name="aday_durumu"]:checked');
+        let adayDurumu = adayDurumuElement ? adayDurumuElement.value : null;
+
+        // Continue to retrieve other form values
+        const sinavSayisal = document.querySelector('[name="sinav_sayisal"]').value;
+        const sinavSozel = document.querySelector('[name="sinav_sozel"]').value;
+        const sinavEnvanter = document.querySelector('[name="sinav_envanter"]').value;
+        const iseBaslamaTarihi = document.querySelector('[name="ise_baslama_tarihi"]').value;
+        const istenCikisTarihi = document.querySelector('[name="isten_cikis_tarihi"]').value;
+        const bildirmeTarihi = document.querySelector('[name="bildirme_tarihi"]').value;
+        const aday_durumu_diger = document.querySelector('[name="aday_durumu_diger"]').value;
+        const gorusme_tarihi = document.getElementById('gorusme_tarihi').value;
+        const ikBolgeci = document.getElementById('ik_bolgeci').value;
+        const notlar = document.getElementById('notlar').value;
+
+        // Create the formData object
+        const formData = {
+            aday_durumu: adayDurumu,
+            sinav_sayisal: sinavSayisal,
+            sinav_sozel: sinavSozel,
+            sinav_envanter: sinavEnvanter,
+            ise_baslama_tarihi: iseBaslamaTarihi,
+            isten_cikis_tarihi: istenCikisTarihi,
+            bildirme_tarihi: bildirmeTarihi,
+            notlar: notlar,
+            aday_durumu_diger: aday_durumu_diger,
+            gorusme_tarihi: gorusme_tarihi,
+            ik_bolgeci: ikBolgeci,
+        };
+
+        // Send the form data to the server
+        fetch(`/ys_faaliyet_update_AdayInfo/${currentAdayId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Aday information updated successfully');
+                modal.style.display = 'none'; // Close modal after successful submission
+                window.location.reload(); // Optionally reload the page to reflect changes
+            } else {
+                console.error('Error updating aday information');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+	
+	function updateFields(pozisyonAdi) {
+        const sinavEnvanterField = document.getElementById('sinav_envanter');
+        const sinavSayisalField = document.getElementById('sinav_sayisal');
+        const sinavSozelField = document.getElementById('sinav_sozel');
+
+        if (pozisyonAdi.toLowerCase().includes('müdürü')) {
+            sinavEnvanterField.disabled = false;
+            sinavSayisalField.disabled = true;
+            sinavSozelField.disabled = true;
+        } else {
+            sinavSayisalField.disabled = false;
+            sinavSozelField.disabled = false;
+        }
+    }
+
+    function bindEditButtons() {
+        const editBtns = document.querySelectorAll('.editBtn');
+
+        editBtns.forEach(function (button) {
+            button.onclick = function () {
+                currentAdayId = button.getAttribute('id');
+
+                fetch(`/ys_faaliyet_return_AdayInfo/${currentAdayId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!modal) {
+                        console.error('Modal element is not defined.');
+                        return;
+                    }
+
+                    modal.style.display = 'block';
+
+                    document.getElementById('aday_adi').textContent = data.aday_ismi;
+                    document.getElementById('bayi').textContent = data.bayi;
+                    document.getElementById('cinsiyet').textContent = data.cinsiyet;
+                    document.getElementById('satis_servis').textContent = data.satis_or_servis;
+                    document.getElementById('pozisyon').textContent = data.pozisyon_adi;
+                    document.getElementById('terfi_isealim').textContent = data.terfi_iseAlim_rotasyon;
+                    // StartDate Modified and filled
+                    if (data.gorusme_tarihi) {
+                        let gorusme_tarihi_temp = new Date(data.gorusme_tarihi);
+                        let gorusme_tarihi = gorusme_tarihi_temp.toISOString().split('T')[0];
+                        document.getElementById('gorusme_tarihi').value = gorusme_tarihi;
+                    }
+                    document.getElementById('bolgeci').textContent = data.bolgeci;
+                    //document.getElementById('ik_bolgeci').textContent = data.ik_bolgeci; // Bölgeci İK editable yapılınca kaldırıldı.
+                    
+                    // ik Bölgeci artık editable ve burada otomatik dolduruluyor
+                    const ikBolgeciField = document.getElementById('ik_bolgeci');
+                    if (data.ik_bolgeci) {
+                        for (let i = 0; i < ikBolgeciField.options.length; i++) {
+                            if (ikBolgeciField.options[i].text.includes(data.ik_bolgeci)) {
+                                ikBolgeciField.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Areas to be filled but filled by default
+                    document.getElementById('sinav_sozel').value = data.sozel_sonuc;
+                    document.getElementById('sinav_sayisal').value = data.sayisal_sonuc;
+                    document.getElementById('sinav_envanter').value = data.envanter_sonuc;
+
+                    document.getElementById('aday_durumu').value = data.aday_durumu;
+                    const adayDurumuRadios = document.querySelectorAll('input[name="aday_durumu"]');
+                    const adayDurumuDigerContainer = document.getElementById('aday_durumu_diger_container');
+
+                    if (data.aday_durumu === "Olumlu") {
+                        document.getElementById('aday_durumu-0').checked = true;
+                        adayDurumuDigerContainer.style.display = "none";
+                    } 
+                    else if (data.aday_durumu === "Olumsuz") {
+                        document.getElementById('aday_durumu-1').checked = true;
+                        adayDurumuDigerContainer.style.display = "none";
+                    } 
+                    else if (data.aday_durumu === "Beklemede") {
+                        document.getElementById('aday_durumu-2').checked = true;
+                        adayDurumuDigerContainer.style.display = "none";
+                    } 
+                    else if (data.aday_durumu === "Diğer") {
+                        document.getElementById('aday_durumu-3').checked = true;
+                        adayDurumuDigerContainer.style.display = "block";
+                    }
+
+                    adayDurumuRadios.forEach(radio => {
+                        radio.removeEventListener("change", toggleAdayDurumuDiger);
+                        radio.addEventListener("change", toggleAdayDurumuDiger);
+                    });
+
+                    function toggleAdayDurumuDiger() {
+                        if (document.getElementById('aday_durumu-3').checked) {
+                            adayDurumuDigerContainer.style.display = "block";
+                        } else {
+                            adayDurumuDigerContainer.style.display = "none";
+                        }
+                    }
+
+                    const aday_durumu_diger = data.DigerSebep;
+                    const aday_durumu_diger_Field = document.getElementById('aday_durumu_diger');
+                    if (aday_durumu_diger) {
+                        for (let i = 0; i < aday_durumu_diger_Field.options.length; i++) {
+                            if (aday_durumu_diger_Field.options[i].text.includes(aday_durumu_diger)) {
+                                aday_durumu_diger_Field.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    // StartDate Modified and filled
+                    if (data.start_date) {
+                        let start_date_temp = new Date(data.start_date);
+                        let start_date = start_date_temp.toISOString().split('T')[0];
+                        document.getElementById('ise_baslama_tarihi').value = start_date;
+                    }
+
+                    // EndDate Modified and filled
+                    if (data.end_date) {
+                        let end_date_temp = new Date(data.end_date);
+                        let end_date = end_date_temp.toISOString().split('T')[0];
+                        document.getElementById('isten_cikis_tarihi').value = end_date;
+                    }
+
+                    // NotifyDate Modified and filled
+                    if (data.notify_date) {
+                        let notify_date_temp = new Date(data.notify_date);
+                        let notify_date = notify_date_temp.toISOString().split('T')[0];
+                        document.getElementById('bildirme_tarihi').value = notify_date;
+                    }
+
+                    document.getElementById('notlar').value = data.notlar;
+
+                    updateFields(data.pozisyon_adi);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+            };
+        });
+    }
+
+    function resetFilters() {
+        location.reload();
+    }
+
+    function applyFilter() {
+        const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+        const bayiFilter = document.getElementById('bayi_adi').value.trim().toLowerCase();
+
+        const pagination = document.querySelector('.pagination');
+        pagination.style.display = 'none';
+
+        if (searchQuery === '' && bayiFilter === '') {
+            location.reload();
+        }
+
+        fetch(`/filter_adaylar?query=${encodeURIComponent(searchQuery)}&bayi=${encodeURIComponent(bayiFilter)}`)
+            .then(response => response.json())
+            .then(data => updateTable(data))
+            .catch(error => console.error('Error fetching filtered results:', error));
+    }
+
+    function updateTable(data) {
+        const tableBody = document.querySelector('.arac2elTable tbody');
+        tableBody.innerHTML = '';
+
+        if (data.length === 0) {
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.innerHTML = `
+                <td colspan="19" style="text-align: center;">Sonuç bulunamadı.</td>
+            `;
+            tableBody.appendChild(noResultsRow);
+            return;
+        }
+
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><button class="editBtn" id="${row.id}" type="button"><i class="fa-regular fa-pen-to-square"></i></button></td>
+                <td>${row.gorusme_tarihi || ''}</td>
+                <td>${row.aday_ismi || ''}</td>
+                <td>${row.bayi || ''}</td>
+                <td>${row.cinsiyet || ''}</td>
+                <td>${row.satis_or_servis || ''}</td>
+                <td>${row.pozisyon_adi || ''}</td>
+                <td>${row.terfi_iseAlim_rotasyon || ''}</td>
+                <td>${row.ik_bolgeci || ''}</td>
+                <td>${row.sayisal_sonuc || ''}</td>
+                <td>${row.sozel_sonuc || ''}</td>
+                <td>${row.envanter_sonuc || ''}</td>
+                <td>${row.aday_durumu || ''}</td>
+                <td>${row.start_date || ''}</td>
+                <td>${row.end_date || ''}</td>
+                <td>${row.notify_date || ''}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        bindEditButtons();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        modal = document.getElementById('myModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        bindEditButtons();
+
+        closeModalBtn.onclick = function () {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    });
+</script>
+{% endblock body %}

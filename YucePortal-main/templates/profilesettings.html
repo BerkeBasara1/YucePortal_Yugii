@@ -1,0 +1,135 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+	<div class="rpaDescription">
+		<br>
+		<h3>Profil Bilgileri</h3>
+		<br>
+		<small>Profil Bilgilerinizi burada görüntüleyebilirsiniz.</small>
+		<br>
+		<small>Eğer yanlış bilgiler mevcut ise lütfen IT Departmanı ile iletişime geçin.</small>
+		<br>
+		<hr>
+		<br>
+	</div>
+	<div class="rpaContent">
+		<div class="profileContainer">
+			<img src="{{ url_for('static', filename='users_card_photos/' + session['username'] + '.jpg') }}" alt="Image" onerror="this.onerror=null;this.src='{{ url_for('static', filename='Skoda Logo.png') }}';">
+			<form method = "post">
+				<label><b>Adınız: </b>{{session["name"]}}</label>
+				<br>
+				<label><b>Soyadınız: </b>{{session["surname"]}}</label>
+				<br>
+				<label><b>Departman: </b>{{session["departman"]}}</label>
+				<br>
+				<label><b>Kullanıcı Adı: </b>{{session["username"]}}</label>
+				<br>
+				<label><b>e-mail: </b>{{session["email"]}}</label>
+				<hr>
+				<label><b>Araç Marka: </b>{{ session["arac_marka"] or "-" }}</label>
+				<br>
+				<label><b>Araç Plaka: </b>{{ session["plaka"] or "-" }}</label>
+				<br>
+				<button type="button" class="btn btn-primary" id="editBtn"><i class="fa-solid fa-pen"></i>&nbsp;&nbsp;Araç Bilgilerini Değiştir</buton>
+			</form>
+		</div>
+	</div>
+	<br>
+</div>
+<div id="myModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <div class="side-by-side_between">
+			<p>Araç Bilgilerini Düzenle</p>
+            <button id="closeModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="rpaContent">
+            <form method = "post" enctype="multipart/form-data" style="width: 100%;">
+				{% set arac_marka_value = session.get('arac_marka') if session.get('arac_marka') else '' %}
+				{{ render_field(form.arac_marka, class="form-control", id="arac_marka", value=arac_marka_value) }}
+				<br>
+				{% set plaka = session.get('plaka') if session.get('plaka') else '' %}
+				{{ render_field(form.arac_plaka, class = "form-control", id="arac_plaka", value=session.get('plaka')) }}
+				<br>
+				<button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fa-regular fa-save"></i>&nbsp;&nbsp;Kaydet</button>
+			</form>
+        </div>
+		
+    </div>
+</div>
+<style>
+	.profileContainer {
+		display: flex;
+		gap: 3%;
+		width: 70%;
+		max-height:300px;
+		justify-content: center;
+		align-items: center;
+	}
+
+	form {
+		margin-bottom: 0px;
+	}
+
+	.profileContainer img {
+		height: 100%;
+		width: auto;
+		border: 2px solid #0E3A2F;
+		border-radius: 50%;
+	}
+
+	#editBtn {
+		color: #78FAAE;
+	}
+
+	#editBtn:hover {
+		cursor: pointer;
+		color: #0E3A2F;
+	}
+
+	.dark-mode #editBtn {
+		color: #0E3A2F;
+	}
+
+	.dark-mode #editBtn:hover {
+		color: #78FAAE;
+	}
+
+	.modal-content{
+		width: 20%;
+	}
+
+	@media screen and (max-width: 1000px) {
+		.profileContainer img {
+			display: none;
+		}
+
+		.modal-content {
+			width: 100%;
+		}
+	}
+
+</style>
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('myModal');
+        const openModalBtn = document.getElementById('editBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+		openModalBtn.onclick = function () {
+            modal.style.display = 'block'
+        };
+
+		closeModalBtn.onclick = function () {
+            modal.style.display = 'none';
+        };
+    
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+	});
+</script>
+{% endblock body %}

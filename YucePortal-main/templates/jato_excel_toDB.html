@@ -1,0 +1,57 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Jato Verilerini Kaydetme</h3>
+        <br>
+        <small>Ortak alanda <b>"\\yucefile\data\YUCE AUTO GENEL\Urun_Jato_Guncelleme"</b> dizininde bulunan Jato excellerini Veritabanına kaydeder.</small>
+        <br>
+        <br>
+        <small></small>
+        <br>
+        <small>Kaydettikten sonra excel dosyalarını bu dizinden siler.</small>
+        <br>
+        <small>Lütfen bu dosyaya Jato excelleri dışında bir dosya yüklemeyiniz.</small>
+        <br>
+        <br>
+        <small>Çalışma süresi excel adetlerine göre değişiklik gösterebilir.</small>
+        <br>
+        <hr>
+        <br>
+      </div>
+      <div class="rpaContent">
+        <a href="/jato_excel_toDB_func">
+          <button class="btn btn-primary">&nbsp;&nbsp;&nbsp;Çalıştır&nbsp;&nbsp;&nbsp;</button>
+        </a>
+        <br>
+      </div>
+      <br>
+      <br>
+      <div class="rpaContent">
+        <a href="/jato_excel_toDB_func2">
+          <button class="btn btn-primary">Çalıştır (2)</button>
+        </a>
+        <br>
+      </div>
+      <br>
+</div>
+<script>
+  // Function to change the button text to a loading icon
+  function setButtonToLoading() {
+    var button = document.querySelector('button.btn.btn-primary');
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+    button.disabled = true; // Prevent multiple button clicks
+    button.classList.add('loading');
+  }
+
+  // Attach an event listener to the button's click event
+  document.querySelector('button.btn.btn-primary').addEventListener('click', function () {
+    setButtonToLoading();
+    // You can perform additional actions here or trigger form submission as needed
+  });
+</script>
+
+{% endblock body %}

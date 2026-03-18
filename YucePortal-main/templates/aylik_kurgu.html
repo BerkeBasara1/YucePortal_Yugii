@@ -1,0 +1,48 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Aylık Kurgu Otomasyonu</h3>
+        <br>
+        <small>Aylık Kurgu Excel'ini buradan güncelleyebilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data">
+            <div class="side-by-side_between">
+                <div style="width: 50%; margin-right: 10px;">
+                    {{ render_field(form.start_date, class = "form-control") }}
+                </div>
+                <div style="width: 50%; margin-left: 10px;">
+                    {{ render_field(form.end_date, class = "form-control") }}
+                </div>
+            </div>
+            <br>
+            {{ render_field(form.yolda_status_excluded, class = "form-control") }}
+            <br>
+            <button type="submit" class="btn btn-primary">Çalıştır</button>
+        </form>
+    </div>
+</div>
+<br>
+<script>
+    // Function to change the button text to a loading icon
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+  
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+</script>
+{% endblock body %}

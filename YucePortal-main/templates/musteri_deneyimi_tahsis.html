@@ -1,0 +1,21 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div style="margin-left:30px;">
+        <br>
+        <h3>Müşteri Deneyim Yönetimi</h3>
+        <br>
+        <small>Geçici araç tahsis listesini excel dosyasından SQL'e kaydetmek ve Dashboard üzerinde görebilmek için buradan tetikleyebilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+        <a href="/run_musteri_deneyimi_tahsis_func">
+        <button class="btn btn-primary">Çalıştır</button>
+        </a>
+        <br>
+    </div>
+</div>
+<br>
+{% endblock body %}

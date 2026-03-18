@@ -1,0 +1,912 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<style>
+    .color_label {
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+        border-radius: 5px;
+    }
+
+    .dark-mode .color_label {
+        color: #000000;
+    }
+
+    .color_text {
+        font-weight: bold;
+    }
+
+    .blue_tag {
+        background-color: #1ED4DF;
+    }
+
+    .yellow_tag {
+        background-color: #FAEB67;
+    }
+
+    .green_tag {
+        background-color: #78FAAE;
+    }
+
+    .acik {
+        color: green;
+    }
+
+    .kapali {
+        color: red;
+    }
+
+    #filters select {
+        border: 1px solid #0E3A2F;
+        box-shadow: 0 0 5px #0E3A2F !important;
+        outline: none;
+        border-radius:5px;
+    }
+
+    #filters select:focus {
+        border: 1px solid #78FAAE;
+        box-shadow: 0 0 5px #78FAAE !important;
+        outline: none;
+        border-radius:5px;
+    }
+
+    .carInfoBtn {
+        width: 80%;
+        padding: 5% 10%;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+    }
+
+    .carInfoBtn:hover {
+        border-color: #F1F2F2;
+    }
+
+    #carPlate_deadline {
+        color: #0E3A2F;
+    }
+
+    .dark-mode #carPlate_deadline {
+        color: #78FAAE;
+    }
+
+    .dark-mode .tablinks:hover span {
+        color: #0E3A2F;
+    }
+
+    .dark-mode .tablinks.active span {
+        color: #0E3A2F;
+    }
+</style>
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="platformContainer">
+        <div class="rpaDescription">
+            <br>
+            <h3><a href="/YuceAutoUser/Arac_2El_Menu" class="returnBtn">2. El Araç Menü</a> >> Satıştaki Araçların Yönetimi</h3>
+            <br>
+            <small>Satıştaki araçlara verilen tüm teklifleri aşağıda görebilirsiniz.</small>
+            <br>
+            <small><span style="font-weight: bold;">Kalın yazılı</span> satırlar araca ait en yüksek fiyat olan tekliflerdir.</small>
+            <br>
+            <hr>
+            <div class="side-by-side">
+                <small class="color_label blue_tag" onclick="filterByColor('blue_tag')">&nbsp;&nbsp;Mavi&nbsp;&nbsp;</small>
+                <small class="color_label yellow_tag" onclick="filterByColor('yellow_tag')">&nbsp;&nbsp;Sarı&nbsp;&nbsp;</small>
+                <small class="color_label green_tag" onclick="filterByColor('green_tag')">&nbsp;&nbsp;Yeşil&nbsp;&nbsp;</small>
+            </div>
+            <div class="side-by-side">
+                <small class="color_text">Bayilere <span class="acik">açık</span>, Yüce Auto personeline <span class="kapali">kapalı</span></small>
+                <small class="color_text">Bayilere ve Yüce Auto personeline <span class="kapali">kapalı</span></small>
+                <small class="color_text">Bayilere <span class="kapali">kapalı</span>, Yüce Auto personeline <span class="acik">açık</span></small>
+            </div>
+            <hr>
+        </div>
+    </div>
+    <div id="filters" style="margin-bottom:10px; margin-top:1%; margin-left: 2%;">
+        <div class="side-by-side_between" style="width: 100%; display: flex; align-items: center;">
+            <div style="width: 100%;">
+                <label for="surec_no" style="margin-left:20px;">Süreç No:&nbsp;</label>
+                <select id="surec_no" style="width: 10%;" onchange="applyFilter()">
+                    <option value="">Tümü</option>
+                    {% for surec in surec_numlar %}
+                        <option value="{{ option }}">{{ surec }}</option>
+                    {% endfor %}
+                </select>
+                <!-- <label for="bayi_adi" style="margin-left:20px">Bayi:&nbsp;</label>
+                <select id="bayi_adi" style="width: 15%;" onchange="applyFilter()">
+                    <option value="">Tümü</option>
+                    {% for bayii in bayii_isimleri %}
+                        <option value="{{ option }}">{{ bayii }}</option>
+                    {% endfor %}
+                </select> -->
+                <p id="rowscount" style="margin-left: 2%; display: inline-flex; color: #0E3A2F;"></p>
+            </div>
+            <div class="right_side_btn" style="display: flex; gap: 3%;">
+                <button id="clearFilters" type="button" class="btn btn-primary" onclick="resetFilters()">Filtereleri Temizle</button>
+                {% if arac_var == True %}
+                    {% if blue_cars_in_table == False %}
+                        <button id="ExcelBtn1" type="button" class="btn btn-primary"><i class="fa-regular fa-file-excel"></i>&nbsp;&nbsp;Excel'e Al</button>
+                    {% else %}
+                        <button id="ExcelBtn1" type="button" class="btn btn-primary disabled-button" disabled><i class="fa-regular fa-file-excel"></i>&nbsp;&nbsp;Excel'e Al</button>
+                    {% endif %}
+                {% else %}
+                        <button id="ExcelBtn1" type="button" class="btn btn-primary disabled-button" disabled><i class="fa-regular fa-file-excel"></i>&nbsp;&nbsp;Excel'e Al</button>
+                {% endif %}
+            </div>
+        </div>    
+    </div>
+    <div class="rpaContent">
+        <div id="tableContainer" style="overflow: visible;">
+            <table id="bayiTable" class="arac2elTable" style="color: #0E3A2F; min-height: 10%;">
+                <thead>
+                    <tr>
+                        <th class="checkbox_col"><input type="checkbox" id="select-all" onclick="toggleButtonVisibility()"></th>
+                        <th style="width: 7%;">Süreç No</th>
+                        <th>Plaka No</th>
+                        <th style="width: 23%;">Model</th>
+                        <th>Yıl</th>
+                        <th style="width: 10%;">Renk</th>
+                        <th>KM</th>
+                        <th style="width: 10%;">Bayi Adı</th>
+                        <th style="width: 10%;">Fiyat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in best_offers_results %}
+                        {% if result[3] != "0" %}
+                            <tr class="bestoffer">
+                                <td><input type="checkbox" class="select-car" onclick="toggleButtonVisibility()" data-plaka="{{ result[2] }}"></td>
+                                <td><b>Süreç {{ result[12] }}</b></td>
+                                    {% if result[16] == 1 %}
+                                        <td><button class="carInfoBtn blue_tag" id="{{result[2]}}" type="button">{{ result[7] }}</button></td>
+                                    {% elif result[16] == 2 %}
+                                        <td><button class="carInfoBtn yellow_tag" id="{{result[2]}}" type="button">{{ result[7] }}</button></td>
+                                    {% elif result[16] == 3 %}
+                                        <td><button class="carInfoBtn green_tag" id="{{result[2]}}" type="button">{{ result[7] }}</button></td>
+                                    {% endif %}
+                                <td><b>{{ result[8] }}</b></td>
+                                <td><b>{{ result[9] }}</b></td>
+                                <td><b>{{ result[10] }}</b></td>
+                                <td><b>{{ result[11] }} KM</b></td>
+                                {% if result[16] == 1 %}
+                                <td>?</td>
+                                <td>?</td>
+                                {% else %}
+                                <td><b>{{ result[1] }}</b></td>
+                                <td><b>{{ result[3] }} TL</b></td>
+                                {% endif %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    {% for result in none_offered_cars %}
+                            <tr class="bestoffer">
+                                <td><input type="checkbox" class="select-car" onclick="toggleButtonVisibility()" data-plaka="{{ result[0] }}"></td>
+                                <td><b>Süreç {{ result[10] }}</b></td>
+                                    {% if result[7] == 1 %}
+                                    <td><button class="carInfoBtn blue_tag" id="{{result[0]}}" type="button">{{ result[1] }}</button></td>
+                                    {% elif result[7] == 2 %}
+                                        <td><button class="carInfoBtn yellow_tag" id="{{result[0]}}" type="button">{{ result[1] }}</button></td>
+                                    {% elif result[7] == 3 %}
+                                        <td><button class="carInfoBtn green_tag" id="{{result[0]}}" type="button">{{ result[1] }}</button></td>
+                                    {% endif %}
+                                <td><b>{{ result[2] }}</b></td>
+                                <td><b>{{ result[3] }}</b></td>
+                                <td><b>{{ result[4] }}</b></td>
+                                <td><b>{{ result[5] }} KM</b></td>
+                                <td></td>
+                                <td><b>-</b></td>
+                            </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="right_side_btn">
+        <button id="Bayi_Kapanis" type="button" class="btn btn-primary" style="min-width: 15%;"><i class="fa-regular fa-circle-xmark"></i>&nbsp;&nbsp;Seçili Araçları Bayilere Kapat</button>
+        <button id="YA_Satis" type="button" class="btn btn-primary" style="min-width: 15%;"><i class="fa-solid fa-square-arrow-up-right"></i>&nbsp;&nbsp;Seçili Araçları Yüce Auto'ya Satışa Aç</button>
+        <button id="YA_Kapanis" type="button" class="btn btn-primary" style="min-width: 15%;"><i class="fa-regular fa-circle-xmark"></i>&nbsp;&nbsp;Seçili Araçları Yüce Auto'ya Kapat</button>
+    </div>
+    <br>
+    <div id="myModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width: 90%; min-height: 60vh;">
+            <div class="side-by-side_between">
+                <h4 id="carPlate_deadline">PLAKA / TARİH</h4>
+                <button id="closeModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <br>
+    
+            <div class="tabs" style="user-select: none;">
+                <button class="tablinks active" onclick="openTab(event, 'bayiTeklifleriTab')">Bayi Teklifleri <span id="teklifler_adet"></span></button>
+                <button class="tablinks" onclick="openTab(event, 'yaTeklifleriTab')">Yüce Auto Teklifleri <span id="ilgileniyorum_adet"></span></button>
+                <button class="tablinks" onclick="openTab(event, 'aracBilgileriTab')">Araç Bilgileri</button>
+            </div>
+    
+            <div id="bayiTeklifleriTab" class="tabcontent" style="display: block;">
+                <div id="tableContainer" style="width: 100%; overflow-y: auto; max-height: 43vh">
+                    <table class="arac2elTable">
+                        <thead>
+                            <tr>
+                                <th>Bayi</th>
+                                <th>Fiyat</th>
+                                <th>Teklif Verdi</th>
+                                <th>Teklif Tarihi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div id="yaTeklifleriTab" class="tabcontent" style="display: none;">
+                <div id="tableContainer" style="width: 100%;">
+                    <table class="arac2elTable">
+                        <thead>
+                            <tr>
+                                <th>Personel</th>
+                                <th>Gösterilen Fiyat</th>
+                                <th>İlgileniyor</th>
+                                <th>Teklif Tarihi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <div id="aracBilgileriTab" class="tabcontent" style="display: none;">
+                <div id="tableContainer" style="width: 100%;">
+                    <table class="arac2elTable">
+                        <thead>
+                            <tr>
+                                <th>Eksper Raporu</th>
+                                <th>Servis Geçmişi</th>
+                                <th>Araç Teklif Formu</th>
+                                <th>Fotoğraflar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="eksperRaporu"></td>
+                                <td id="servisGecmisi"></td>
+                                <td id="aracTeklifFormu"></td>
+                                <td id="fotograf"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+<br>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initially count visible rows on page load
+        countVisibleRows();
+    });
+    
+    function filterByColor(colorClass) {
+        // Get all the table rows
+        var tableRows = document.querySelectorAll('#bayiTable tbody tr');
+
+        // Loop through each row and check the color class of the button inside the "Plaka No" column
+        tableRows.forEach(function(row) {
+            var plakaNoColumn = row.cells[2]; // Assuming "Plaka No" is the 3rd column (index 2)
+            var button = plakaNoColumn.querySelector('button'); // Get the button inside the cell
+
+            // Check if the button has the specified color class
+            if (button && button.classList.contains(colorClass)) {
+                row.style.display = ''; // Show the row
+            } else {
+                row.style.display = 'none'; // Hide the row
+            }
+        });
+
+        countVisibleRows(); // Recalculate the number of visible rows
+    }
+
+    function applyFilter() {
+        // Get bayi and surec filter values
+        var selectBox1 = document.getElementById('bayi_adi');
+        var selectedBayi = selectBox1.options[selectBox1.selectedIndex].text;
+        var selectBox2 = document.getElementById('surec_no');
+        var selectedSurec = selectBox2.options[selectBox2.selectedIndex].text;
+        
+        // Get all rows in the table
+        var tableRows = document.querySelectorAll('#bayiTable tbody tr');
+
+        // Loop through each row in the table
+        tableRows.forEach(function(row) {
+            var bayiName = row.cells[7].textContent.trim(); // Assume bayi name is in the second cell
+            var surecNo = row.cells[1].textContent.trim().replace("Süreç ", "");  // Assume surec number is in the 10th cell
+
+            // Logic to display rows based on both selected bayis and surecs
+            var showRow = false;
+
+            // If no bayis and no surecs are selected, show all rows
+            if (selectedBayi == "Tümü" && selectedSurec == "Tümü") {
+                showRow = true;
+            }
+            // If no bayis are selected but surecs are, check against surecs only
+            else if (selectedBayi == "Tümü" && selectedSurec == surecNo) {
+                showRow = true;
+            }
+            // If no surecs are selected but bayis are, check against bayis only
+            else if (selectedSurec == "Tümü" && selectedBayi == bayiName) {
+                showRow = true;
+            }
+            // If both bayis and surecs are selected, show only rows that match both
+            else if (selectedBayi == bayiName && selectedSurec == surecNo) {
+                showRow = true;
+            }
+
+            // Show or hide the row based on the filter logic
+            if (showRow) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        countVisibleRows();
+
+        // Change the button text based on the filter selection
+        var button = document.getElementById('HighestBids');
+        if (selectedBayi || selectedSurec) {
+            button.innerHTML = '<i class="fa-solid fa-gavel"></i>&nbsp;&nbsp;En Yüksek Teklifler';
+        } else {
+            button.innerHTML = '<i class="fa-solid fa-gavel"></i>&nbsp;&nbsp;Tüm Teklifler';
+        }
+    }
+
+    function applyFilterYA() {
+        // Get surec filter values
+        var selectBoxYA = document.getElementById('surec_no_YA');
+        var selectedSurec = selectBoxYA.options[selectBoxYA.selectedIndex].text;
+        
+        // Get all rows in the table
+        var tableRows = document.querySelectorAll('#yuceTable tbody tr');
+
+        // Loop through each row in the table
+        tableRows.forEach(function(row) {
+            var surecNo = row.cells[6].textContent.trim().replace("Süreç ", "");  // Assume surec number is in the 10th cell
+
+            // Logic to display rows based on selected surecs
+            var showRow = false;
+
+            // If no surecs are selected, show all rows
+            if (selectedSurec == "Tümü") {
+                showRow = true;
+            }
+            // If surecs are selected check surecs only
+            else if (selectedSurec == surecNo) {
+                showRow = true;
+            }
+
+            // Show or hide the row based on the filter logic
+            if (showRow) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        countVisibleRows();
+    }
+
+    function toggleOffers() {
+        var bestOffers = document.querySelectorAll('.bestoffer');
+        var regularOffers = document.querySelectorAll('.offer');
+        var button = document.getElementById('HighestBids');
+
+        // Reset filters when toggling offers
+        resetFilters();  // Call this function to reset the filters
+
+        if (button.textContent.includes('En Yüksek Teklifler')) {
+            // Show best offers, hide regular offers
+            bestOffers.forEach(function(row) {
+                row.style.display = '';
+            });
+            regularOffers.forEach(function(row) {
+                row.style.display = 'none';
+            });
+            // Update button text
+            button.innerHTML = '<i class="fa-solid fa-gavel"></i>&nbsp;&nbsp;Tüm Teklifler';
+        } else {
+            // Show regular offers, hide best offers
+            bestOffers.forEach(function(row) {
+                row.style.display = '';
+            });
+            regularOffers.forEach(function(row) {
+                row.style.display = '';
+            });
+            // Update button text
+            button.innerHTML = '<i class="fa-solid fa-gavel"></i>&nbsp;&nbsp;En Yüksek Teklifler';
+        }
+
+        countVisibleRows(); // Recount visible rows after resetting the filters
+    }
+
+    // Function to reset filters (clear checkboxes and reset the table to default view)
+    function resetFilters() {
+        // Get all bayi and surec checkboxes
+        var bayiCheckboxes = document.querySelectorAll('.bayi_check');
+        var surecCheckboxes = document.querySelectorAll('.surec_check');
+        var surecNoFilter = document.getElementById('surec_no');
+        var bayiFilter = document.getElementById('bayi_adi');
+
+        // Uncheck all bayi checkboxes
+        bayiCheckboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+
+        // Uncheck all surec checkboxes
+        surecCheckboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+
+        surecNoFilter.selectedIndex = 0;
+        bayiFilter.selectedIndex = 0;
+
+        // Show all rows in the table (since no filters should be applied)
+        var tableRows = document.querySelectorAll('#bayiTable tbody tr');
+        tableRows.forEach(function(row) {
+            row.style.display = ''; // Make sure all rows are visible
+        });
+        countVisibleRows();
+    }
+
+    function toggleButtonVisibility() {
+        var checkboxAll = document.getElementById('select-all');
+        var checkboxesCar = document.querySelectorAll('.select-car');
+        var isAnyChecked = checkboxAll.checked;
+
+        // Check if any of the car checkboxes are checked
+        checkboxesCar.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                isAnyChecked = true;
+            }
+        });
+    }
+
+    document.getElementById('select-all').addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.select-car').forEach(function(checkbox) {
+            checkbox.checked = isChecked;
+            const row = checkbox.closest('tr');
+            if (isChecked) {
+                row.classList.add('selected-row');
+            } else {
+                row.style.backgroundColor = '';
+                row.classList.remove('selected-row');
+            }
+        });
+        toggleButtonVisibility(); // Update button visibility based on the new state
+    });
+
+    document.querySelectorAll('.select-car').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            const row = this.closest('tr');
+            if (this.checked) {
+                row.classList.add('selected-row');
+            } else {
+                row.style.backgroundColor = '';
+                document.getElementById('select-all').checked = false; // Uncheck Select All if one checkbox is unchecked
+                row.classList.remove('selected-row');
+            }
+        });
+    });
+
+    // Displays how many rows are there in the bayiTable
+    function countVisibleRows() {
+        const table = document.getElementById("bayiTable");
+        const tbody = table.querySelector("tbody");
+        const rows = tbody.getElementsByTagName("tr");
+        let visibleRowCount = 0;
+
+        // Loop through all rows and check if they are visible
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].style.display !== "none") { // Check if the row is visible
+                visibleRowCount++;
+            }
+        }
+
+        // Update the text inside the <p id="rowscount"> element
+        const rowsCountElement = document.getElementById("rowscount");
+        rowsCountElement.textContent = "(" + visibleRowCount + ")";
+    }
+
+    // ExcelBtn1 to download the excel file
+    document.getElementById("ExcelBtn1").addEventListener("click", function () {
+        // Redirect the user to the Flask endpoint that triggers the download
+        window.location.href = "/download_teklifler_excel";
+    });
+
+    // For "Seçili Araçları Bayilere Kapat" button
+    document.getElementById('Bayi_Kapanis').addEventListener('click', function() {
+        const selectedCars = [];
+        // Loop through all checked checkboxes
+        document.querySelectorAll('.select-car:checked').forEach(function(checkbox) {
+            const row = checkbox.closest('tr');  // Get the row associated with the checkbox
+
+            // Check if the row is visible (not hidden)
+            if (row.style.display !== 'none') {
+                console.log(checkbox.getAttribute('data-plaka'));
+                selectedCars.push(checkbox.getAttribute('data-plaka')); // Add the car's plate number (or ID) to the list
+            }
+        });
+
+        if (selectedCars.length === 0) {
+            showPopUpModal('Lütfen en az bir araç seçin.', 'alert');
+            return;
+        }
+
+        // Send the selected cars to the backend API as JSON
+        showChoicePopUpModal('Araçlar bayilere kapatılacaktır.<br>Devam etmek istiyor musunuz?', 'question', function() {
+            // If the user confirms, proceed with the fetch request
+            fetch('/api/close_cars_to_bayi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ selected_cars: selectedCars }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else if (data.invalid_cars) {
+                    showPopUpModal('İsteğiniz gerçekleştirilemedi.<br>Lütfen seçtiğiniz araçları kontrol ediniz: ' + data.invalid_cars.join(', '), 'error');
+                } else {
+                    showPopUpModal('Bir hata oluştu.', 'error');
+                }
+            })
+            .catch(error => {
+                location.reload();
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    // For "Seçili Araçları Yüce Auto'ya Satışa Aç" button
+    document.getElementById('YA_Satis').addEventListener('click', function() {
+        const selectedCars = [];
+        
+        // Loop through all checked checkboxes
+        document.querySelectorAll('.select-car:checked').forEach(function(checkbox) {
+            const row = checkbox.closest('tr');  // Get the row associated with the checkbox
+
+            // Check if the row is visible (not hidden)
+            if (row.style.display !== 'none') {
+                selectedCars.push(checkbox.getAttribute('data-plaka')); // Add the car's plate number (or ID) to the list
+            }
+        });
+
+        if (selectedCars.length === 0) {
+            showPopUpModal('Lütfen en az bir araç seçin.', 'alert');
+            return;
+        }
+
+        // Send the selected cars to the backend API as JSON
+        showChoicePopUpModal('Araçlar Yüce Auto personeline açılacak ve mail gönderimi yapılacaktır.<br>Devam etmek istiyor musunuz?', 'question', function() {
+            fetch('/api/open_cars_to_yuceauto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ selected_cars: selectedCars }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else if (data.invalid_cars) {
+                    showPopUpModal('İsteğiniz gerçekleştirilemedi.<br>Lütfen seçtiğiniz araçları kontrol ediniz: ' + data.invalid_cars.join(', '), 'error');
+                } else {
+                    showPopUpModal('Bir hata oluştu.', 'error');
+                }
+            })
+            .catch(error => {
+                location.reload();
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    document.getElementById('YA_Kapanis').addEventListener('click', function() {
+        const selectedCars = [];
+        
+        // Loop through all checked checkboxes
+        document.querySelectorAll('.select-car:checked').forEach(function(checkbox) {
+            const row = checkbox.closest('tr');  // Get the row associated with the checkbox
+
+            // Check if the row is visible (not hidden)
+            if (row.style.display !== 'none') {
+                selectedCars.push(checkbox.getAttribute('data-plaka')); // Add the car's plate number (or ID) to the list
+            }
+        });
+
+        if (selectedCars.length === 0) {
+            showPopUpModal('Lütfen en az bir araç seçin.', 'alert');
+            return;
+        }
+
+        // Send the selected cars to the backend API as JSON
+        showChoicePopUpModal('Araçlar Yüce Auto personeline kapatılacaktır.<br>Devam etmek istiyor musunuz?', 'question', function() {
+            fetch('/api/close_cars_to_yuceauto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ selected_cars: selectedCars }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else if (data.invalid_cars) {
+                    showPopUpModal('İsteğiniz gerçekleştirilemedi. Lütfen seçtiğiniz araçları kontrol ediniz: ' + data.invalid_cars.join(', '), 'error');
+                } else {
+                    showPopUpModal('Bir hata oluştu.', 'error');
+                }
+            })
+            .catch(error => {
+                location.reload();
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const modal = document.getElementById('myModal');
+        const openModalBtns = document.querySelectorAll('.carInfoBtn.yellow_tag, .carInfoBtn.green_tag');
+
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const firstTabLink = document.querySelector('.tablinks');
+        const firstTabContent = document.querySelector('.tabcontent');
+
+        openModalBtns.forEach(function (button) {
+            button.onclick = function() {
+                const currentCarId = button.getAttribute('id');
+                fetch(`/YuceAutoUser/SurecTamamlanmisAraclar/carinfo/${currentCarId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('carPlate_deadline').textContent = data.Plaka + " / " + data.deadline;
+                    if(data.EksperRaporu == '-'){
+                        document.getElementById('eksperRaporu').innerHTML = "-";
+                    }
+                    else{
+                        document.getElementById('eksperRaporu').innerHTML = `<a href="{{ url_for('Display_EksperRaporu_PDF', filename='EksperRaporu_')}}${data.Plaka}" target="_blank"><b>Görüntüle&nbsp;</b></a>`;
+                    }
+                    if(data.ServisGecmisi == '-'){
+                        document.getElementById('servisGecmisi').innerHTML = "-";
+                    }
+                    else{
+                        document.getElementById('servisGecmisi').innerHTML = `<a href="{{ url_for('Display_ServisGecmisi_PDF', filename='ServisGecmisi_')}}${data.Plaka}" target="_blank"><b>Görüntüle&nbsp;</b></a>`;
+                    }
+                    if(data.AracTeklifForm == "-"){
+                        document.getElementById('aracTeklifFormu').innerHTML = "-";
+                    }
+                    else{
+                        document.getElementById('aracTeklifFormu').innerHTML = `<a href="{{ url_for('Display_AracTeklifForm', filename='AracTeklifFormu_')}}${data.Plaka}" target="_blank"><b>Görüntüle&nbsp;</b></a>`;
+                    }
+                    
+                    const photos = [data.photo1, data.photo2, data.photo3, data.photo4, data.photos5];
+                    const totalPhotos = photos.length;
+                    const availablePhotos = photos.filter(photo => photo !== "-").length;
+                    const photoCountDisplay = document.getElementById('fotograf');
+                    if(availablePhotos == 0){
+                        photoCountDisplay.innerHTML = `<b>${availablePhotos}/${totalPhotos}</b>`;
+                    }
+                    else {
+                        photoCountDisplay.innerHTML = `<a href="#" id="downloadPhotos"><b>${availablePhotos}/${totalPhotos}</b></a>`;
+                    }
+
+                    document.getElementById('downloadPhotos').onclick = function(event) {
+                        event.preventDefault(); // Prevent the default anchor behavior
+                        photos.forEach((photo, index) => {
+                            if (photo !== "-") {
+                                fetch(`/static/Arac_foto_2ElArac/${photo}`)
+                                    .then(response => response.blob()) // Get the file as a Blob
+                                    .then(blob => {
+                                        const link = document.createElement('a');
+                                        link.href = URL.createObjectURL(blob); // Create a URL for the Blob
+                                        link.download = photo + ".jpeg"; // Set the filename
+                                        document.body.appendChild(link); // Append to body
+                                        link.click(); // Trigger the download
+                                        document.body.removeChild(link); // Clean up
+                                        URL.revokeObjectURL(link.href); // Release memory
+                                    })
+                                    .catch(error => console.error('Download error:', error));
+                            }
+                        });
+                    };
+                })
+
+                fetch(`/YuceAutoUser/SurecTamamlanmisAraclar/teklifler_bayii/${currentCarId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(dataList => {
+                    let tableBody = document.querySelector('#bayiTeklifleriTab .arac2elTable tbody');
+                    
+                    tableBody.innerHTML = '';
+                    let teklifli_rows_count = 0;
+                    // Iterate over each dictionary in the list and create table rows
+                    dataList.forEach(data => {
+                        let newRow = document.createElement('tr');
+                        let bayiCell = document.createElement('td');
+                        bayiCell.textContent = data.dealerName;
+                        newRow.appendChild(bayiCell);
+                        
+                        let fiyatCell = document.createElement('td');
+                        if(data.Teklif == null){
+                            fiyatCell.textContent == ""
+                        }
+                        else {
+                            fiyatCell.textContent = parseFloat(data.Teklif).toLocaleString('tr-TR') + ' TL';
+                            teklifli_rows_count = teklifli_rows_count + 1;
+
+                        }                            
+                        newRow.appendChild(fiyatCell);
+                        
+                        let teklifVerCell = document.createElement('td');
+                        teklifVerCell.textContent = data.TeklifVerClicked;
+                        newRow.appendChild(teklifVerCell);
+                        
+                        let teklifTarihiCell = document.createElement('td');
+                        teklifTarihiCell.textContent = data.Bidding_Date;
+                        newRow.appendChild(teklifTarihiCell);
+                        
+                        // Append the row to the table body
+                        tableBody.appendChild(newRow);
+                    });
+                    document.getElementById('teklifler_adet').innerText = '(' + teklifli_rows_count + '/' + dataList.length + ')';
+                })
+
+                fetch(`/YuceAutoUser/SurecTamamlanmisAraclar/teklifler_YuceAuto/${currentCarId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(dataList => {
+                    let tableBody = document.querySelector('#yaTeklifleriTab .arac2elTable tbody');
+                    tableBody.innerHTML = '';
+                    dataList.forEach(data => {
+                        let newRow = document.createElement('tr');
+                        let yaCell = document.createElement('td');
+                        yaCell.textContent = data.username;
+                        newRow.appendChild(yaCell);
+                        
+                        let yaFiyatCell = document.createElement('td');
+                        if(data.Fiyat == null){
+                            yaFiyatCell.textContent == ""
+                        }
+                        else {
+                            yaFiyatCell.textContent = parseFloat(data.Fiyat).toLocaleString('tr-TR') + ' TL';
+                        }                            
+                        newRow.appendChild(yaFiyatCell);
+                        
+                        let ilgileniyorumCell = document.createElement('td');
+                        ilgileniyorumCell.textContent = data.ilgileniyor;
+                        newRow.appendChild(ilgileniyorumCell);
+                        
+                        let gonderimTarihiCell = document.createElement('td');
+                        gonderimTarihiCell.textContent = data.Gonderme_Tarihi;
+                        newRow.appendChild(gonderimTarihiCell);
+                        
+                        // Append the row to the table body
+                        tableBody.appendChild(newRow);
+                    });
+                    document.getElementById('ilgileniyorum_adet').innerText = '(' + dataList.length + ')';
+                });
+                
+                modal.style.display = 'block';
+
+                closeModalBtn.onclick = function(event) {
+                    modal.style.display = 'none';
+                    document.getElementById('carPlate_deadline').textContent = "";
+                    document.querySelectorAll('.tablinks').forEach(link => link.classList.remove('active'));
+                    document.querySelectorAll('.tabcontent').forEach(content => content.style.display = 'none');
+                    firstTabLink.classList.add('active');
+                    firstTabContent.style.display = 'block';
+                }
+
+                window.onclick = function(event) {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                        document.getElementById('carPlate_deadline').textContent = "";
+                        document.querySelectorAll('.tablinks').forEach(link => link.classList.remove('active'));
+                        document.querySelectorAll('.tabcontent').forEach(content => content.style.display = 'none');
+                        firstTabLink.classList.add('active');
+                        firstTabContent.style.display = 'block';
+                    }
+                }
+            };
+        });
+    });
+
+    function openTab(evt, tabName) {
+        const tabContents = document.querySelectorAll('.tabcontent');
+        tabContents.forEach(content => content.style.display = 'none');
+
+        const tabLinks = document.querySelectorAll('.tablinks');
+        tabLinks.forEach(link => link.classList.remove('active'));
+
+        document.getElementById(tabName).style.display = 'block';
+        evt.currentTarget.classList.add('active');
+    }
+</script>
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    
+    input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 15px;
+        height: 15px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+        background-color: #fff;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: #0E3A2F;
+        border-color: #0E3A2F;
+    }
+
+    input[type="checkbox"]:checked::after {
+        content: "✓";
+        font-size: 14px;
+        color: #78FAAE; /* Tick color */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+{% endblock body %}

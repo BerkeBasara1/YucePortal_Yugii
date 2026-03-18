@@ -1,0 +1,51 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>PDF Karşılaştırma</h3>
+        <br>
+        <small>İki benzer PDF yükleyip aralarındaki farkları görmek için kullanabilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+    </div>
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data">
+            <div id="pdfForm" class="side-by-side_between {{ 'hidden' if hide_pdf_form else '' }}">
+                <div  style="width: 50%;">
+                    {{ render_field(form.file1, class = "form-control") }}
+                </div>
+                <div  style="width: 50%;">
+                    {{ render_field(form.file2, class = "form-control") }}
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Çalıştır</button>
+            <div id="comparisonArea" class="{{ '' if show_comparison_area else 'hidden' }}">
+                <div class="side-by-side">
+                    <p>Benzerlik: <b>% {{ similarity_percentage}}</b></p>
+                    <p>Farklı kelime adedi : <b>{{ different_words_count }}</b></p>
+                </div>
+                <br>
+                <div class="side-by-side_between" style="text-align: left; background-color: white;">
+                    <div style="width: 50%; overflow: auto; max-height: 600px; padding: 3%; border-right: 1px solid #a0a7a8;">
+                        <p><b>PDF1</b></p>
+                        <p>{{ coloured_text1|safe  }}</p>
+                    </div>
+                    <div style="width: 50%; overflow: auto; max-height: 600px; padding: 3%;">
+                        <p><b>PDF2</b></p>
+                        <p>{{ coloured_text2|safe  }}</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+        </form>
+    </div>
+</div>
+<br>
+{% endblock body %}

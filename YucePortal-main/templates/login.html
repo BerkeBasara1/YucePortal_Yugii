@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<body>
+<div id="loginContainer">
+    <div>
+        <img src="..\static\SkodaHeader.png" alt="Yüce Auto">
+    </div>
+    <div class="loginContainer">
+        <br>
+        <form method="post">
+            {{ render_field(form.username) }}
+            <br>
+            {{ render_field(form.password) }}
+            <br>
+            <button type="submit" id="loginBtn" class="btn btn-primary"><b>Giriş</b></button>
+        </form>
+        <br>
+    </div>
+</div>
+</body>
+<style>
+  body {
+    background-color: #0E3A2F;
+  }
+</style>
+<script>
+    // Function to change the button text to a loading icon
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i id="loading" class="fas fa-spinner fa-spin"></i> Yükleniyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+  
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+  </script>
+
+{% endblock body %}

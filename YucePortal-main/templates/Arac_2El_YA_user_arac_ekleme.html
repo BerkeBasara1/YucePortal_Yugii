@@ -1,0 +1,741 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin-left: 3% !important; margin-right: 3% !important;">
+    <div id="platformContainer" class="rpaDescription" style="margin-left: 30px !important; margin-right: 30px !important;">
+        <br>
+        <h3><a href="/YuceAutoUser/Arac_2El_Menu" class="returnBtn">2. El Araç Menü</a> >> Şirket Araçları Veri Girişi</h3>
+        <small>Satışa sunmak üzere 2. el araç veri girişini buradan yapabilirsiniz.</small>
+        <br>
+        <small>"Araç Ekle" butonu ile araçları satışa hazır hale getirebilirirsiniz. Daha sonra seçtiğiniz araçları "Satışa Çıkar" butonuna basarak bayilere açabilirsiniz</small>
+        <br>
+        <hr>
+    </div>
+    <div class="platformContainer">
+        <br>
+        <div id="photoModal" class="modal">
+            <div class="modal-content">
+                <div style="text-align: right">
+                    <button id="closePhotoModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <button id="prevPhoto" class="nav-btn" style="position: absolute; left: 20px; color:#78FAAE; background-color:#0E3A2F;">&#10094;</button>
+                <button id="nextPhoto" class="nav-btn" style="position: absolute; right: 20px; color:#78FAAE; background-color:#0E3A2F;">&#10095;</button>
+                <div id="photoContainer" style="text-align: center;">
+                    <img id="currentPhoto" src="" style="max-width: 80%; border-radius: 5px;" />
+                </div>
+            </div>
+        </div>
+
+        <form id="rpaForm" method="post" enctype="multipart/form-data" style="margin-left:5%; margin-right:5%;">
+            <div class="center_item" style="width: 90%;">
+                <div class="side-by-side">
+                    <div style="width: 15%">
+                        {{ render_field(form.plaka_no, class="form-control", id="plaka_no") }}
+                    </div>
+                    <div>
+                        {{ render_field(form.model, class="form-control", id="model")}}
+                    </div>
+                    <div>
+                        {{ render_field(form.yil, class="form-control", id="yil") }}
+                    </div>
+                    <div>
+                        {{ render_field(form.renk, class="form-control", id="renk") }}
+                    </div>
+                    <div>
+                        {{ render_field(form.km, class="form-control", id="km") }}
+                    </div>      
+                </div>
+                <br>
+                <div class="side-by-side center_item" style="width: 70%;">
+                    <div>
+                        {{ render_field(form.eksper_raporu, class="form-control", id="eksper_raporu") }}
+                    </div>
+                    <div>
+                        {{ render_field(form.servis_gecmisi, class="form-control", id="servis_gecmisi") }}
+                    </div>
+                    <div>
+                        {{ render_field(form.arac_teklif_formu, class="form-control", id="arac_teklif_formu") }}
+                    </div>
+                </div>
+                <br>
+                <div class="side-by-side">
+                    <div style="width:20%; text-align:center;">
+                        {{ render_field(form.arac_foto_1, class="form-control", id="arac_foto_1") }}
+                    </div>
+                    <div id="file2" style="width:20%; text-align:center; display:none;">
+                        {{ render_field(form.arac_foto_2, class="form-control", id="arac_foto_2") }}
+                    </div>
+                    <div id="file3" style="width:20%; text-align:center; display:none;">
+                        {{ render_field(form.arac_foto_3, class="form-control", id="arac_foto_3") }}
+                    </div>
+                    <div id="file4" style="width:20%; text-align:center; display:none;">
+                        {{ render_field(form.arac_foto_4, class="form-control", id="arac_foto_4") }}
+                    </div>
+                    <div id="file5" style="width:20%; text-align:center; display:none;">
+                        {{ render_field(form.arac_foto_5, class="form-control", id="arac_foto_5") }}
+                    </div>
+                </div>
+                <div style="text-align:center; margin-top:10px;">
+                    <button id="addFileButton" type="button" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
+                </div>
+            </div>
+            <br>
+            <div style="text-align: center; margin-top:15px;">
+                <button id="addCarsBtn" type="submit" class="btn btn-primary">Araç Ekle</button>
+            </div>
+            <div id="bayiModal" class="modal">
+                <div class="modal-content">
+                    <div style="text-align: right;">
+                        <button id="closeModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: space-between; gap: 3%;">
+                        <div class="scroll_table_div" style="width: 30%;">
+                            <table class="arac2elTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 1%;"><input type="checkbox" id="bayi_select-all"></th>
+                                        <th>Bayi Adı</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for bayii in bayiis %}
+                                        <tr>
+                                            <td><input type="checkbox" class="select-bayi" id="{{bayii[0]}}"></td>
+                                            <td style="text-align: left;">{{bayii[1]}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="width: 70%;">
+                            {{ render_field(form.deadline_tarihi, class="form-control", id="deadline_tarih", type="date") }}
+                            <hr>
+                            {{ render_field(form.mail_subject, class="form-control", id="mail_subject", disabled="disabled") }}
+                            <br>
+                            {{ render_field(form.mail_body, class="form-control", id="mail_body", style="height: 45%;", disabled="disabled") }}
+                        </div>
+                    </div>
+                    <br>
+                    <button type="button" class="btn btn-primary" onclick="submitSelectedCars()">Satışa Çıkar</button>
+                </div>
+            </div>
+        </form>
+        <hr style="margin-left: 30px; margin-right: 30px;">
+        <br>
+        <div class="rpaContent">
+            <div id="tableContainer">
+                <table class="arac2elTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 3%;"><input type="checkbox" id="select-all" onclick="toggleButtonVisibility()"></th>
+                            <th>Plaka No</th>
+                            <th style="width: 20%;">Model</th>
+                            <th>Yıl</th>
+                            <th style="width: 15%;">Renk</th>
+                            <th>KM</th>
+                            <th>Eksper Raporu</th>
+                            <th>Servis Geçmişi</th>
+                            <th>Araç Teklif Formu</th>
+                            <th>Fotoğraflar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for car in cars_on_sale %}
+                        <tr>
+                            <td><input type="checkbox" class="select-car" onclick="toggleButtonVisibility()" data-plaka="{{ car[2] }}"></td>
+                            <td>{{ car[2] }}</td>
+                            <td>{{ car[3] }}</td>
+                            <td>{{ car[4] }}</td>
+                            <td>{{ car[5] }}</td>
+                            <td>{{ "{:,.0f}".format(car[6]).replace(",", ".") }}</td>
+                            {% if car[9] != "-" %}
+                            <td class="fileBtn"><a href="{{ url_for('Display_EksperRaporu_PDF', filename='EksperRaporu_' + car[2]) }}" target="_blank"><b>Görüntüle&nbsp;</b></a><button style="border:none; background:none;" class="deleteEksperRaporu" data-carid="{{ car[2] }}"><i class="fa-regular fa-trash-can" title="Eki kaldır"></i></button></td>
+                            {% else %}
+                            <td class="fileBtn">
+                                <form action="/YuceAutoUser/upload/eksper_raporu/{{ car[2] }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+                                    <input type="file" name="eksperRaporuFile" style="display:none;" class="fileInput">
+                                    <a href="#" class="addFileBtn">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </a>
+                                </form>
+                            </td>
+                            {% endif %}
+                            {% if car[8] != "-" %}
+                            <td class="fileBtn"><a href="{{ url_for('Display_ServisGecmisi_PDF', filename='ServisGecmisi_' + car[2]) }}" target="_blank"><b>Görüntüle&nbsp;</b></a><button style="border:none; background:none;" class="deleteServisGecmisi" data-carid="{{ car[2] }}"><i class="fa-regular fa-trash-can" title="Eki kaldır"></i></button></td>
+                            {% else %}
+                                <td class="fileBtn">
+                                    <form action="/YuceAutoUser/upload/servis_gecmisi/{{ car[2] }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+                                        <input type="file" name="servisGecmisiFile" style="display:none;" class="fileInput">
+                                        <a href="#" class="addServisGecmisiBtn">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </a>
+                                    </form>
+                                </td>
+                            {% endif %}
+                            {% if car[16] != "-" %}
+                            <td class="fileBtn"><a href="{{ url_for('Display_AracTeklifForm', filename='AracTeklifFormu_' + car[2]) }}" target="_blank"><b>Görüntüle&nbsp;</b></a><button style="border:none; background:none;" class="deleteAracTeklifForm" data-carid="{{ car[2] }}"><i class="fa-regular fa-trash-can" title="Eki kaldır"></i></button></td>
+                            {% else %}
+                                <td class="fileBtn">
+                                    <form action="/YuceAutoUser/upload/arac_teklif_formu/{{ car[2] }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+                                        <input type="file" name="aracteklifFormFile" style="display:none;" class="fileInput">
+                                        <a href="#" class="addAracTeklifFormBtn">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </a>
+                                    </form>
+                                </td>
+                            {% endif %}
+                            <td style="text-align: center;">
+                                <a href="#" class="photo-count" data-car-id="{{ car[0] }}"
+                                   data-photo1="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + car[2] + '_1') if car[11] != '-' else '' }}"
+                                   data-photo2="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + car[2] + '_2') if car[12] != '-' else '' }}"
+                                   data-photo3="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + car[2] + '_3') if car[13] != '-' else '' }}"
+                                   data-photo4="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + car[2] + '_4') if car[14] != '-' else '' }}"
+                                   data-photo5="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + car[2] + '_5') if car[15] != '-' else '' }}">
+                                    <b>{{ (1 if car[11] != "-" else 0) + (1 if car[12] != "-" else 0) + 
+                                        (1 if car[13] != "-" else 0) + (1 if car[14] != "-" else 0) + 
+                                        (1 if car[15] != "-" else 0) }} / 5</b>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <br>
+        </div>
+    </div>
+    <div class="right_side_btn">
+        <br>
+        <button id="deleteBtn" type="button" class="btn btn-primary" style="background-color: #F15252; color:white; border: none;" disabled onclick="deleteSelectedCars()">Kaldır</button>
+        <button id="openModalBtn" type="button" class="btn btn-primary disabled-button" disabled>Seçili Araçlarla Devam Et</button>
+    </div>
+    <br>
+</div>
+<br>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const element = document.querySelector('#plaka_no');
+        const choices = new Choices(element, {
+            placeholderValue: "Select a vehicle",
+            searchEnabled: true,
+            shouldSort: false,
+            itemSelectText: '',
+        });
+    });
+
+    function toggleButtonVisibility() {
+        var checkboxAll = document.getElementById('select-all');
+        var checkboxesCar = document.querySelectorAll('.select-car');
+        var button = document.getElementById('deleteBtn');
+        var button_modal = document.getElementById('openModalBtn');
+        var isAnyChecked = checkboxAll.checked;
+
+        // Check if any of the car checkboxes are checked
+        checkboxesCar.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                isAnyChecked = true;
+            }
+        });
+
+        // Show or hide the button based on the checkboxes' states
+        if (isAnyChecked) {
+            button.disabled = false;
+            button_modal.disabled = false;
+            button_modal.classList.remove('disabled-button');
+        } else {
+            button.disabled = true;
+            button_modal.disabled = true;
+            button_modal.classList.add('disabled-button');
+        }
+    }
+
+    // Function to change the button text to a loading icon
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+  
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+
+    const Sales_2ndHand_results = {{ Sales_2ndHand_results | tojson | safe }};
+
+    document.getElementById("plaka_no").addEventListener("change", function() {
+        const selectedPlate = this.value;
+
+        // Find the matching element in Sales_2ndHand_results
+        const result = Sales_2ndHand_results.find(item => item[0] === selectedPlate);
+
+        if (result) {
+            // Assuming the structure of result is [plate, model, year, color, km]
+            document.getElementById("model").value = result[1];
+            document.getElementById("yil").value = result[2];
+            document.getElementById("renk").value = result[3];
+            let kmValue = result[4].toString().replace(/\D/g, '');
+            kmValue = kmValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            document.getElementById("km").value = kmValue;
+        } else {
+            // Clear fields if no match is found
+            document.getElementById("model").value = '';
+            document.getElementById("yil").value = '';
+            document.getElementById("renk").value = '';
+            document.getElementById("km").value = '';
+        }
+    });
+    document.getElementById('km').addEventListener('input', function (e) {
+        // Remove any non-digit characters (except for dots)
+        let value = e.target.value.replace(/\D/g, '');
+
+        // Format the value with dots as thousands separators
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+        // Set the formatted value back to the input field
+        e.target.value = value;
+    });
+
+    document.getElementById('select-all').addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.select-car').forEach(function(checkbox) {
+            checkbox.checked = isChecked;
+            const row = checkbox.closest('tr');
+            if (isChecked) {
+                row.classList.add('selected-row');
+            } else {
+                row.style.backgroundColor = '';
+                row.classList.remove('selected-row');
+            }
+        });
+        toggleButtonVisibility(); // Update button visibility based on the new state
+    });
+
+    document.querySelectorAll('.select-car').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            const row = this.closest('tr');
+            if (this.checked) {
+                row.classList.add('selected-row');
+            } else {
+                row.style.backgroundColor = '';
+                document.getElementById('select-all').checked = false; // Uncheck Select All if one checkbox is unchecked
+                row.classList.remove('selected-row');
+            }
+        });
+    });
+
+    document.querySelectorAll('.select-car').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            const allChecked = document.querySelectorAll('.select-car:checked').length === document.querySelectorAll('.select-car').length;
+            document.getElementById('select-all').checked = allChecked;
+            toggleButtonVisibility(); // Update button visibility based on the new state
+        });
+    });
+
+    document.getElementById('bayi_select-all').addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.select-bayi').forEach(function(checkbox) {
+            checkbox.checked = isChecked;
+            const row = checkbox.closest('tr');
+            if (isChecked) {
+                row.classList.add('selected-row');
+            } else {
+                row.style.backgroundColor = '';
+                row.classList.remove('selected-row');
+            }
+        });
+        toggleButtonVisibility(); // Update button visibility based on the new state
+    });
+
+    document.querySelectorAll('.select-bayi').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            const row = this.closest('tr');
+            if (this.checked) {
+                row.classList.add('selected-row');
+            } else {
+                row.style.backgroundColor = '';
+                document.getElementById('bayi_select-all').checked = false; // Uncheck Select All if one checkbox is unchecked
+                row.classList.remove('selected-row');
+            }
+        });
+    });
+
+    function submitSelectedCars() {
+        const selectedCars = [];
+        const selectedBayis = [];
+
+        // Get all selected checkboxes for cars
+        document.querySelectorAll('.select-car:checked').forEach(function (checkbox) {
+            selectedCars.push(checkbox.getAttribute('data-plaka'));
+        });
+
+        // Get all selected checkboxes for bayis
+        document.querySelectorAll('.select-bayi:checked').forEach(function (checkbox) {
+            selectedBayis.push(checkbox.id); // Assuming the ID of the checkbox is the bayi ID
+        });
+        
+        const deadlineDate = document.getElementById('deadline_tarih').value;
+
+        if (selectedCars.length === 0) {
+            showPopUpModal('Lütfen en az bir araç seçiniz.', 'alert');
+            return;
+        }
+        if (selectedBayis.length === 0) {
+            showPopUpModal('Lütfen en az bir bayi seçiniz.', 'alert');
+            return;
+        }
+
+        // Send the selected cars and selected bayis to your API
+        showChoicePopUpModal('Araçlar bayilere açılacak ve mail gönderimi yapılacaktır.<br>Devam etmek istiyor musunuz? ', 'question', function() {
+            fetch('/YuceAutoUser/submitsales', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ cars: selectedCars, bayi_ids: selectedBayis, deadline: deadlineDate }) // Include bayi_ids
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    showPopUpModal('Satışa çıkarma işleminde bir hata oluştu.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+    
+    function deleteSelectedCars() {
+        const selectedCars = [];
+
+        // Get all selected checkboxes
+        document.querySelectorAll('.select-car:checked').forEach(function (checkbox) {
+            selectedCars.push(checkbox.getAttribute('data-plaka'));
+        });
+
+        if (selectedCars.length === 0) {
+            showPopUpModal('Lütfen en az bir araç seçiniz.', 'alert');
+            return;
+        }
+
+        // Send the selected cars to your API for deletion
+        showChoicePopUpModal('Seçili araçlar listeden kaldırılacaktır.<br>Devam etmek istiyor musunuz? ', 'question', function() {
+            fetch('/DeleteCars', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ cars: selectedCars })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status);
+                window.location.reload();
+                
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+
+    document.querySelectorAll(".deleteEksperRaporu").forEach(function(button) {
+        button.addEventListener("click", function() {
+            const carID = this.getAttribute("data-carid");
+
+            showChoicePopUpModal('Eksper raporu silinecektir.<br>Devam etmek istiyor musunuz? ', 'question', function() {
+                fetch(`/YuceAutoUser/delete/eksper_raporu/${carID}`, {
+                    method: "GET",
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Refresh the page on success
+                    } else {
+                        console.error("Failed to delete Eksper Raporu");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    });
+
+    document.querySelectorAll(".deleteServisGecmisi").forEach(function(button) {
+        button.addEventListener("click", function() {
+            const carID = this.getAttribute("data-carid");
+
+            showChoicePopUpModal('Servis Geçmişi silinecektir.<br>Devam etmek istiyor musunuz? ', 'question', function() {
+                fetch(`/YuceAutoUser/delete/servis_gecmisi/${carID}`, {
+                    method: "GET",
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Refresh the page on success
+                    } else {
+                        console.error("Failed to delete Eksper Raporu");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    });
+
+    document.querySelectorAll(".deleteAracTeklifForm").forEach(function(button) {
+        button.addEventListener("click", function() {
+            const carID = this.getAttribute("data-carid");
+
+            showChoicePopUpModal('Araç Teklif Formu silinecektir.<br>Devam etmek istiyor musunuz? ', 'question', function() {
+                fetch(`/YuceAutoUser/delete/arac_teklif_formu/${carID}`, {
+                    method: "GET",
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Refresh the page on success
+                    } else {
+                        console.error("Failed to delete Araç Teklif Formu");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    });
+
+    document.querySelectorAll(".addFileBtn").forEach(function(button) {
+        button.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the default link behavior
+            this.closest("form").querySelector(".fileInput").click(); // Trigger the hidden file input
+        });
+    });
+
+    document.querySelectorAll(".fileInput").forEach(function(input) {
+        input.addEventListener("change", function() {
+            this.closest("form").submit(); 
+        });
+    });
+
+    document.querySelectorAll(".addServisGecmisiBtn").forEach(function(button) {
+        button.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the default link behavior
+            this.closest("form").querySelector(".fileInput").click(); // Trigger the hidden file input
+        });
+    });
+
+    document.querySelectorAll(".addAracTeklifFormBtn").forEach(function(button) {
+        button.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the default link behavior
+            this.closest("form").querySelector(".fileInput").click(); // Trigger the hidden file input
+        });
+    });
+
+    // Automatically submit the form when a file is selected for Servis Gecmisi
+    document.querySelectorAll(".fileInput").forEach(function(input) {
+        input.addEventListener("change", function() {
+            this.closest("form").submit(); // Automatically submit the form when a file is selected
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const modal = document.getElementById('bayiModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        openModalBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+
+        closeModalBtn.onclick = function(event) {
+            modal.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const addFileButton = document.getElementById('addFileButton');
+        let fileCount = 1; // Keep track of the number of file inputs currently shown
+
+        // Function to show the next file input
+        function showNextFileInput() {
+            fileCount++;
+            const nextFileInput = document.getElementById('file' + fileCount);
+
+            if (nextFileInput) {
+                nextFileInput.style.display = 'block'; // Show the next file input
+            }
+
+            // If all 5 file inputs are shown, hide the "+" button
+            if (fileCount === 5) {
+                addFileButton.style.display = 'none';
+            }
+        }
+
+        // Add click event listener to the "+" button
+        addFileButton.addEventListener('click', function() {
+            showNextFileInput();
+        });
+
+        const deadlineField = document.getElementById('deadline_tarih');
+        const mailBodyField = document.getElementById('mail_body');
+        let previousDate = "**.**.****"; // Initialize the placeholder
+
+        // Get today's date in yyyy-mm-dd format
+        const today = new Date().toISOString().split('T')[0];
+        // Set the min attribute of the deadline date field to today
+        deadlineField.setAttribute('min', today);
+
+        // Function to update the mail_body field when the deadline date is selected
+        function updateMailBody() {
+            const selectedDate = deadlineField.value;
+
+            // If a date is selected
+            if (selectedDate) {
+                // Replace the previous date or placeholder with the new selected date
+                mailBodyField.value = mailBodyField.value.replace(previousDate, selectedDate);
+
+                // Update previousDate to the new selected date
+                previousDate = selectedDate;
+            }
+        }
+
+        // Listen for changes in the deadline date field
+        deadlineField.addEventListener('change', updateMailBody);
+    });
+
+    let currentPhotoIndex = 0;
+    let photos = [];
+
+    // Function to open the modal with car photos
+    function openModal(photoArray) {
+        var modal = document.getElementById('photoModal');
+        var currentPhoto = document.getElementById('currentPhoto');
+        const closePhotoModalBtn = document.getElementById('closePhotoModalBtn');
+
+        // Store photos array and reset index
+        photos = photoArray.filter(photo => photo !== '-' && photo !== '');  // Filter out invalid photos
+        currentPhotoIndex = 0;
+
+        if (photos.length > 0) {
+            currentPhoto.src = photos[currentPhotoIndex]; // Display first photo
+        } else {
+            currentPhoto.src = ''; // If no photos, display nothing
+        }
+
+        // Show modal
+        modal.style.display = 'block';
+
+        closePhotoModalBtn.onclick = function(event) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Function to go to the next photo
+    function nextPhoto() {
+        if (currentPhotoIndex < photos.length - 1) {
+            currentPhotoIndex++;
+        } else {
+            currentPhotoIndex = 0;  // Loop back to the first photo
+        }
+        updatePhoto();
+    }
+
+    // Function to go to the previous photo
+    function prevPhoto() {
+        if (currentPhotoIndex > 0) {
+            currentPhotoIndex--;
+        } else {
+            currentPhotoIndex = photos.length - 1;  // Loop back to the last photo
+        }
+        updatePhoto();
+    }
+
+    // Function to update the photo in the modal
+    function updatePhoto() {
+        var currentPhoto = document.getElementById('currentPhoto');
+        currentPhoto.src = photos[currentPhotoIndex];
+    }
+
+    // Event listeners for navigation buttons
+    document.getElementById('nextPhoto').addEventListener('click', nextPhoto);
+    document.getElementById('prevPhoto').addEventListener('click', prevPhoto);
+
+    // Close modal when the user clicks the 'x' button
+    document.getElementById('closePhotoModalBtn').onclick = function() {
+        document.getElementById('photoModal').style.display = 'none';
+    };
+
+    // Handle clicks on the photo links
+    document.querySelectorAll('.photo-count').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Gather the photo paths from the clicked element
+            var photos = [
+                this.getAttribute('data-photo1'),
+                this.getAttribute('data-photo2'),
+                this.getAttribute('data-photo3'),
+                this.getAttribute('data-photo4'),
+                this.getAttribute('data-photo5')
+            ];
+
+            // Open the modal with the gathered photos
+            openModal(photos);
+        });
+    });
+    
+    // Close modal if the user clicks outside of it
+    window.onclick = function(event) {
+        var photoModal = document.getElementById('photoModal');
+        if (event.target == photoModal) {
+            photoModal.style.display = 'none';
+        }
+        var bayiModal = document.getElementById('bayiModal');
+        if (event.target == bayiModal) {
+            bayiModal.style.display = 'none';
+        }
+    };
+
+</script>
+<style>
+.nav-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px;
+    z-index: 2;
+    border-radius: 50%;
+}
+
+.nav-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#prevPhoto {
+    left: 20px;
+}
+
+#nextPhoto {
+    right: 20px;
+}
+
+.dark-mode #addFileButton {
+    background-color: #78FAAE;
+    color: #0E3A2F;
+}
+
+.dark-mode #addFileButton:hover {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+}
+
+.dark-mode #addFileButton:hover i {
+    color: #78FAAE;
+}
+</style>
+{% endblock body %}

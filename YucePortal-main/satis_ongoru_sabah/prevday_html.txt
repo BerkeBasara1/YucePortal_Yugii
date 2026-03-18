@@ -1,0 +1,123 @@
+
+        <table>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="text-align: center; font-weight: bold; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">16.12.2024</th>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">Bağlantı</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">Fatura</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">Toplam</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">Günlük</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">Aylık Öngörü</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">Toplam Potansiyel</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">Düzeltilmiş Öngörü</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #0e3a2f; color: #78faae;">D.Öng/T.Pot</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #f7b046;">Kurgu</td>
+                <td style="text-align: center; font-weight: bold; padding: 0 10px; border: 1px solid black; background-color: #f7b046;">Aylık (D.Öngörü/Kurgu)</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">Fabia</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">104</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">83</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">187</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">12</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">349</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046">219</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046">219</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%100</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">193</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color:#f7b046;;">%113</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">Scala</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">39</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">14</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">53</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">4</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">99</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">270</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">99</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%37</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">50</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color:#f7b046;">%198</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">Octavia</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">115</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">74</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">189</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">13</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">353</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">571</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">353</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%62</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">272</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046;">%130</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">Superb</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">253</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">159</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">412</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">27</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">769</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">945</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">769</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%81</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">690</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046;">%111</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">Kamiq</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">508</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">300</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">808</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">54</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">1508</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046">1064</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046">1064</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%100</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">935</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046;">%114</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">Karoq</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">110</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">77</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">187</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">12</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">349</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046">316</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046">316</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%100</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">250</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046;">%126</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">Kodiaq</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">180</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">118</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">298</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">20</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">556</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">612</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">556</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%91</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">410</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046;">%136</td>
+            </tr>
+            <tr style="height: 30px; border: 1px solid;">
+                <th style="border: 1px solid black; padding: 0 20px; background-color: #78faae; color: #0e3a2f;">TOPLAM</th>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">1309</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">825</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">2134</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">142</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">3983</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">3997</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #fff">3376</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">%84</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black;">2800</td>
+                <td style="padding: 0 10px; text-align: center; border: 1px solid black; background-color: #f7b046;">%121</td>
+            </tr>
+        </table>
+        <br>
+ 
+        

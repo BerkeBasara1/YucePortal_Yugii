@@ -1,0 +1,100 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Aylık Öngörü Tablosu</h3>
+        <br>
+        <small>Aşağıdaki formu tam ve doğru şekilde doldurduktan sonra butona basarak aylık öngörü tablosunu eposta olarak gönderebilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+        <button id="openModalBtn" class="btn btn-primary" style="width:100%">Kurgu Değerleri</button>
+    </div>
+    <br>
+    <div class="rpaContent">
+        <form method="post" enctype="multipart/form-data">
+            <div class="side-by-side_between">
+                <div style="width: 50%">
+                    {{ render_field(form.potansiyel_fabia, class="form-control", id="potansiyel_fabia", value=result["Fabia"])}}
+                    {{ render_field(form.potansiyel_scala, class="form-control", id="potansiyel_scala", value=result["Scala"])}}
+                    {{ render_field(form.potansiyel_octavia, class="form-control", id="potansiyel_octavia", value=result["Octavia"])}}
+                    {{ render_field(form.potansiyel_superb, class="form-control", id="potansiyel_superb", value=result["Superb"])}}
+                </div>
+                <div style="width: 50%">
+                    {{ render_field(form.potansiyel_kamiq, class="form-control", id="potansiyel_kamiq", value=result["Kamiq"])}}
+                    {{ render_field(form.potansiyel_karoq, class="form-control", id="potansiyel_karoq", value=result["Karoq"])}}
+                    {{ render_field(form.potansiyel_kodiaq, class="form-control", id="potansiyel_kodiaq", value=result["Kodiaq"])}}
+                </div>
+                <div id="myModal" class="modal" style="display:none;">
+                    <div class="modal-content">
+                        <div class="side-by-side_between">
+                            <h3 style="text-align: center;">Model Bazlı Kurgu değerlerini buradan değiştirebilirsiniz</h3>
+                            <button id="closeModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <br>
+                        <div class="side-by-side_between">
+                            <hr>
+                            <br>
+                            <div style="width: 50%">
+                                {{ render_field(form.kurgu_fabia, class="form-control", id="kurgu_fabia", value=result2["Fabia"])}}
+                                {{ render_field(form.kurgu_scala, class="form-control", id="kurgu_scala", value=result2["Scala"])}}
+                                {{ render_field(form.kurgu_octavia, class="form-control", id="kurgu_octavia", value=result2["Octavia"])}}
+                                {{ render_field(form.kurgu_superb, class="form-control", id="kurgu_superb", value=result2["Superb"])}}
+                            </div>
+                            <div style="width: 50%">
+                                {{ render_field(form.kurgu_kamiq, class="form-control", id="kurgu_kamiq", value=result2["Kamiq"])}}
+                                {{ render_field(form.kurgu_karoq, class="form-control", id="kurgu_karoq", value=result2["Karoq"])}}
+                                {{ render_field(form.kurgu_kodiaq, class="form-control", id="kurgu_kodiaq", value=result2["Kodiaq"])}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div style="text-align: center;">
+                {{ render_field(form.OncekiGunYOK, class="form-control")}}
+                <br>
+                <button type="submit" class="btn btn-primary">Raporu Gönder</button>
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const modal = document.getElementById('myModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const modalText = document.getElementById('modalText');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        openModalBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+
+        closeModalBtn.onclick = function(event) {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    });
+
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+</script>
+{% endblock body %}

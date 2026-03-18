@@ -1,0 +1,371 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    {% if existance %}
+        <div class="platformContainer">
+            <div class="rpaDescription">
+                <br>
+                <div id="photoModal" class="modal">
+                    <div class="modal-content">
+                        <div class="close-modal">
+                            <div class="right_side_btn" style="margin-right:-1%">
+                                <button id="closeModalBtn" class="close-modal-btn"type="button"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                        <button id="prevPhoto" class="nav-btn" style="position: absolute; left: 20px; color:#78FAAE; background-color:#0E3A2F;">&#10094;</button>
+                        <button id="nextPhoto" class="nav-btn" style="position: absolute; right: 20px; color:#78FAAE; background-color:#0E3A2F;">&#10095;</button>
+                        <div id="photoContainer" style="text-align: center;">
+                            <img id="currentPhoto" src="" style="max-width: 80%; border-radius: 5px;" />
+                        </div>
+                    </div>
+                </div>
+                <h3>Yüce Auto Teklif Giriş Ekranı</h3>
+                <br>
+                <small>Satışta bulunan araçları buradan görüntülüyebilir ilgilendiğiniz araç veya araçları buradan seçebilirsiniz.</small>
+                <br>
+                <small>Bu formu yalnızca 1 kez doldurabilirsiniz. Daha sonra revize etme şansınız olmayacaktır.</small>
+                <br>
+                <hr>
+                <br>
+            </div>
+        </div>
+        <div class="rpaContent">
+            <div id="tableContainer">
+                <table id="arac2elTable" class="arac2elTable">
+                    <thead>
+                        <tr>
+                            <th>Plaka No</th>
+                            <th style="width: 15%;">Model</th>
+                            <th style="width: 5%;">Yıl</th>
+                            <th style="width: 10%;">Renk</th>
+                            <th style="width: 5%;">KM</th>
+                            <th>Eksper Raporu</th>
+                            <th>Servis Geçmişi</th>
+                            <th>Araç Teklif Formu</th>
+                            <th>Fotoğraflar</th>
+                            <th>Fiyat</th>
+                            <th>İlgileniyorum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                            {% if result[22] == 1 %}
+                                <tr style="background-color: #A0A7A8;">
+                            {% else %}
+                                <tr>
+                            {% endif %}    
+                            <td>{{ result[2] }}</td>
+                            <td>{{ result[3] }}</td>
+                            <td>{{ result[4] }}</td>
+                            <td>{{ result[5] }}</td>
+                            <td>{{ result[6] }} KM</td>
+                            <td>
+                                {% if result[9] != "-" %}
+                                    <a href="{{  url_for('Display_EksperRaporu_PDF', filename='EksperRaporu_' + result[2]) }}" target="_blank"><b>Görüntüle</b></a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if result[8] != "-" %}
+                                    <a href="{{ url_for('Display_ServisGecmisi_PDF', filename='ServisGecmisi_' + result[2]) }}" target="_blank"><b>Görüntüle</b></a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if result[19] != "-" %}
+                                    <a href="{{  url_for('Display_AracTeklifForm', filename='AracTeklifFormu_' + result[2]) }}" target="_blank"><b>Görüntüle</b></a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="#" class="photo-count" data-car-id="{{ result[0] }}"
+                                   data-photo1="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_1') if result[14] != '-' else '' }}"
+                                   data-photo2="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_2') if result[15] != '-' else '' }}"
+                                   data-photo3="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_3') if result[16] != '-' else '' }}"
+                                   data-photo4="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_4') if result[17] != '-' else '' }}"
+                                   data-photo5="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_5') if result[18] != '-' else '' }}">
+                                    <b>{{ (1 if result[14] != "-" else 0) + (1 if result[15] != "-" else 0) + 
+                                        (1 if result[16] != "-" else 0) + (1 if result[17] != "-" else 0) + 
+                                        (1 if result[18] != "-" else 0) }} Fotoğraf</b>
+                                </a>
+                            </td>
+                            {% if result[7] == "N.one" %}
+                                <td> - </td>
+                            {% else %}
+                                <td>{{ result[7] }}</td>
+                            {% endif %}
+                            {% if result[22] == 1 %} <!--Gonderildi status check-->
+                                {% if result[21] == 1 %} <!--ilgileniyor status check -->
+                                    <td id="teklif_ver">{{ render_field(form.teklif_ver_checkbox, class="form-control", id=result[0], checked=True, disabled='disabled') }}</td>
+                                {% else %}
+                                    <td id="teklif_ver">{{ render_field(form.teklif_ver_checkbox, class="form-control", id=result[0], disabled='disabled') }}</td>
+                                {% endif %}
+                            {% else %}
+                                <td id="teklif_ver">{{ render_field(form.teklif_ver_checkbox, class="form-control", id=result[0]) }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="rpaDescription">
+            <div class="hidden">
+                {{ render_field(form.aciklama, class="form-control", id="aciklama") }}
+            </div>
+        </div>
+        <div class="right_side_btn">
+            <br>
+            <button id="GonderBtn" type="button" class="btn btn-primary disabled-button" style="min-width: 10%;" disabled><i class="fa-regular fa-paper-plane"></i>&nbsp;&nbsp;Gönder</button>
+        </div>
+        <br>
+    {% else %}
+        <h4 style="padding: 20px;">Satışta araç bulunmamaktadır.</h4>
+    {% endif %}
+</div>
+<br>
+<script> 
+    document.getElementById('GonderBtn').addEventListener('click', function() {
+        // Get all checkboxes
+        let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        let checkboxData = [];
+
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.id === "darkModeToggle") {
+                return;
+            }
+
+            let checkbox_id = checkbox.id;
+            let checkbox_value = checkbox.checked;
+
+            // Collect each checkbox's ID and value in an array
+            checkboxData.push({
+                checkbox_id: checkbox_id,
+                checkbox_value: checkbox_value
+            });
+        });
+
+        // Get the value of the aciklama field
+        let aciklamaValue = document.getElementById('aciklama').value;
+
+        // Send the entire array of checkbox data and aciklama to the backend in one request
+        fetch('/send_offers_from_YAuser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                checkboxes: checkboxData,
+                aciklama: aciklamaValue  // Send aciklama value along with the checkbox data
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            showChoicePopUpModal('Değiştirme durumunuz olmayacak, devam etmek istiyor musunuz?', 'question', function() {
+                location.reload();
+            });
+        })
+        .catch((error) => {
+            location.reload();
+            console.error('Error:', error);
+        });
+    });
+
+    let currentPhotoIndex = 0;
+    let photos = [];
+
+    // Function to open the modal with car photos
+    function openModal(photoArray) {
+        var modal = document.getElementById('photoModal');
+        var currentPhoto = document.getElementById('currentPhoto');
+
+        // Store photos array and reset index
+        photos = photoArray.filter(photo => photo !== '-' && photo !== '');  // Filter out invalid photos
+        currentPhotoIndex = 0;
+
+        if (photos.length > 0) {
+            currentPhoto.src = photos[currentPhotoIndex]; // Display first photo
+        } else {
+            currentPhoto.src = ''; // If no photos, display nothing
+        }
+
+        // Show modal
+        modal.style.display = 'block';
+    }
+
+    // Function to go to the next photo
+    function nextPhoto() {
+        if (currentPhotoIndex < photos.length - 1) {
+            currentPhotoIndex++;
+        } else {
+            currentPhotoIndex = 0;  // Loop back to the first photo
+        }
+        updatePhoto();
+    }
+
+    // Function to go to the previous photo
+    function prevPhoto() {
+        if (currentPhotoIndex > 0) {
+            currentPhotoIndex--;
+        } else {
+            currentPhotoIndex = photos.length - 1;  // Loop back to the last photo
+        }
+        updatePhoto();
+    }
+
+    // Function to update the photo in the modal
+    function updatePhoto() {
+        var currentPhoto = document.getElementById('currentPhoto');
+        currentPhoto.src = photos[currentPhotoIndex];
+    }
+
+    // Event listeners for navigation buttons
+    document.getElementById('nextPhoto').addEventListener('click', nextPhoto);
+    document.getElementById('prevPhoto').addEventListener('click', prevPhoto);
+
+    // Close modal when the user clicks the 'x' button
+    document.getElementById('closeModalBtn').onclick = function() {
+        document.getElementById('photoModal').style.display = 'none';
+    };
+
+    // Handle clicks on the photo links
+    document.querySelectorAll('.photo-count').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Gather the photo paths from the clicked element
+            var photoArray = [
+                this.getAttribute('data-photo1'),
+                this.getAttribute('data-photo2'),
+                this.getAttribute('data-photo3'),
+                this.getAttribute('data-photo4'),
+                this.getAttribute('data-photo5')
+            ];
+
+            // Open the modal with the gathered photos
+            openModal(photoArray);
+        });
+    });
+
+    // Close modal when the user clicks on the 'x' span
+    document.querySelector('.close-modal').onclick = function() {
+        document.getElementById('photoModal').style.display = 'none';
+    };
+
+    // Handle clicks on the photo links
+    document.querySelectorAll('.photo-count').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Gather the photo paths from the clicked element
+            var photos = [
+                this.getAttribute('data-photo1'),
+                this.getAttribute('data-photo2'),
+                this.getAttribute('data-photo3'),
+                this.getAttribute('data-photo4'),
+                this.getAttribute('data-photo5')
+            ];
+
+            // Open the modal with the gathered photos
+            openModal(photos);
+        });
+    });
+
+    // Close modal if the user clicks outside of it
+    document.addEventListener('DOMContentLoaded', (event) => {
+        window.onclick = function(event) {
+            var modal = document.getElementById('photoModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const gonderButton = document.getElementById('GonderBtn');
+        const btnDisabled = {{ btn_disabled | tojson }};
+
+        if (!btnDisabled) {
+            gonderButton.disabled = false;
+            gonderButton.classList.remove('disabled-button');
+        }
+    });
+</script>
+<style>
+    /* Remove the arrows (spinners) in the number input */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Ensure the input is set to text to allow formatting */
+    input[type="text"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #teklif_ver input[type="checkbox"] {
+        width: 35px;
+        height: 35px;
+    }
+
+    #teklif_ver input[type="checkbox"]:disabled {
+        background-color: #A0A7A8;
+        border-color: #394748;
+        cursor: not-allowed; /* Change cursor to indicate it's disabled */
+    }
+
+    #teklif_ver input[type="checkbox"]:disabled:checked {
+        background-color: #A0A7A8; /* Change background color when checked and disabled */
+        border-color: #394748; /* Change border color when checked and disabled */
+    }
+
+    #teklif_ver input[type="checkbox"]:disabled:checked::after {
+        content: "✓";
+        font-size: 14px;
+        color: #394748; /* Change tick color for disabled checked state */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #teklif_input input[type="text"]:disabled {
+        background-color: #CACECF;
+    }
+
+    .nav-btn {
+        background-color: rgba(0, 0, 0, 0.5);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 10px;
+        z-index: 2;
+        border-radius: 50%;
+    }
+
+    .nav-btn:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    #prevPhoto {
+        left: 20px;
+    }
+
+    #nextPhoto {
+        right: 20px;
+    }
+</style>
+{% endblock body %}

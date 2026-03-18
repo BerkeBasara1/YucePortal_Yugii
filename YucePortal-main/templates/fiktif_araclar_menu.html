@@ -1,0 +1,40 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<div id="rpaPlatform" class="RpaForm">
+    <div id="platformContainer">
+        <div>
+            <br>
+            <div class="side-by-side_between" style="color: #0E3A2F;">
+                <h4 id="mainHeader">Fiktif Araçlar Menü</h4>
+            <div id="departmantInfo"><p>&nbsp;&nbsp;{{session["departman"]}} Departmanı&nbsp;&nbsp;</p></div>
+            </div>
+            <br>
+            <hr>
+        </div>
+        <div class="stock-container_index">
+            <a href="/fiktif_araclar_mailing">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-regular fa-paper-plane"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Fiktifteki Araçları Paylaş</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/fiktif_araclar_mail_tanimlama_ekrani">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-regular fa-envelope-open"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Bayi Mail Tanımlama</p></div>
+                    </h2>
+                </div>
+            </a>
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+{% endblock body %}
+    

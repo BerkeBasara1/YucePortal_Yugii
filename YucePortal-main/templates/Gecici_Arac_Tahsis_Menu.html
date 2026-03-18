@@ -1,0 +1,48 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<div id="rpaPlatform" class="RpaForm">
+    <div id="platformContainer">
+        <div>
+            <br>
+            <div class="side-by-side_between" style="color: #0E3A2F;">
+                <h4 id="mainHeader">Geçici Araç Tahsis İşlemleri</h4>
+                <p class="right_side_btn">{{session["departman"]}} Departmanı</p>
+            </div>
+            <br>
+            <hr>
+        </div>
+        <div class="stock-container_index">
+            <a href="/GeciciAracTahsis/AracTanimlama">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-plus"></i> <i class="fa-solid fa-car"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Araç Tanımlama</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/GeciciAracTahsis/FonlamaOrani">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Fonlama Oranı</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/GeciciAracTahsis/IkameAracBedeli">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>İkame Araç Bedeli</p></div>
+                    </h2>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock body %}
+    

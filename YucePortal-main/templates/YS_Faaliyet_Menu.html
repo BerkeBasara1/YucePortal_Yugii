@@ -1,0 +1,40 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<div id="rpaPlatform" class="RpaForm">
+    <div id="platformContainer">
+        <div>
+            <br>
+            <div class="side-by-side_between" style="color: #0E3A2F;">
+                <h4 id="mainHeader">YS Faaliyet Raporu</h4>
+            <div id="departmantInfo"><p>&nbsp;&nbsp;{{session["departman"]}} Departmanı&nbsp;&nbsp;</p></div>
+            </div>
+            <br>
+            <hr>
+        </div>
+        <div class="stock-container_index">
+            <a href="/ys_faaliyet_raporu">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-address-book"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Bayi İşe Alım Formu</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/ys_faaliyet_raporu_listesi">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-table"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Aday Listesi</p></div>
+                    </h2>
+                </div>
+            </a>
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+{% endblock body %}
+    

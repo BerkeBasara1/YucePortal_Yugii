@@ -1,0 +1,593 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    {% if existance %}
+        <div class="platformContainer">
+            <div class="rpaDescription">
+                <br>
+                <div id="photoModal" class="modal">
+                    <div class="modal-content">
+                        <div class="close-modal">
+                            <div class="right_side_btn" style="margin-right:-1%">
+                                <button id="closeModalBtn" class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                        <button id="prevPhoto" class="nav-btn" style="position: absolute; left: 20px; color:#78FAAE; background-color:#0E3A2F;">&#10094;</button>
+                        <button id="nextPhoto" class="nav-btn" style="position: absolute; right: 20px; color:#78FAAE; background-color:#0E3A2F;">&#10095;</button>
+                        <div id="photoContainer" style="text-align: center;">
+                            <img id="currentPhoto" src="" style="max-width: 80%; border-radius: 5px;" />
+                        </div>
+                    </div>
+                </div>
+                <h3>Teklif Giriş Ekranı</h3>
+                <br>
+                <small>Yüce Auto tarafından satış teklifinde bulunulan araçları buradan görüntülüyebilir ve ilgili araçlara teklif verebilirsiniz.</small>
+                <br>
+                <small>Teklifinizi gönderdikten sonra teklifinizi revize edemezsiniz.</small>
+                <br>
+                <hr>
+                <br>
+            </div>
+        </div>
+        <div class="rpaContent">
+            <div id="tableContainer">
+                <table id="arac2elTable" class="arac2elTable">
+                    <thead>
+                        <tr>
+                            <th>Plaka No</th>
+                            <th style="width: 12%;">Model</th>
+                            <th style="width: 5%;">Yıl</th>
+                            <th style="width: 10%;">Renk</th>
+                            <th style="width: 5%;">KM</th>
+                            <th>Eksper Raporu</th>
+                            <th>Servis Geçmişi</th>
+                            <th>Araç Teklif Formu</th>
+                            <th>Fotoğraflar</th>
+                            <th>Kapanışa Kalan Süre</th>
+                            <th>Teklif ver</th>
+                            <th style="width: 13%;">Fiyat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr style="{% if result[16] == 1 %}background-color: #A0A7A8;{% endif %}">
+                            <td>{{ result[2] }}</td>
+                            <td>{{ result[3] }}</td>
+                            <td>{{ result[4] }}</td>
+                            <td>{{ result[5] }}</td>
+                            <td>{{ result[6] }} KM</td>
+                            <td>
+                                {% if result[9] != "-" %}
+                                    <a href="{{  url_for('Display_EksperRaporu_PDF', filename='EksperRaporu_' + result[2]) }}" target="_blank"><b>Görüntüle</b></a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if result[8] != "-" %}
+                                    <a href="{{ url_for('Display_ServisGecmisi_PDF', filename='ServisGecmisi_' + result[2]) }}" target="_blank"><b>Görüntüle</b></a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if result[23] != "-" %}
+                                    <a href="{{  url_for('Display_AracTeklifForm', filename='AracTeklifFormu_' + result[2]) }}" target="_blank"><b>Görüntüle</b></a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="#" class="photo-count" data-car-id="{{ result[0] }}"
+                                   data-photo1="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_1') if result[18] != '-' else '' }}"
+                                   data-photo2="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_2') if result[19] != '-' else '' }}"
+                                   data-photo3="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_3') if result[20] != '-' else '' }}"
+                                   data-photo4="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_4') if result[21] != '-' else '' }}"
+                                   data-photo5="{{ url_for('static', filename= 'Arac_foto_2ElArac/' + result[2] + '_5') if result[22] != '-' else '' }}">
+                                    <b>{{ (1 if result[18] != "-" else 0) + (1 if result[19] != "-" else 0) + 
+                                        (1 if result[20] != "-" else 0) + (1 if result[21] != "-" else 0) + 
+                                        (1 if result[22] != "-" else 0) }} Fotoğraf</b>
+                                </a>
+                            </td>
+                            <td class="countdown" data-deadline="{{ result[12] }}"></td>
+                            {% if result[16] == 0 %}
+                                {% if result[24] == 1 %}
+                                    <td id="teklif_ver">{{ render_field(form.teklif_ver_checkbox, class="form-control", id=result[0]~"-checkbox", checked=True) }}</td>
+                                {% elif result[24] == 0 %}
+                                    <td id="teklif_ver">{{ render_field(form.teklif_ver_checkbox, class="form-control", id=result[0]~"-checkbox") }}</td>
+                                {% endif %}
+                            {% else %}
+                                {% if result[24] == True %}
+                                    <td id="teklif_ver">{{ render_field(form.teklif_ver_checkbox, class="form-control", id=result[0]~"-checkbox", disabled='disabled', checked=True) }}</td>
+                                {% elif result[24] == False %}
+                                    <td id="teklif_ver">{{ render_field(form.teklif_ver_checkbox, class="form-control", id=result[0]~"-checkbox", disabled='disabled') }}</td>
+                                {% endif %}
+                            {% endif %}
+                            
+                            {% if result[16] == 0 %}
+                            <td id="teklif_input" class="table_input_cell">
+                                <div style="display: flex; align-items: center; margin: 0px;">
+                                    {% if result[24] == 1 %}
+                                    {{ render_field(form.teklif, class="form-control", id=result[0], value=result[15]) }}
+                                    {% elif result[24] == 0 %}
+                                        {{ render_field(form.teklif, class="form-control", id=result[0], value=result[15], disabled='disabled') }}
+                                    {% endif %}
+                                    <span style="padding: 0px 2%;">₺</span>
+                                </div>
+                            </td>
+                            {% else %}
+                            <td id="teklif_input" class="table_input_cell">
+                                <div style="display: flex; align-items: center; margin: 0px;">
+                                    {{ render_field(form.teklif, class="form-control", id=result[0], value=result[15], disabled='disabled') }}
+                                    <span style="padding: 0px 2%;">₺</span>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="rpaDescription">
+            <div>
+                {% if results[0][16] == 0 %}
+                    {{ render_field(form.aciklama, class="form-control", id="aciklama") }}
+                {% else %}
+                    {{ render_field(form.aciklama, class="form-control", id="aciklama", disabled='disabled') }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="right_side_btn">
+            <br>
+            <button id="kaydetButton" type="button" class="btn btn-primary disabled-button" style="min-width: 10%;" disabled><i class="fa-regular fa-floppy-disk"></i>&nbsp;&nbsp;Kaydet</button>
+            <button id="GonderBtn" type="button" class="btn btn-primary disabled-button" style="min-width: 10%;" disabled><i class="fa-regular fa-paper-plane"></i>&nbsp;&nbsp;Gönder</button>
+        </div>
+        <br>
+</div>
+<br>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const textInputs = document.querySelectorAll('input[type="text"]');
+        const kaydetButton = document.getElementById('kaydetButton');
+        const gonderButton = document.getElementById('GonderBtn');
+        const bayiisiId = "{{ session['Bayiisi_ID'] }}";
+        const bidderID = {{session['ID']}}; // Safely embed session variables
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        // Function to check if any checkbox is checked or if any text input has changed
+        function updateButtonState() {
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            const anyTextChanged = Array.from(textInputs).some(input => input.value.trim() !== '');
+            if (anyChecked || anyTextChanged) {
+                // Enable the buttons if any checkbox is checked or any text input has changed
+                kaydetButton.disabled = false;
+                kaydetButton.classList.remove('disabled-button');
+            }
+            if(!anyChecked) {
+                // Disable the buttons if all checkboxes are unchecked and no text input has changed
+                kaydetButton.disabled = true;
+                kaydetButton.classList.add('disabled-button');
+            }
+        }
+
+        if({{btn_mustbe_enabled}} === 1) {
+            gonderButton.disabled= false;
+            gonderButton.classList.remove('disabled-button');
+        }
+
+        // Enabling button if there shall be changes on the text areas
+        const textInputs2 = document.querySelectorAll('input[type="text"]');
+        textInputs2.forEach(input => {
+            input.addEventListener('input', function() {
+                updateButtonState()
+            });
+        });
+
+        // Attach event listeners to each checkbox to toggle button state
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkboxId = this.id; // Get the checkbox ID
+                const textInput = document.getElementById(checkboxId.replace("-checkbox", "")); // Get the corresponding text input
+
+                if (this.checked) {
+                    // If checkbox is checked, enable the text input
+                    textInput.disabled = false;
+                } else {
+                    // If checkbox is unchecked, disable the text input
+                    textInput.disabled = true;
+                    textInput.value = '0';  // Optional: Set the value to 0 when disabled
+                }
+
+                // Update the state of the buttons after each change
+                updateButtonState();
+            });
+        });
+
+        // Fills the "Açıklama" box with the Açıklama user did at the first result item
+        {% if existance %}
+            {% if results[0][17] is not none %}
+                document.getElementById("aciklama").value = "{{ results[0][17] }}";
+            {% endif %}
+        {% endif %}
+
+        // Fetch existing bids and populate the text areas
+        fetch('/get_user_bids')
+            .then(response => response.json())
+            .then(bids => {
+                textInputs.forEach(input => {
+                    const id = input.id;
+                    if (bids[id]) {
+                        input.value = new Intl.NumberFormat('tr-TR').format(bids[id]);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching bids:', error);
+            });
+
+        textInputs.forEach((input, index) => {
+            // Add the input event listener to format the value
+            input.addEventListener('input', function() {
+                const value = this.value.replace(/\D/g, '');  // Remove all non-digit characters
+
+                // Save the cursor position
+                const cursorPosition = this.selectionStart;
+                const lengthBefore = this.value.length;
+
+                // Format the value with thousand separators
+                this.value = new Intl.NumberFormat('tr-TR').format(value);
+
+                // Adjust the cursor position based on changes in the length
+                const lengthAfter = this.value.length;
+                const newPosition = cursorPosition + (lengthAfter - lengthBefore);
+
+                // Set the cursor back to the correct position
+                this.setSelectionRange(newPosition, newPosition);
+            });
+
+            // Add the keydown event listener to move to the next input on "Enter"
+            input.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const nextInput = textInputs[index + 1];
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            });
+        });
+
+        // Kaydet function to save the bids
+        function saveBids(buttonType) {
+            return new Promise((resolve, reject) => {
+                const data = [];
+                
+                for (let i = 0; i < textInputs.length; i++) {
+                    const input = textInputs[i];
+                    const id = input.id;
+                    const value = input.value.replace(/\D/g, ''); // Remove formatting for saving
+                    const aciklamaInput = document.getElementById("aciklama").value;
+
+                    // Check if the corresponding checkbox is checked
+                    const checkbox = document.getElementById(`${id}-checkbox`);
+                    const isChecked = checkbox ? checkbox.checked : false;
+
+                    console.log(value.length)
+                    // Validation: Check if value has fewer than 8 digits
+                    if (value.length < 6 && value !== "0") {
+                        showPopUpModal('Minimum 6 basamaklı bir teklif girmeniz gerekmektedir.', 'alert');
+                        reject('Validation failed.'); // Reject the promise
+                        return; // Exit the function early
+                    }
+
+                    data.push({
+                        id: id,
+                        value: value,
+                        bayiisi_id: bayiisiId,
+                        aciklama: aciklamaInput,
+                        bidderID: bidderID,
+                        buttonType: buttonType, // Add button type to the data
+                        isChecked: isChecked    // Send checkbox status to backend
+                    });
+                }
+
+                // Send the data to the API
+                fetch('/send_bids_fromBayii', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log('Bids saved successfully!');
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    reject(error);
+                });
+            });
+        }
+
+
+        // Attach saveBids function to the Kaydet button click event
+        kaydetButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            saveBids('Kaydet').then(() => {
+                location.reload();
+            }).catch(error => {
+                console.error('Failed to save bids:', error);
+            });
+        });
+
+        // Gonder button sends request to mark bids as sent
+        gonderButton.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // Show the custom modal instead of the default confirm
+            showChoicePopUpModal('Tekliflerinizi revize etme şansınız olmayacaktır.<br>Devam etmek istiyor musunuz?', 'question', function() {
+                // This code runs if the user clicks "confirm" in the modal
+                saveBids('Gonder')
+                    .then(() => {
+                        fetch('/mark_bids_as_sent', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Failed to save bids:', error);
+                    });
+            });
+        });
+
+    });
+
+    function openModal(photos) {
+        var modal = document.getElementById('photoModal');
+        var photoContainer = document.getElementById('photoContainer');
+        photoContainer.innerHTML = '';  // Clear any previous images
+
+        // Loop through the photo paths and create img elements for each valid path
+        photos.forEach(function(photo) {
+            if (photo !== '-' && photo !== '') {
+                var imgElement = document.createElement('img');
+                imgElement.src = photo;
+                imgElement.style.maxWidth = '200px';  // Set max width for the images
+                imgElement.style.margin = '10px';
+                photoContainer.appendChild(imgElement);
+            }
+        });
+
+        // Show the modal
+        modal.style.display = 'block';
+    }
+
+    let currentPhotoIndex = 0;
+    let photos = [];
+
+    // Function to open the modal with car photos
+    function openModal(photoArray) {
+        var modal = document.getElementById('photoModal');
+        var currentPhoto = document.getElementById('currentPhoto');
+
+        // Store photos array and reset index
+        photos = photoArray.filter(photo => photo !== '-' && photo !== '');  // Filter out invalid photos
+        currentPhotoIndex = 0;
+
+        if (photos.length > 0) {
+            currentPhoto.src = photos[currentPhotoIndex]; // Display first photo
+        } else {
+            currentPhoto.src = ''; // If no photos, display nothing
+        }
+
+        // Show modal
+        modal.style.display = 'block';
+    }
+
+    // Function to go to the next photo
+    function nextPhoto() {
+        if (currentPhotoIndex < photos.length - 1) {
+            currentPhotoIndex++;
+        } else {
+            currentPhotoIndex = 0;  // Loop back to the first photo
+        }
+        updatePhoto();
+    }
+
+    // Function to go to the previous photo
+    function prevPhoto() {
+        if (currentPhotoIndex > 0) {
+            currentPhotoIndex--;
+        } else {
+            currentPhotoIndex = photos.length - 1;  // Loop back to the last photo
+        }
+        updatePhoto();
+    }
+
+    // Function to update the photo in the modal
+    function updatePhoto() {
+        var currentPhoto = document.getElementById('currentPhoto');
+        currentPhoto.src = photos[currentPhotoIndex];
+    }
+
+    // Event listeners for navigation buttons
+    document.getElementById('nextPhoto').addEventListener('click', nextPhoto);
+    document.getElementById('prevPhoto').addEventListener('click', prevPhoto);
+
+    // Close modal when the user clicks the 'x' button
+    document.getElementById('closeModalBtn').onclick = function() {
+        document.getElementById('photoModal').style.display = 'none';
+    };
+
+    // Handle clicks on the photo links
+    document.querySelectorAll('.photo-count').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Gather the photo paths from the clicked element
+            var photoArray = [
+                this.getAttribute('data-photo1'),
+                this.getAttribute('data-photo2'),
+                this.getAttribute('data-photo3'),
+                this.getAttribute('data-photo4'),
+                this.getAttribute('data-photo5')
+            ];
+
+            // Open the modal with the gathered photos
+            openModal(photoArray);
+        });
+    });
+
+    // Close modal if the user clicks outside of it
+    window.onclick = function(event) {
+        var modal = document.getElementById('photoModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    // Close modal when the user clicks on the 'x' span
+    document.querySelector('.close-modal').onclick = function() {
+        document.getElementById('photoModal').style.display = 'none';
+    };
+
+    // Handle clicks on the photo links
+    document.querySelectorAll('.photo-count').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Gather the photo paths from the clicked element
+            var photos = [
+                this.getAttribute('data-photo1'),
+                this.getAttribute('data-photo2'),
+                this.getAttribute('data-photo3'),
+                this.getAttribute('data-photo4'),
+                this.getAttribute('data-photo5')
+            ];
+
+            // Open the modal with the gathered photos
+            openModal(photos);
+        });
+    });
+
+    // Close modal if the user clicks outside of it
+    document.addEventListener('DOMContentLoaded', (event) => {
+        window.onclick = function(event) {
+            var modal = document.getElementById('photoModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    });
+
+    // Deadline Countdown
+    const countdownElements = document.querySelectorAll('.countdown');
+
+    countdownElements.forEach((element) => {
+        const countdownDate = new Date(element.getAttribute('data-deadline')).getTime();
+
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            // Calculate time components
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result inside the countdown cell
+            element.innerHTML = `${days}g ${hours}s ${minutes}dk ${seconds}sn`;
+        }, 1000);
+    });
+</script>
+{% else %}
+<p>Satışta Araç bulunmamaktadır.</p>
+{% endif %}
+<style>
+    /* Remove the arrows (spinners) in the number input */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Ensure the input is set to text to allow formatting */
+    input[type="text"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #teklif_ver input[type="checkbox"] {
+        width: 35px;
+        height: 35px;
+    }
+
+    #teklif_ver input[type="checkbox"]:disabled {
+        background-color: #A0A7A8;
+        border-color: #394748;
+        cursor: not-allowed; /* Change cursor to indicate it's disabled */
+    }
+
+    #teklif_ver input[type="checkbox"]:disabled:checked {
+        background-color: #A0A7A8; /* Change background color when checked and disabled */
+        border-color: #394748; /* Change border color when checked and disabled */
+    }
+
+    #teklif_ver input[type="checkbox"]:disabled:checked::after {
+        content: "✓";
+        font-size: 14px;
+        color: #394748; /* Change tick color for disabled checked state */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #teklif_input input[type="text"]:disabled {
+        background-color: #CACECF;
+    }
+
+    .nav-btn {
+        background-color: rgba(0, 0, 0, 0.5);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 10px;
+        z-index: 2;
+        border-radius: 50%;
+    }
+
+    .nav-btn:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    #prevPhoto {
+        left: 20px;
+    }
+
+    #nextPhoto {
+        right: 20px;
+    }
+</style>
+{% endblock body %}

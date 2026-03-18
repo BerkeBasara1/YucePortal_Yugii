@@ -1,0 +1,31 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+  <div class="rpaDescription">
+    <br>
+    <h3>Profil Bilgileri</h3>
+    <br>
+    <small>Profil Bilgilerinizi burada görüntüleyebilir.</small>
+    <br>
+    <small>Eğer yanlış bilgiler mevcut ise, lütfen Yüce Auto IT Departmanı ile iletişime geçin.</small>
+    <br>
+    <hr>
+    <br>
+  </div>
+  <div class="rpaContent">
+    <form method = "post" style="text-align:left;">
+      <label><b>Adınız: </b>{{session["name"]}}</label>
+      <br>
+      <label><b>Soyadınız: </b>{{session["surname"]}}</label>
+      <br>
+      <label><b>Bayi: </b>{{session["bayi_adi"]}}</label>
+      <br>
+      <label><b>e-mail: </b>{{session["email"]}}</label>
+      <br>
+    </form>
+  </div>
+  <br>
+</div>
+{% endblock body %}

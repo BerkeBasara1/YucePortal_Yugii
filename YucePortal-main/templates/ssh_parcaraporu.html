@@ -1,0 +1,68 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Günlük SSH Raporu Otomasyonu</h3>
+        <br>
+        <small>Aşağıdaki formu tam ve doğru şekilde doldurduktan sonra butona basarak Günlük Perakende Parça Satış Raporunu eposta olarak gönderebilirsiniz.</small>
+        <br>
+        <small>Raporun hazırlanması uzun sürebilir. Bu sayfayı yenileyerek sürecin ne kadar tamamlandığını görebilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+    </div>
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data">
+            <div class="side-by-side_between">
+                <div style="width: 50%;">
+                    {{ render_field(form.turkuazusername, class="form-control") }}
+                </div>
+                <div style="width: 50%;">
+                    <div class="pw-area">
+                        {{ render_field(form.turkuazpw, class="form-control password-toggle")}}
+                    </div>
+                </div>
+            </div>
+            <br>
+            {{ render_field(form.first_day_check, class = "form-control") }}
+            <br>
+            <button type="submit" class="btn btn-primary">Raporu Gönder</button>
+        </form>
+    </div>
+</div>
+<br>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordField = document.querySelector(".pw-area input");
+        const toggleButton = document.createElement("i");
+        toggleButton.className = "fa fa-eye";
+        const pwAreaDiv = document.querySelector(".pw-area");
+        pwAreaDiv.appendChild(toggleButton);
+
+        toggleButton.addEventListener("click", function () {
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.className = "fa fa-eye-slash"; // Change to "fa fa-eye-slash" to show a slashed eye for password visibility
+            } else {
+                passwordField.type = "password";
+                toggleButton.className = "fa fa-eye";
+            }
+        });
+    });
+    // Function to change the button text to a loading icon
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+  
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+</script>
+{% endblock body %}

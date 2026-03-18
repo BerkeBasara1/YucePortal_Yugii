@@ -1,0 +1,65 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Garanti İmha Projesi Kullanıcı Raporu</h3>
+        <br>
+        <small>Garanti İmha Projesi kullanıcıların uygulamaya giriş yapma sıklığını buradan inceleyebilirsiniz.</small>
+        <br>
+        <br>
+        <hr>
+        <br>
+    </div>
+    <div class="rpaContent">
+      <div id="tableContainer">
+        <table id="garantiListTable">
+            <thead>
+                <tr>
+                    <th>Bayi</th>
+                    <th>İsim</th>
+                    <th>Soyisim</th>
+                    <th>Son Giriş Tarihi</th>
+                    <th>Girilmeyen Gün Sayısı</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for user in users_result %}
+                <tr class="table-row">
+                  <td class="table-cell"><small>{{ user[3] }}</small></td>
+                  <td class="table-cell"><small>{{ user[0] }}</small></td>
+                  <td class="table-cell"><small>{{ user[1] }}</small></td>
+                  <td class="table-cell"><small>{{ user[2] }}</small></td>
+                  {% if user[4] <= 7 %}
+                    <td class="table-cell"><span style="color: black; background-color: #78FAAE; padding: 0 30px; border-radius: 1em;">{{ user[4] }}</span></td>
+                  {% elif user[4] > 7 and user[4] <= 30 %}
+                    <td class="table-cell"><span style="color: black; background-color: #F7B046; padding: 0 30px; border-radius: 1em;">{{ user[4] }}</span></td>
+                  {% else %}
+                    <td class="table-cell"><span style="color: white; background-color: #F15252; padding: 0 30px; border-radius: 1em;">{{ user[4] }}</span></td>
+                  {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  </div>
+  <br>
+</div>
+<br>
+<style>
+  .dark-mode .table-row:nth-child(even) {
+    background-color: #2E2E2E; /* Darker background for even rows */
+  }
+
+  .dark-mode .table-row:nth-child(odd) {
+      background-color: #1C1C1C; /* Darker background for odd rows */
+  }
+
+  .dark-mode .table-cell {
+      color: #78FAAE; /* Adjust text color if needed */
+  }
+
+</style>
+{% endblock body %}

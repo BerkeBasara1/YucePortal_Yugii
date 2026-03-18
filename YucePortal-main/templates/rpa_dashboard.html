@@ -1,0 +1,137 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #0E3A2F; font-weight: bold;">
+        Automation Overview
+    </h2>
+    <div class="row text-center mb-5">
+        <div class="col-md-3">
+            <div class="p-4 rounded" style="background-color: #0E3A2F; color: #78FAAE;">
+                <h4>Otomasyon Sayısı</h4>
+                <h2>12</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-4 rounded" style="background-color: #78FAAE; color: #0E3A2F;">
+                <h4>Robot çalışan sayısı</h4>
+                <h2>2</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-4 rounded" style="background-color: #0E3A2F; color: #78FAAE;">
+                <h4>İnsan Gücü Kazancı</h4>
+                <h2>254 Dakika</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-4 rounded" style="background-color: #78FAAE; color: #0E3A2F;">
+                <h4>RPA ile Harcanan Süre</h4>
+                <h2>15 Min</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header text-white" style="background-color: #0E3A2F;">
+            <h5 class="mb-0">Automation Details</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered text-center">
+                <thead style="background-color: #0E3A2F; color: #FFFFFF;">
+                    <tr>
+                        <th>Department</th>
+                        <th>Automation</th>
+                        <th>Frequency</th>
+                        <th>Time Taken</th>
+                        <th>Manual Effort</th>
+                        <th>Start Date</th>
+                        <th>Satisfaction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Satış</td>
+                        <td>Sabah Raporu</td>
+                        <td>Her gün</td>
+                        <td>7 sec</td>
+                        <td>1-14 min</td>
+                        <td>Mart 2023</td>
+                        <td><span class="badge rounded-pill" style="background-color: #78FAAE; color: #0E3A2F;">4.5/5</span></td>
+                    </tr>
+                    <tr>
+                        <td>SSH</td>
+                        <td>SSH Sabah Raporu</td>
+                        <td>Her gün</td>
+                        <td>45 min</td>
+                        <td>2 hrs</td>
+                        <td>Temmuz 2023</td>
+                        <td><span class="badge rounded-pill" style="background-color: #78FAAE; color: #0E3A2F;">4.0/5</span></td>
+                    </tr>
+                    <!-- Add more rows dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Satisfaction Graph -->
+    <div class="card shadow-sm">
+        <div class="card-header text-white" style="background-color: #0E3A2F;">
+            <h5 class="mb-0">Time Spent on Tasks</h5>
+        </div>
+        <div class="card-body">
+            <!-- Ensure this canvas element is present -->
+            <canvas id="satisfactionChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Ensure the canvas element exists and Chart.js is loaded
+    const ctx = document.getElementById('satisfactionChart')?.getContext('2d');
+    if (ctx) {
+        // Initialize the Chart.js bar chart
+        const satisfactionChart = new Chart(ctx, {
+            type: 'bar', // Set the chart type
+            data: {
+                labels: ['Sabah Raporu', 'SSH Sabah Raporu', 'PCL Fatura Bulma', 'Jato Güncelleme'],
+                datasets: [{
+                    label: 'Minutes Spent',
+                    data: [7, 45, 30, 240], // Provide valid data
+                    backgroundColor: '#78FAAE',
+                    borderColor: '#0E3A2F',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Rotate the chart for horizontal bars
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' min'; // Append "min" to labels
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500, // Animation duration
+                    easing: 'easeOutBounce' // Smooth and bouncy animation
+                },
+                plugins: {
+                    legend: {
+                        display: true, // Show legend
+                        labels: {
+                            color: '#0E3A2F' // Legend label color
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        console.error("Canvas element with ID 'satisfactionChart' not found.");
+    }
+</script>
+{% endblock body %}

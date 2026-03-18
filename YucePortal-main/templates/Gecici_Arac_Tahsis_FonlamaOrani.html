@@ -1,0 +1,113 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3><a href="/Gecici_Arac_Tahsis_Menu" class="returnBtn">Geçici Araç Tahsis Menü</a> >> Fonlama Oranı</h3>
+        <br>
+        <small>Ay bazında geçerli fonlama oranını buradan güncelleyebilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data" style="width: 30%;">
+            <div class="side-by-side_between">
+                <div style="width: 50%; margin-right: 10px;">
+                    {{ render_field(form.ay, class = "form-control") }}
+                </div>
+                <div style="width: 50%; margin-left: 10px;">
+                    {{ render_field(form.yil, class = "form-control") }}
+                </div>
+            </div>
+            <br>
+            <div style="position: relative;">
+                <span style="position: absolute; left: 5%; top: 72%; transform: translateY(-50%); font-size: 16px;">%</span>
+                {{ render_field(form.fonlama_orani, id="fonlama_orani", class="form-control", style="padding-left: 30px;", oninput="limitInput(this)") }}
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+    <hr>
+    <div class="rpaContent">
+        <div id="tableContainer" style="width: 60%;">
+            <table class="arac2elTable">
+                <thead>
+                    <tr>
+                        <th>Ay</th>
+                        <th>Yıl</th>
+                        <th>Fonlama Oranı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result[1] }}</td>
+                        <td>{{ result[2] }}</td>
+                        <td>{{ result[3] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+<script>
+    function limitInput(input) {
+        let value = input.value.replace(/[^0-9,]/g, '');
+
+        const commaIndex = value.indexOf(',');
+        if (commaIndex !== -1) {
+            value = value.substring(0, commaIndex + 1) + value.substring(commaIndex + 1).replace(/,/g, '');
+        }
+
+        const digits = value.replace(/[^0-9]/g, '');
+        if (digits.length > 5) {
+            const allowedDigits = digits.slice(0, 5);
+
+            let result = '';
+            let digitIndex = 0;
+            for (let char of value) {
+                if (char >= '0' && char <= '9') {
+                    if (digitIndex < allowedDigits.length) {
+                        result += char;
+                        digitIndex++;
+                    }
+                } else {
+                    result += char;
+                }
+            }
+            value = result;
+        }
+
+        if (commaIndex !== -1) {
+            const parts = value.split(',');
+            if (parts.length > 1 && parts[1].length > 2) {
+                parts[1] = parts[1].slice(0, 2);
+            }
+            value = parts.join(',');
+        }
+
+        input.value = value;
+    }
+    
+    // Function to change the button text to a loading icon
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+  
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+</script>
+{% endblock body %}

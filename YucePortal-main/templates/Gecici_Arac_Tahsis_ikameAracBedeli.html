@@ -1,0 +1,83 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3><a href="/Gecici_Arac_Tahsis_Menu" class="returnBtn">Geçici Araç Tahsis Menü</a> >> İkame Araç Bedeli</h3>
+        <br>
+        <small>Ay bazında geçerli fonlama oranını buradan güncelleyebilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data" style="width: 40%;">
+            <div>
+                {{ render_field(form.models, class = "form-control") }}
+                <br>
+                {{ render_field(form.yil, class = "form-control") }}
+                <br>
+                {{ render_field(form.ikame_arac_bedeli, id="ikame_arac_bedeli", class="form-control", oninput="limitInput(this)") }}
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+    <hr>
+    <div class="rpaContent">
+        <div id="tableContainer" style="width: 80%;">
+            <table class="arac2elTable">
+                <thead>
+                    <tr>
+                        <th style="width: 60%;">Model</th>
+                        <th style="width: 10%;">Yıl</th>
+                        <th style="width: 30%;">İkame Araç Bedeli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr>
+                            <td>{{ result[1] }}</td>
+                            <td>{{ result[2] }}</td>
+                            <td>{{ result[3] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </div>
+    <br>
+</div>
+<br>
+<script>
+    function limitInput(input) {
+        let value = input.value.replace(/[^0-9,]/g, ''); // Remove invalid characters
+
+        // Split integer and decimal parts
+        let parts = value.split(',');
+        let integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Add thousand separators
+        let decimalPart = parts[1] ? parts[1].slice(0, 2) : ''; // Limit to 2 decimal places
+
+        // Reconstruct formatted value
+        input.value = decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+    }
+
+    
+    // Function to change the button text to a loading icon
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+  
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+</script>
+{% endblock body %}

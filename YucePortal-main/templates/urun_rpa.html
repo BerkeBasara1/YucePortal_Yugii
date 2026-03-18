@@ -1,0 +1,90 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<style>
+    a:hover {
+      text-decoration: none;
+    }
+    a:focus {
+    outline: none;
+    }
+</style>
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container" style="position:relative; background-color:#F1F2F2; padding:10px; border-radius:25px; opacity:1; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);">
+
+    <div style="margin-left:30px;">
+        <br>
+        <h3>Pazar Verilerini Güncelleme</h3>
+        <br>
+        <small>Pazar verisini güncellemek istediğiniz markayı seçebilirsiniz.</small>
+        <br>
+        <br>
+        <small>Dikkat! Sadece DB güncellemesi yapar, Excel üzerinden iş yapmaz.</small>
+        <br>
+        <br>
+        <small>Veriler markaların websitelerini ziyaret ederek elde edilmektedir.</small>
+        <br>
+        <hr style="margin-right:30px;">
+        <br>
+    </div>
+
+    <div style="text-align:center;">
+        <a href="/fiyat_guncelleme/DS">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>DS</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Peugeot">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Peugeot</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Opel">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Opel</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Cupra">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Cupra</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Kia">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Kia</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Volkswagen">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Volkswagen</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Toyota">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Toyota</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Renault">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Renault</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Ford">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Ford</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Nissan">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Nissan</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Seat">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Seat</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Citroen">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Citroen</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Hyundai">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Hyundai</b></button>
+        </a>
+        <span style="margin-right: 20px;"></span>
+        <a href="/fiyat_guncelleme/Dacia">
+            <button class="btn btn-primary" style="background:#0E3A2F; color:#78FAAE; width: 150px; border-radius:10px; border-width: 0px; margin-bottom: 30px;"><b>Dacia</b></button>
+        </a>
+    </div>
+</div>
+<br>
+{% endblock body %}

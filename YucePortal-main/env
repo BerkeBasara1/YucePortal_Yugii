@@ -1,0 +1,41 @@
+sabahraporu_email=sabahraporu@skoda.com.tr
+sabahraporu_email_Password=sabahrapor123
+
+mailName=bilgilendirme@skoda.com.tr
+aksamrapor_mailName=aksamraporu@skoda.com.tr
+
+yuceportal_mail=yuceportal@skoda.com.tr
+yuceportal_pwd=Skoda.2024
+
+
+Skoda_Satis_Stok_Raporu=C:\Users\yuceappadmin\Downloads\Skoda Satış Stok Raporu.xlsx
+Model_Kirilimli=C:\Users\yuceappadmin\Downloads\Model_Kirilimli.xls
+
+
+YuceDB="DRIVER={SQL Server};SERVER=YUCESQL2\\SQL201701;DATABASE=Raporlar;UID=usryuceauto;PWD=Reader142536"
+YuceDashboardDB="DRIVER={SQL Server};SERVER=YUCESQL2\\SQL201701;DATABASE=YuceDashboard;UID=YuceUser;PWD=APTw7r2C"
+YA_2El_AracSatis="DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.0.0.20\\SQLYC;DATABASE=YA_2El_AracSatis;UID=YuceUser;PWD=APTw7r2C"
+Garanti_imha_DB="DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.0.0.20\\SQLYC;DATABASE=Garanti_Imha;UID=garantiimha_usr;PWD=m41cA1C36tY63qZ19"
+SkodabotDB="DRIVER={SQL Server};SERVER=10.0.0.20\\SQLYC;DATABASE=SkodaBot;UID=skodabot;PWD=Skodabot.2024"
+
+
+
+username=USR_YUCE_PWR
+userpwd=vJ9Q3BpH01
+host=10.113.197.4
+port=1521
+service_name=DOTODWHDBP1
+dsn=USR_YUCE_PWR/vJ9Q3BpH01@10.113.197.4:1521/DOTODWHDBP1
+
+
+YA_price_increment=2000
+
+
+bilgilendirme_mail=bilgilendirme@skoda.com.tr
+bilgilendirme_mail_pw=Skoda.2023
+
+
+YA_RPA_MYSQL_HOST=localhost
+YA_RPA_MYSQL_USER=root
+YA_RPA_MYSQL_PASSWORD=
+YA_RPA_MYSQL_DATABASE=ya_rpa

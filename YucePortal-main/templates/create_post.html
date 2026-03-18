@@ -1,0 +1,186 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+
+<div id="myModal" class="modal" style="display:none;">
+  <div class="post-card">
+    <button id="closeModalBtn" class="close-modal-btn" style="float: right;">×</button>
+    <br>
+    <div class="post-info">
+      <p class="department_post_owner">{{ session['departman'] }}</p>
+      <p class="timestamp">02.02.1998 <small>09:30</small></p>
+    </div>
+    <div class="post-image">
+      <img id="postImage" src="../static/Skoda-logo.png" alt="Post Image 1">
+    </div>
+    <div class="post-content">
+      <h4 id="postTitle">Post Title</h4>
+      <p id="postText">Post content goes here. This is a brief description or text related to the post.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="rpaDescription">
+    <br>
+    <h3>Duyuru Yayınlama</h3>
+    <br>
+    <small>Aşağıdaki alanları doldurarak Yüce portal üzerinden bir duyuru yayınlayabilirsiniz.</small>
+    <br>
+    <small>Duyurunun kullanıcılara mail ile iletilmesini istiyorsanız "Mail yoluyla bilgilendir" kutucuğunu seçebilirsiniz.</small>
+    <br>
+    <hr>
+    <br>
+  </div>
+  <button id="openModalBtn" class="btn btn-primary" style="width:90%; margin-right:5%; margin-left:5%;">Duyuru Önizlemesini Göster</button>
+  <br>
+  <br>
+  <form id="rpaForm" method="post" enctype="multipart/form-data" style="margin-left:5%; margin-right:5%;">
+    {{ render_field(form.subject, class="form-control") }}
+    <br>
+    <div id="editor-container" style="border-radius: 10px; height: 35%;"></div>
+    <input type="hidden" name="content" id="hidden-content">
+    <br>
+    {{ render_field(form.image, class="form-control") }}
+    <br>
+    {{ render_field(form.mail_reminder, class="form-control") }}
+    <br>
+    <br>
+    <button type="submit" class="btn btn-primary">Duyuruyu Paylaş</button>
+  </form>
+  <br>
+  <br>
+</div>
+
+<style>
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .post-card {
+    position: relative;
+    width: 50%;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (max-width: 767px) {
+    .post-card {
+      width: 90%;
+    }
+  }
+
+  .post-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+  }
+
+  .post-image img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+  }
+
+  .post-content {
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+  }
+
+  .close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("myModal");
+    const openModalBtn = document.getElementById("openModalBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+    // Initialize Quill editor
+    const quill = new Quill('#editor-container', {
+        theme: 'snow', // Or 'bubble'
+        modules: {
+            toolbar: [
+              [{ font: [] }, { size: [] }], // Font and size dropdown
+              ['bold', 'italic', 'underline', 'strike'], // Bold, italic, underline, strikethrough
+              [{ color: [] }, { background: [] }], // Text color and background color
+              [{ script: 'sub' }, { script: 'super' }], // Subscript and superscript
+              [{ header: [1, 2, 3, 4, 5, 6, false] }], // Header options
+              [{ list: 'ordered' }, { list: 'bullet' }], // Ordered and unordered lists
+              [{ indent: '-1' }, { indent: '+1' }], // Indentation
+              [{ align: [] }], // Text alignment
+              ['blockquote'], // Blockquote and code block
+              ['link', 'image', 'video'], // Insert links, images, and videos
+              ['clean'] // Remove formatting
+            ]
+        }
+    });
+
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function (e) {
+        const content = quill.root.innerHTML;  // Get HTML content from Quill
+        document.getElementById("hidden-content").value = content;  // Set content to the hidden input
+    });
+
+    openModalBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        // Get user inputs
+        const title = document.querySelector("input[name='subject']").value;
+        const content = quill.root.innerHTML; // Get content from Quill editor
+        const imageFile = document.querySelector("input[name='image']").files[0];
+
+        // Update modal content
+        document.getElementById("postTitle").textContent = title || "Konu";
+        document.getElementById("postText").innerHTML = content || "İçerik"; // Use .innerHTML to render formatted content
+
+        if (imageFile) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("postImage").src = e.target.result;
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            document.getElementById("postImage").src = "../static/Skoda-logo.png"; // Default image
+        }
+
+        // Show modal
+        modal.style.display = "flex";
+    });
+
+    closeModalBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
+</script>
+
+{% endblock body %}
+

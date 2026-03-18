@@ -1,0 +1,224 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="rpaDescription">
+        <br>
+        <h3><a href="/fiktif_araclar_menu" class="returnBtn">Fiktif Araçlar Menü</a> >> Fiktifteki Araçları Bayilerle Paylaş</h3>
+        <br>
+        <small>Fiktifte bulunan araçların ilgili bayilere mail yoluyla gönderilmesi için kullanabilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+        <form id="rpaForm" method = "post" enctype="multipart/form-data" style="margin-left: 25%; width: 50%;">
+            {{ render_field(form.tarih, class="form-control", id='tarih') }}
+            <br>
+            {{ render_field(form.mail_konu, class="form-control") }}
+            <br>
+            {{ render_field(form.mail_body, class="form-control", style="height: 20%", id='mail_body') }}
+            <br>
+            {% if btn_locked == False %}
+                <button type="submit" class="btn btn-primary">Mail Gönder</button>
+            {% else %}
+                <button type="submit" class="btn btn-primary" disabled>Mail Gönder</button>
+            {% endif %}
+        </form>
+        <br>
+        <div id="filters" style="margin-bottom:10px; margin-top:1%; margin-left: 2%;">
+            <div class="side-by-side_between" style="width: 100%; display: flex; align-items: center;">
+                <div style="width: 100%;">
+                    <label for="modelkirilim" style="margin-left:20px;">Model:&nbsp;</label>
+                    <select id="modelkirilim" style="width: 10%;" onchange="applyFilter()">
+                        <option value="">Tümü</option>
+                        <option value="Fabia">Fabia</option>
+                        <option value="Scala">Scala</option>
+                        <option value="Octavia">Octavia</option>
+                        <option value="Superb">Superb</option>
+                        <option value="Kamiq">Kamiq</option>
+                        <option value="Karoq">Karoq</option>
+                        <option value="Kodiaq">Kodiaq</option>
+                    </select>
+                    <label for="bayi_adi" style="margin-left:20px">Bayi:&nbsp;</label>
+                    <select id="bayi_adi" style="width: 15%;" onchange="applyFilter()">
+                        <option value="">Tümü</option>
+                        {% for bayii in bayii_aslist %}
+                            <option value="{{ bayii }}">{{ bayii }}</option>
+                        {% endfor %}
+                    </select>
+                    <p id="rowscount" style="margin-left: 2%; display: inline-flex;">Toplam Araç: {{ fiktifteki_araclar | length}}</p>
+                </div>
+                <div class="right_side_btn" style="display: flex; gap: 3%;">
+                    <button id="clearFilters" type="button" class="btn btn-primary" onclick="resetFilters()">Filtereleri Temizle</button>
+                </div>
+            </div>    
+        </div>
+        <div class="rpaContent">
+            <div id="tableContainer" style="overflow: visible;">
+                <table class="arac2elTable">
+                    <thead>
+                        <th style="width: 5%;">Sipariş Numarası</th>
+                        <th style="width: 12%;">Model Tanımı</th>
+                        <th style="width: 5%;">Renk</th>
+                        <th style="width: 7%;">Trim</th>
+                        <th style="width: 5%;">Bayi Adı</th>
+                        <th style="width: 5%;">Statü / Stok Durumu</th>
+                    </thead>
+                    <tbody>
+                        {% for result in fiktifteki_araclar %}
+                            <tr id="{{ result[7] }}">
+                                <td>{{ result[0] }}</td>
+                                <td>{{ result[1] }}</td>
+                                <td>{{ result[3] }}</td>
+                                <td>{{ result[4] }}</td>
+                                <td>{{ result[2] }}</td>
+                                <td>{{ result[5] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+<br>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deadlineField = document.getElementById('tarih');
+        const mailBodyField = document.getElementById('mail_body');
+        let previousDatePattern = /\*\*.\*\*.\*\*\*\*/; // Placeholder pattern for the initial value
+
+        // Get today's date in yyyy-mm-dd format
+        const today = new Date().toISOString().split('T')[0];
+        // Set the min attribute of the deadline date field to today
+        deadlineField.setAttribute('min', today);
+
+        function updateMailBody() {
+            const selectedDate = deadlineField.value;
+
+            if (selectedDate) {
+                const formattedDate = new Date(selectedDate).toLocaleDateString('tr-TR'); // Format date as dd.mm.yyyy
+                // Replace the placeholder or previous date with the new selected date
+                mailBodyField.value = mailBodyField.value.replace(previousDatePattern, formattedDate);
+
+                // Update the pattern to the new date for subsequent replacements
+                previousDatePattern = new RegExp(formattedDate.replace(/\./g, '\\.')); // Escape dots for regex
+            }
+        }
+
+        // Attach event listener to the `change` event of the deadline field
+        deadlineField.addEventListener('change', updateMailBody);
+
+        function sendRowsToApi(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Collect rows data
+            const tableRows = Array.from(document.querySelectorAll('.arac2elTable tbody tr'));
+            const rowsData = tableRows
+                .filter(row => row.style.display !== 'none') // Include only visible rows
+                .map(row => {
+                    const cells = row.querySelectorAll('td');
+                    return {
+                        id: row.id, // Row ID
+                        siparisNo: cells[0]?.textContent.trim(),
+                        modelTanim: cells[1]?.textContent.trim(),
+                        renk: cells[2]?.textContent.trim(),
+                        trim: cells[3]?.textContent.trim(),
+                        bayiAdi: cells[4]?.textContent.trim(),
+                        statu: cells[5]?.textContent.trim()
+                    };
+                });
+
+            // Get the deadline date value
+            const deadlineDate = document.getElementById('tarih').value;
+
+            // Send data to API
+            fetch('/fiktif_araclar_mailing_send_emails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ rows: rowsData, deadline: deadlineDate }) // Include deadline
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('API Response:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending the data.');
+            });
+        }
+
+        // Attach the sendRowsToApi function to the form submission
+        const form = document.querySelector('form');
+        form.addEventListener('submit', sendRowsToApi);
+    });
+
+    function applyFilter() {
+        // Get selected values from dropdowns
+        var selectedModel = document.getElementById('modelkirilim').value;
+        var selectedBayi = document.getElementById('bayi_adi').value;
+
+        // Get all rows in the table
+        var tableRows = document.querySelectorAll('.arac2elTable tbody tr');
+
+        // Loop through each row in the table
+        tableRows.forEach(function(row) {
+            // Get cell values for model and bayi from the row
+            var modelValue = row.cells[1].textContent.trim(); // Adjusted to the correct cell index for Model
+            var bayiValue = row.cells[4].textContent.trim(); // Adjusted to the correct cell index for Bayi Adı
+
+            // Logic to show or hide the row
+            var showRow = true;
+
+            if (selectedModel && selectedModel !== "" && selectedModel !== "Tümü" && !modelValue.toLowerCase().includes(selectedModel.toLowerCase())) {
+                showRow = false;
+            }
+            if (selectedBayi && selectedBayi !== "" && selectedBayi !== "Tümü" && bayiValue !== selectedBayi) {
+                showRow = false;
+            }
+
+            // Set row visibility based on the filter logic
+            row.style.display = showRow ? '' : 'none';
+        });
+
+        // Update the rows count display
+        var visibleRowsCount = Array.from(tableRows).filter(row => row.style.display !== 'none').length;
+        document.getElementById('rowscount').textContent = `Toplam Araç: ${visibleRowsCount}`;
+    }
+
+    function resetFilters() {
+        // Reset the dropdowns to their default value
+        document.getElementById('modelkirilim').value = "";
+        document.getElementById('bayi_adi').value = "";
+
+        // Get all rows in the table
+        var tableRows = document.querySelectorAll('.arac2elTable tbody tr');
+
+        // Show all rows
+        tableRows.forEach(function(row) {
+            row.style.display = '';
+        });
+
+        // Update the rows count display
+        document.getElementById('rowscount').textContent = `Toplam Araç: ${tableRows.length}`;
+    }
+
+
+    // Function to change the button text to a loading icon
+    function setButtonToLoading() {
+        var button = document.querySelector('button[type="submit"]');
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+        button.disabled = true; // Prevent multiple form submissions
+        button.classList.add('loading');
+    }
+
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+        setButtonToLoading();
+    });
+</script>
+
+{% endblock body %}

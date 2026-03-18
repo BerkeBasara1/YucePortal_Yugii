@@ -1,0 +1,57 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<div id="rpaPlatform" class="RpaForm">
+    <div id="platformContainer">
+        <div>
+            <br>
+            <div class="side-by-side_between" style="color: #0E3A2F;">
+                <h4 id="mainHeader">2. El Araç İşlemleri</h4>
+                <p class="right_side_btn">{{session["departman"]}} Departmanı</p>
+            </div>
+            <br>
+            <hr>
+        </div>
+        <div class="stock-container_index">
+            <a href="/YuceAutoUser/2ElAracEkleme">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-plus"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Satışa Araç Ekleme</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/YuceAutoUser/TeklifGoruntuleme">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-table"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Satıştaki Araçlar</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/YuceAutoUser/SurecTamamlanmisAraclar?page=1">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Süreci Tamamlanmış Araçlar</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/YuceAutoUser/Arac_2El_mail_tanim_ekrani">
+                <div class="stock-box">
+                    <h2 style="color:#0E3A2F; margin-bottom:20px; margin-top:20px;">
+                        <div class="stock-box-icon"><i class="fa-regular fa-envelope-open"></i></div>
+                        <br>
+                        <div class="stock-box-label"><p>Mail Tanım Ekranı</p></div>
+                    </h2>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock body %}
+    

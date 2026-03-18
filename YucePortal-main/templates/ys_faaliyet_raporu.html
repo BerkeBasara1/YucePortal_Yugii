@@ -1,0 +1,224 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription" style="margin-left:30px;">
+        <br>
+        <h3><a href="/YuceAutoUser/YS_Faaliyet_Menu" class="returnBtn">YS Faaliyet Menü</a> >> YS Faaliyet Raporu</h3>
+        <hr>
+        <br>
+    </div>
+    <div class="rpaContent" style="padding: 0px 3%;">
+        <form method = "post" id="ys_faaliyet_form" enctype="multipart/form-data" style="width: 100%;">
+            <div class="side-by-side_between">
+                <div style="width: 50%;">
+                    {{ render_field(form.gorusme_tarihi, class = "form-control") }}
+                    <br>
+                    {{ render_field(form.bayi_adi, class = "form-control", id="bayi_adi") }}
+                    <br>
+                    {{ render_field(form.aday_adi, class = "form-control") }}
+                    <br>
+                    {{ render_field(form.cinsiyet, class = "form-control") }}
+                    {{ render_field(form.satis_servis, class = "form-control", id="satis_servis") }}
+                    {{ render_field(form.aday_durumu, class="form-control", id="aday_durumu") }}
+                    <div id="aday_durumu_diger_container" style="display:none;">
+                        {{ render_field(form.aday_durumu_diger, class="form-control", id="aday_durumu_diger") }}
+                    </div>
+                    
+                    <hr>
+                    <p style="font-weight: bold; text-decoration: underline; color: #0E3A2F;">Sınav Sonuçları</p>
+                    {{ render_field(form.sinav_sayisal, class = "form-control") }}
+                    {{ render_field(form.sinav_sozel, class = "form-control") }}
+                    {{ render_field(form.sinav_envanter, class = "form-control") }}
+                    <hr>
+                </div>
+                <div style="width: 50%;">
+                    {{ render_field(form.pozisyon_adi, class = "form-control") }}
+                    <br>
+                    {{ render_field(form.aksiyon, class = "form-control") }}
+                    {{ render_field(form.bolgeci, class = "form-control", id="bolgeci") }}
+                    <br>
+                    {{ render_field(form.ik_bolgeci, class = "form-control", id="ik_bolgeci") }}
+                    <br>
+                    <div class="side-by-side">
+                        <div>
+                            {{ render_field(form.ise_baslama_tarihi, class = "form-control") }}
+                        </div>
+                        <div>
+                            {{ render_field(form.isten_cikis_tarihi, class = "form-control") }}
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    {{ render_field(form.cv, class = "form-control") }}
+                    <br>
+                    <br>
+                    {{ render_field(form.notlar, class = "form-control") }}
+                </div>
+            </div>
+            <br>
+            <br><br>
+            <div class="right_side_btn">
+                <button type="submit" class="btn btn-primary" style="min-width: 15%;">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<script>
+    const bayiData = {{ results | tojson }};
+
+    function updateBolgeciField() {
+        const bayiAdiSelect = document.getElementById('bayi_adi').value;
+        const satisServisValue = document.querySelector('input[name="satis_servis"]:checked') ? document.querySelector('input[name="satis_servis"]:checked').value : null;
+
+        const bayiIndex = bayiData.findIndex(bayi => bayi[0] === bayiAdiSelect);
+
+        const bolgeciField = document.getElementById('bolgeci');
+
+        if (bayiIndex !== -1 && satisServisValue) {
+            let personToSet;
+
+            if (satisServisValue === 'Satış') {
+                personToSet = bayiData[bayiIndex][1];
+            } else if (satisServisValue === 'Servis') {
+                personToSet = bayiData[bayiIndex][2];
+            }
+
+            // Set the value of the bolgeci field to the selected person
+            bolgeciField.value = personToSet;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const bayiAdiSelect = document.getElementById('bayi_adi');
+        const satisServisRadioButtons = document.querySelectorAll('input[name="satis_servis"]');
+
+        // Add change event listener for bayi_adi (dropdown)
+        bayiAdiSelect.addEventListener('change', updateBolgeciField);
+
+        // Add change event listeners for satis_servis radio buttons
+        satisServisRadioButtons.forEach(function (radioButton) {
+            radioButton.addEventListener('change', updateBolgeciField);
+        });
+
+        const adayIsmiField = document.querySelector('input[name="aday_adi"]');
+
+        // Prevent numeric input in aday_ismi field
+        adayIsmiField.addEventListener('input', function (event) {
+            const sanitizedValue = this.value.replace(/[0-9]/g, ''); // Remove any numeric characters
+            if (this.value !== sanitizedValue) {
+                this.value = sanitizedValue;
+            }
+        });
+
+        // Optional: Prevent pasting numeric content
+        adayIsmiField.addEventListener('paste', function (event) {
+            const paste = (event.clipboardData || window.clipboardData).getData('text');
+            if (/[0-9]/.test(paste)) {
+                event.preventDefault(); // Block the paste event if it contains numerics
+            }
+        });
+
+        const adayDurumuRadios = document.querySelectorAll('input[name="aday_durumu"]');
+        const adayDurumuDigerContainer = document.getElementById('aday_durumu_diger_container');
+        const adayDurumuDiger = document.getElementById('aday_durumu_diger');
+
+        // Function to show/hide aday_durumu_diger based on selection
+        function toggleAdayDurumuDiger() {
+            let selectedValue = '';
+            for (const radio of adayDurumuRadios) {
+                if (radio.checked) {
+                    selectedValue = radio.value;
+                    break;
+                }
+            }
+
+            if (selectedValue === 'Diğer') {
+                adayDurumuDigerContainer.style.display = 'block';
+            } else {
+                adayDurumuDigerContainer.style.display = 'none';
+                adayDurumuDiger.value = '';
+            }
+        }
+
+        // Initially check on page load
+        toggleAdayDurumuDiger();
+
+        // Add event listener for changes to each radio button
+        adayDurumuRadios.forEach(radio => {
+            radio.addEventListener('change', toggleAdayDurumuDiger);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const sessionName = "{{ session['name'] }}";
+        
+        // Get the ik_bolgeci dropdown field
+        const ikBolgeciField = document.getElementById('ik_bolgeci');
+
+        if (sessionName) {
+            for (let i = 0; i < ikBolgeciField.options.length; i++) {
+                // If sessionName matches any option, set it as the selected option
+                if (ikBolgeciField.options[i].text.includes(sessionName)) {
+                    ikBolgeciField.selectedIndex = i;
+                    break; // Stop once the match is found
+                }
+            }
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Disable the bolgeci field on page load
+        const bolgeciField = document.getElementById('bolgeci');
+        bolgeciField.disabled = true;
+        document.getElementById("ys_faaliyet_form").addEventListener("submit", function(event) {
+            bolgeciField.disabled = false;
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const pozisyonAdiSelect = document.getElementById('pozisyon_adi');
+    const sinavEnvanterField = document.getElementById('sinav_envanter');
+    const sinavSayisalField = document.getElementById('sinav_sayisal');
+    const sinavSozelField = document.getElementById('sinav_sozel');
+
+    // Function to update the fields based on the selected option
+    function updateFields() {
+        const selectedPozisyon = pozisyonAdiSelect.value.toLowerCase();
+        
+        if (selectedPozisyon.includes('müdürü')) {
+            // If the selected option includes "müdürü", enable sinav_envanter, disable sinav_sayisal and sinav_sozel
+            sinavEnvanterField.disabled = false;
+            sinavSayisalField.disabled = true;
+            sinavSozelField.disabled = true;
+
+            // Clear values of disabled fields
+            sinavSayisalField.value = '';
+            sinavSozelField.value = '';
+        } else {
+            // Otherwise, disable sinav_envanter, enable sinav_sayisal and sinav_sozel
+            sinavSayisalField.disabled = false;
+            sinavSozelField.disabled = false;
+
+            // Clear value of the disabled field
+            sinavEnvanterField.value = '';
+        }
+    }
+
+    // Add event listener to the pozisyon_adi dropdown
+    pozisyonAdiSelect.addEventListener('change', updateFields);
+
+    // Initial check in case the field is pre-filled
+    updateFields();
+});
+
+
+</script>
+<style>
+    #ys_faaliyet_form dd input{
+        box-shadow:none;
+    }
+</style>
+
+{% endblock body %}

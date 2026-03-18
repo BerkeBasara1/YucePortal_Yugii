@@ -1,0 +1,269 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+<div id="rpaPlatform" class="RpaForm">
+    {% if error_message %}
+    <div class="alert alert-warning">Hata</div>
+    {% endif %}
+    <div id="platformContainer">
+        <br>
+        <div class="side-by-side_between" style="color: #0E3A2F;">
+            <h4 style="margin-left: 3%;">Merhaba {{ session["name"] }}!</h4>
+            {% if session["YA_user"] == True %}
+                <p class="right_side_btn">{{session["departman"]}} Departmanı</p>
+            {% endif %}
+        </div>
+        <br>
+        <div class="stock-container_index">
+            {% if session["departman"] == "Satış" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/sabahraporu">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-newspaper"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Sabah Raporu</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Satış" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/satis_ongoru_sabah">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-newspaper"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Öngörü Raporu</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Satış" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/fiktif_araclar_menu">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-envelope-open"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Fiktifteki Araçlar Bayi Bildirimi</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Satış" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/aksamraporu">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-newspaper"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Akşam Raporu</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Satış" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/satis_mailing">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-envelope-open"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Satış Hedef Mail</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "SSH" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/sshparcaraporu">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-newspaper"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>SSH Raporu</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "SSH" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/garanti_imha_kullanici_detay_raporu_cekme">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-table-list"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Garanti İmha Kullanıcıları</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Strateji ve Planlama" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/planlama_pcl_pdf">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Fatura PDF Bulma</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Bilgi Teknolojileri" or session["username"] == "leylaa" %}
+                <a href="/dashboard_yetkilendirme">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-universal-access"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Dashboard Yetkilendirme</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Strateji ve Planlama" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/aylik_kurgu">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-file-excel"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Kurgu Excel</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/data_refresh">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Excel Veri Güncelleme</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Ürün" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/kampanya_yukleme">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-upload"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Kampanya Yükleme</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Strateji ve Planlama" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/odd">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-upload"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>ODD Verisi Yükleme</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Ürün" or session["departman"] == "Bilgi Teknolojileri" %}
+                <a href="/jato_excel_toDB">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-solid fa-upload"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Jato Verileri</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "İdari İşler" or session["departman"] == "Bilgi Teknolojileri" %}
+                {% if session["superuser"] == "0" %}
+                    <a href="/YuceAutoUser/Arac_2El_Menu">
+                        <div class="stock-box">
+                            <h2>
+                                <div class="stock-box-icon"><i class="fa-solid fa-car"></i></div>
+                                <br>
+                                <div class="stock-box-label"><p>2. El Araç Satış İşlemleri</p></div>
+                            </h2>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endif %}
+            {% if session["departman"] == "Bilgi Teknolojileri" or session["departman"] == "İnsan Kaynakları"  %}
+                <a href="/YuceAutoUser/YS_Faaliyet_Menu">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-newspaper"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>YS Faaliyet Raporu</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Bilgi Teknolojileri" or session["departman"] == "Müşteri Deneyimi" %}
+                <a href="/trigger_MusDeneyimi_AracTahsis_toDB">
+                    <div class="stock-box">
+                        <h2>
+                            <div class="stock-box-icon"><i class="fa-regular fa-newspaper"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Araç Tahsis Otomasyon</p></div>
+                        </h2>
+                    </div>
+                </a>
+            {% endif %}
+            {% if session["departman"] == "Bilgi Teknolojileri" %}
+            <a href="/Gecici_Arac_Tahsis_Menu">
+                <div class="stock-box">
+                    <h2>
+                        <div class="stock-box-icon"><i class="fa-solid fa-car"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Geçici Araç Tahsis</p></div>
+                    </h2>
+                </div>
+            </a>
+            {% endif %}
+            {% if session["YA_user"] == True %}
+                    <a href="/Arac_2El_Ekrani_YA_Personel">
+                        <div class="stock-box">
+                            <h2>
+                                <div class="stock-box-icon"><i class="fa-solid fa-gavel"></i></div>
+                                <br>
+                                <div class="stock-box-label"><p>2. El Araç Teklif</p></div>
+                            </h2>
+                        </div>
+                    </a>
+            {% endif %}
+            {% if session["YA_user"] == True %}
+            <a href="/pdf_comparison">
+                <div class="stock-box">
+                    <h2>
+                        <div class="stock-box-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>PDF Karşılaştırma</p></div>
+                    </h2>
+                </div>
+            </a>
+            {% endif %}
+            {% if session["YA_user"] == False %}
+            <a href="/2.El_Arac_ekrani">
+                <div class="stock-box">
+                    <h2>
+                        <div class="stock-box-icon"><i class="fa-solid fa-gavel"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>Yüce Auto Araçlar Teklif</p></div>
+                    </h2>
+                </div>
+            </a>
+            <a href="/bayi_2.elAraclar_sonuclar">
+                <div class="stock-box">
+                    <h2>
+                        <div class="stock-box-icon"><i class="fa-solid fa-check-to-slot"></i></div>
+                            <br>
+                            <div class="stock-box-label"><p>İhalesi Tamamlanmış Araçlar</p></div>
+                    </h2>
+                </div>
+            </a>
+            {% endif %}
+            
+        </div>
+        <br>
+        <br>
+    </div>
+</div>
+<br>
+
+{% endblock body %}
+    

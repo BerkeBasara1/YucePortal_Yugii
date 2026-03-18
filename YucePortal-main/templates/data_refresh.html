@@ -1,0 +1,40 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Filo Excel Verileri Güncelleme</h3>
+        <br>
+        <small>Onedrive üzerindeki Filo Satış verilerinin güncellenmesi için tetikleme ekranı.</small>
+        <br>
+        <hr>
+        <br>
+      </div>
+      <div class="rpaContent">
+        <a href="">
+          <button class="btn btn-primary">&nbsp;&nbsp;&nbsp;Çalıştır&nbsp;&nbsp;&nbsp;</button>
+        </a>
+        <br>
+      </div>
+      <br>
+    </div>
+</div>
+<script>
+  // Function to change the button text to a loading icon
+  function setButtonToLoading() {
+    var button = document.querySelector('button.btn.btn-primary');
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+    button.disabled = true; // Prevent multiple button clicks
+    button.classList.add('loading');
+  }
+
+  // Attach an event listener to the button's click event
+  document.querySelector('button.btn.btn-primary').addEventListener('click', function () {
+    setButtonToLoading();
+    // You can perform additional actions here or trigger form submission as needed
+  });
+</script>
+
+{% endblock body %}

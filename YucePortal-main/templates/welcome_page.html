@@ -1,0 +1,743 @@
+ <head>
+    <title>Yüce Portal (Beta)</title>
+    <link rel="icon" type="image/png" href="../static/Skoda Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+{% include "includes/messages.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<body>
+    <div id="backgroundContainer"></div>
+
+    <div class="animated-bg" id="yuceportal">
+        <h2>Yüce Portal</h2>
+    </div>
+
+    <div class="login-area">
+        <div class="half-screen">
+            <div class="loginContainer left-login">
+                <h3>Yüce Auto Giriş</h3>
+                <form method="post">
+                    {{ render_field(form.username) }}
+                    <br>
+                    {{ render_field(form.password) }}
+                    <br>
+                    <button type="submit" id="loginBtnYA" class="btn btn-primary loginBtn"><b>Giriş</b></button>
+                </form>
+            </div>
+        </div>
+        <div class="half-screen">
+            <div class="loginContainer right-login">
+                <h3>Bayi Giriş</h3>
+                <form id="bayiForm" method="post">
+                    {{ render_field(form2.mail, id="bayiMail") }}
+                    <br>
+                    {{ render_field(form2.password, id="bayiPassword") }}
+                    <br>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+                        <button type="button" id="loginBtnBayi" class="btn btn-primary loginBtn" style="padding: 3% 6%;">Giriş</button>
+                        <button type="button" class="btn btn-primary loginBtn" onclick="window.location.href='/forgot_password';" style="padding: 3% 6%;">Şifremi Unuttum</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="slider-container">
+        <div class="slider" id="slider">
+            <a href="https://turkuaz.dohas.com.tr/Admin/UILogin.aspx?ReturnUrl=%2f&__019270E5D1F8__=A7JfBnED6H4%3d__&t=1728470962680T" target="_blank">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='TurkuazLogin.png') }}">
+                </div>
+            </a>
+            <a href="https://grp.cpn.vwg/isam/sps/authsvc/policy/grpuidpw?Target=https://grp.cpn.vwg/" target="_blank">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='GRP.png') }}">
+                </div>
+            </a>
+            <a href="https://urunportali.skoda.com.tr/" target="_blank">
+                <div class="card" style="background-color: #055188;">
+                    <img src="{{ url_for('static', filename='UrunPortal.jpeg') }}">
+                </div>
+            </a>
+            <a href="https://destek.skoda.com.tr/#!/login" target="_blank">
+                <div class="card" style="background-color: #264E44;">
+                    <img src="{{ url_for('static', filename='YA_TYS.png') }}">
+                </div>
+            </a>
+            <a href="https://talep.dohas.com.tr/#!/login" target="_blank">
+                <div class="card" style="background-color: #206FA9;">
+                    <img src="{{ url_for('static', filename='Turkuaz_TYS.png') }}">
+                </div>
+            </a>
+            <a href="https://garantiimha.yuceauto.com.tr/login/" target="_blank">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='garantiimha.jpeg') }}">
+                </div>
+            </a>
+            <a href="https://www.skodaakademi.com/Home/Login" target="_blank">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='skodaakademi.png') }}">
+                </div>
+            </a>
+        </div>
+        <div class="slider-nav left" onclick="moveSlider(1)">&#8249;</div>
+        <div class="slider-nav right" onclick="moveSlider(-1)">&#8250;</div>
+    </div>
+
+    <div id="PopUpModal" class="modal" style="display:none;">
+        <div class="PopUpModalContainer">
+            <div class="PopUpModalContent">
+                <span id="popUpIcon"></span>
+                <br><br>
+                <span id="popUpText"></span>
+            </div>
+            <br>
+            <div class="PopUpModalButton">
+                <button type="button" id="okBtn" class="btn btn-primary">Tamam</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    * {
+        font-family: 'SKODANextW05-Bold', sans-serif;
+    }
+
+    .alert.alert-danger{
+        background-color: #F7B046;
+        color:#000000;
+        padding: 10px;
+        border-bottom: 1px solid red;
+    }
+
+    ::selection {
+        background-color: #78FAAE;
+        color: #0E3A2F;
+    }
+
+    .loginContainer {
+        position: fixed;
+        max-height: 60%;
+        padding: 1% 3%;
+        text-align: center;
+        color: white;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0.8), 0 6px 20px rgba(0, 0, 0, 0.8);
+        transition: padding 0.5s ease-in-out;
+    }
+
+    .loginContainer:hover, .loginContainer:focus-within {
+        padding: 1% 7%;
+    }
+
+    .loginContainer h3 {
+        color: #78FAAE;
+    }
+
+    .login-area {
+        position: fixed;
+        width: 100%;
+        height: calc(100vh - 300px);
+        top: 200px;
+        display: flex;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    .half-screen {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: #0E3A2F;
+        transition: background-color 0.3s ease, font-size 0.8s ease;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .left {
+        left: 0;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+        background: linear-gradient(-45deg, #78FAAE, #0E3A2F, #78FAAE);
+        background-size: 200% 1000%;
+        animation: gradientShift 50s ease infinite;
+    }
+
+    .dark-mode .left {
+        background: linear-gradient(-45deg, #333333, black, #333333);
+    }
+
+    .dark-mode .right {
+        background: linear-gradient(-45deg, #333333, black, #333333);
+    }
+
+    .right {
+        right: 0;
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 15px;
+        background: linear-gradient(45deg, #78FAAE, #0E3A2F, #78FAAE);
+        background-size: 200% 1000%;
+        animation: gradientShift 50s ease infinite;
+    }
+
+    @keyframes slideInLeft {
+        0% {
+            transform: translateX(-100%); /* Start from left off-screen */
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 0.95;
+        }
+    }
+
+    @keyframes slideInRight {
+        0% {
+            transform: translateX(100%); /* Start from right off-screen */
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 0.95;
+        }
+    }
+
+    @keyframes slideInTop {
+        0% {
+            transform: translateY(-100%); /* Start from top off-screen */
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 0.95;
+        }
+    }
+
+    @keyframes slideInBottom {
+        0% {
+            transform: translateY(100%); /* Start from bottom off-screen */
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 0.95;
+        }
+    }
+
+    .left-login {
+        left: 0;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+        background: linear-gradient(-45deg, #78FAAE, #0E3A2F, #78FAAE);
+        background-size: 200% 1000%;
+        animation: gradientShift 50s ease infinite, slideInLeft 0.5s forwards; /* Slide in from left */
+    }
+
+    .right-login {
+        right: 0;
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 15px;
+        background: linear-gradient(45deg, #78FAAE, #0E3A2F, #78FAAE);
+        background-size: 200% 1000%;
+        animation: gradientShift 50s ease infinite, slideInRight 0.5s forwards; /* Slide in from right */
+    }
+
+    .dark-mode .left-login {
+        background: linear-gradient(-45deg, #333333, black, #333333);
+    }
+
+    .dark-mode .right-login {
+        background: linear-gradient(-45deg, #333333, black, #333333);
+    }
+
+    .btn-primary {
+        padding: 3% 15%;
+        font-size: 18px;
+        background-color:white;
+        color:#0E3A2f;
+        border-radius:10px;
+        border:1px solid white;
+        cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0E3A2F;
+        color: #78FAAE;
+        border:1px solid #78FAAE;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+
+    .btn-primary:focus {
+        background:#0E3A2F !important;
+        color:#78FAAE !important;
+        outline: none  !important;
+        box-shadow: 0 0 5px #78FAAE !important;
+        border: 1px solid #78FAAE !important;
+    }
+
+    .btn-primary:focus:hover {
+        background:#78FAAE !important;
+        color:#0E3A2F !important;
+        border: 1px solid #78FAAE !important;
+        cursor: pointer !important;
+    }
+
+    label {
+        font-size: 18px;
+    }
+
+    input {
+        margin-top: 5px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    dd {
+        margin-inline-start: 0px;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, sans-serif;
+        user-select: none; /* For modern browsers */
+        -webkit-user-select: none; /* For Safari */
+        -moz-user-select: none; /* For Firefox */
+        -ms-user-select: none; /* For Internet Explorer/Edge */
+    }
+
+    .animated-bg {
+        position: relative;
+        width: 100%;
+        text-align: center;
+        color: #78FAAE;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(45deg, #78FAAE, #0E3A2F, #78FAAE);
+        background-size: 120% 2000%;
+        animation: gradientShift 20s ease infinite;
+        opacity:0.95;
+        animation: gradientShift 50s ease infinite, slideInTop 0.5s forwards; /* Slide in from top */
+        z-index: 1000;
+    }
+
+    .dark-mode .animated-bg {
+        background-color: black;
+    }
+
+    .dark-mode .animated-bg {
+        background: linear-gradient(to top, black, transparent);
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .slider-container {
+        position: fixed;
+        width: 100%;
+        bottom: -90px; /* Move it down so half is hidden */
+        left: 0;
+        background-color: #E3E5E6;
+        padding: 18px 0;
+        z-index: 1000;
+        animation: gradientShift 50s ease infinite, slideInBottom 0.5s forwards;
+        cursor: default;
+        transition: bottom 0.3s ease-in-out;
+    }
+
+    .dark-mode .slider-container {
+        background-color: black;
+    }
+
+    .slider-container:hover {
+        bottom: 0; /* Move it up fully into view */
+    }
+
+    .slider-container::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: -5px;
+        width: 100%;
+        height: 7px;
+        background: linear-gradient(to top, #E3E5E6, transparent);
+    }
+
+    .dark-mode .slider-container::after {
+        background-color: black;
+        background: linear-gradient(to top, black, transparent);
+    }
+
+    .slider {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .slider a {
+        text-decoration: none;
+    }
+
+    .card {
+        width: 500px;
+        height: 150px;
+        overflow: hidden;
+        margin: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #78FAAE;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.1);
+        box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #78FAAE;
+        font-size: 70px;
+        cursor: pointer;
+        padding: 0px 20px;
+    }
+
+    .slider-nav:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #78FAAE;
+        font-size: 75px;
+        transition: font-size 0.3s ease;
+    }
+
+    .slider-nav.left {
+        left: 0;
+    }
+
+    .slider-nav.right {
+        right: 0;
+    }
+
+    img {
+        max-width: 100%;
+        object-fit: cover;
+    }
+
+    .dark-mode #backgroundContainer {
+        background-image: url("../static/Skoda_Logo_Black.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    #loading {
+        color: #0E3A2F;
+    }
+
+    .loginBtn:disabled {
+        background-color: #A0A7A8;
+    }
+
+    .loginBtn:disabled:hover {
+        cursor: not-allowed;
+        background-color: #A0A7A8;
+        color: #0E3A2F;
+        border: none;
+    }
+
+    .btn-primary:hover #loading {
+        color: #78FAAE;
+    }
+
+    #popUpModal {
+        display: none;
+        position: static;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+    }
+
+    .PopUpModalContainer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #F1F2F2;
+        padding: 20px;
+        border: 1px solid #cacecf;
+        border-radius: 25px;
+        width: 20%;
+        max-width: 50%;
+        max-height: 80vh;
+        box-sizing: border-box;
+        box-shadow: 0 5px 15px rgba(14, 58, 47, 0.8);
+        z-index: 2;
+    }
+
+    .PopUpModalContent {
+        text-align: center;
+    }
+
+    .PopUpModalButton button {
+        background-color: #0E3A2F;
+        color: #78FAAE;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    #popUpIcon {
+        font-size: 50px;
+        color: #F7B046;
+    }
+
+    #popUpText {
+        font-size: 17px;
+        color: #0E3A2F;
+    }
+</style>
+
+<script>
+    let slider = document.getElementById('slider');
+    let scrollAmount = 0;
+    let startX = 0; // To store the starting touch position
+
+    window.onload = function() {
+        const leftLogin = document.querySelector('.left-login');
+        const rightLogin = document.querySelector('.right-login');
+        const header = document.querySelector('.animated-bg')
+
+        // Add a delay if you want them to slide in a bit later
+        setTimeout(() => {
+            leftLogin.style.opacity = '0.95';
+            rightLogin.style.opacity = '0.95';
+            header.style.opacity = '0.95';
+        }, 300);
+    };
+
+    function moveSlider(direction) {
+        const slideWidth = 1100; // card width + margin
+        scrollAmount += direction * slideWidth;
+
+        // Prevent sliding out of bounds
+        const maxScroll = -(slider.scrollWidth - slider.clientWidth);
+        if (scrollAmount > 0) scrollAmount = 0;
+        if (scrollAmount < maxScroll) scrollAmount = maxScroll;
+
+        slider.style.transform = `translateX(${scrollAmount}px)`;
+    }
+
+    // Touch event listeners for swipe functionality
+    slider.addEventListener('touchstart', (event) => {
+        startX = event.touches[0].clientX; // Get the initial touch position
+    });
+
+    slider.addEventListener('touchmove', (event) => {
+        event.preventDefault(); // Prevent scrolling while swiping
+    });
+
+    slider.addEventListener('touchend', (event) => {
+        const endX = event.changedTouches[0].clientX; // Get the final touch position
+        const diffX = endX - startX; // Calculate the difference
+
+        // Determine swipe direction and move slider accordingly
+        if (Math.abs(diffX) > 10) { // Threshold for swipe detection
+            if (diffX > 0) {
+                moveSlider(1); // Swipe right
+            } else {
+                moveSlider(-1); // Swipe left
+            }
+        }
+    });
+
+    window.addEventListener('resize', function() {
+        var animatedBgHeight = document.querySelector('.animated-bg').offsetHeight;
+        var sliderContainerHeight = document.querySelector('.slider-container').offsetHeight;
+
+        document.querySelector('.login-area').style.top = `${animatedBgHeight}px`;
+
+        document.querySelector('.login-area').style.height = `${window.innerHeight - sliderContainerHeight - animatedBgHeight}px`;
+    });
+
+    // Initial calculation
+    window.dispatchEvent(new Event('resize'));
+    // Function to change the button text to a loading icon
+    function setButtonToLoading(buttonId) {
+        var button = document.getElementById(buttonId);
+        button.innerHTML = '<i id="loading" class="fas fa-spinner fa-spin"></i> Yükleniyor..';
+        button.disabled = true; // Prevent multiple form submissions
+    }
+
+    // Attach an event listener to the form submission
+    document.querySelector('form').addEventListener('submit', function () {
+        setButtonToLoading('loginBtnYA');
+    });
+
+    function createConfettiEffect() {
+        function createConfetti(x) {
+            confetti({
+                particleCount: 25,
+                startVelocity: 60,
+                angle: 90,
+                spread: 500,
+                gravity: 1,
+                origin: { x, y: 0 },
+                colors: ['#78faae', '#0e3a2f']
+            });
+        }
+        for (let i = 0; i <= 1; i += 0.1) {
+            createConfetti(i);
+        }
+    }
+
+    // Add event listener to the div with id "yuceportal"
+    document.addEventListener('DOMContentLoaded', function() {
+        const yuceportalDiv = document.getElementById('yuceportal');
+
+        if (yuceportalDiv) {
+            yuceportalDiv.addEventListener('click', function() {
+                createConfettiEffect();
+            });
+        }
+    });
+
+    function bayiLogin() {
+        const bayiMail = document.getElementById('bayiMail').value;
+        const bayiPassword = document.getElementById('bayiPassword').value;
+        const bayiLoginBtn = document.getElementById('loginBtnBayi')
+
+        const data = {
+            mail: bayiMail,
+            password: bayiPassword
+        };
+
+        // Send the data to the API using fetch
+        fetch('/bayi_login_api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Success:', data.message);
+                window.location.href = "/index";
+            } else {
+                console.error('Error:', data.message);
+                showPopUpModal(data.message, 'alert', function() {
+                    location.reload();
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            showPopUpModal('Bir hata oluştu, tekrar deneyin.', 'error', function() {
+                location.reload();
+            });
+        });
+    }
+
+    document.getElementById('loginBtnBayi').addEventListener('click', bayiLogin);
+
+    document.getElementById("loginBtnBayi").addEventListener("click", function() {
+        setButtonToLoading("loginBtnBayi");
+    });
+
+    // Add event listener to trigger button click on "Enter" key press
+    document.getElementById('bayiForm').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();  // Prevent form submission (default behavior)
+            bayiLogin();  // Trigger the login function
+        }
+    });
+
+    function showPopUpModal(message, type, callback) {
+        const modal = document.getElementById('PopUpModal');
+        const popUpText = document.getElementById('popUpText');
+        const popUpIcon = document.getElementById('popUpIcon');
+        const okBtn = document.getElementById('okBtn');
+
+        if (modal && popUpText && popUpIcon) {
+            // Set the message
+            popUpText.innerHTML = message;
+
+            // Set the icon and color based on type
+            if (type === 'alert') {
+                popUpIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: #F7B046;"></i>';
+            } else if (type === 'question') {
+                popUpIcon.innerHTML = '<i class="fa-regular fa-circle-question" style="color: #394748;"></i>';
+            } else if (type === 'error') {
+                popUpIcon.innerHTML = '<i class="fa-solid fa-xmark" style="color: #F15252;"></i>';
+            } else if (type === 'check') {
+                popUpIcon.innerHTML = '<i class="fa-regular fa-circle-check" style="color: #0961A1;"></i>';
+            }
+
+            // Display the modal
+            modal.style.display = 'block';
+
+            // Set up "OK" button to close the modal and execute any callback function
+            okBtn.onclick = function() {
+                modal.style.display = 'none';
+                if (callback) callback(); // Execute callback function if provided
+            };
+
+            // Optional: Close the modal if the user clicks outside of it
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    if (callback) callback();
+                }
+            };
+        } else {
+            console.error("Modal elements not found");
+        }
+    }
+
+    var abc = '{{erra}}';
+    console.log(abc);
+    if (abc == "Yaah") {
+        showPopUpModal('Girdiğiniz bilgiler hatalıdır.<br>Lütfen tekrar deneyiniz.', 'error');
+    };
+    if (abc == "Sevval_was_here") {
+        document.querySelectorAll('input').forEach(function(input) {
+            input.disabled = true;
+        });
+        document.querySelectorAll('button.loginBtn').forEach(function(button) {
+            button.disabled = true;
+        });
+        showPopUpModal('Mail adresine yeni bir şifre gönderilmiştir', 'check', function () {
+            window.location.href = "{{ url_for('welcome_page', erra='Nope') }}";
+        });
+    };
+
+
+</script>
+
+{% endblock body %}

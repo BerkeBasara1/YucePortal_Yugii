@@ -1,0 +1,245 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+
+<div id="rpaPlatform">
+    <div class="platformContainer">
+        <div class="rpaDescription">
+            <br>
+            <h3>
+              <a href="/YA_otopark_rezerve" class="returnBtn">Otopark Rezervasyon Sistemi</a> 
+              >> Tüm Rezervasyonlarım
+            </h3>
+            <br>
+            <small>Bugüne kadar yapmış olduğunuz tüm rezervasyonları buradan takip edebilirsiniz.</small>
+            <hr>
+        </div>
+    </div>
+    <br><br>
+    <div class="right_side_btn">
+        <label>
+            <input type="checkbox" id="showAll"/>
+            &nbsp;İptaller Dahil Göster
+        </label>
+    </div>
+    <div class="rpaContent">
+        <div id="tableContainer" style="overflow: visible;">
+            <table class="arac2elTable" style="color: #0E3A2F">
+                <thead>
+                    <tr>
+                        <th style="width: 2%;"></th>
+                        <th>Plaka No</th>
+                        <th>Oluşturma Tarihi</th>
+                        <th>Yer</th>
+                        <th>Rezervasyon Tarih</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr class="{{result[6]}}">
+                            {% if result[6] == 1 %}
+                              <td>
+                                <button 
+                                    class="btn btn-primary deleteBtn" 
+                                    id="deleteBtn_{{ result[0] }}" 
+                                    type="button"
+                                >
+                                  <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                              </td>
+                            {% else %}
+                              <td></td>
+                            {% endif %}
+                            <td>{{ result[2] }}</td>
+                            <td>{{ result[5] }}</td>
+                            <td>{{ result[4] }}</td>
+                            <td>{{ result[3] }}</td>
+                            {% if result[6] == 1 %}
+                                <td><i class="fa-solid fa-hourglass-start" id="status_active"></i></td>
+                            {% elif result[6] == 2 %}
+                                <td><i class="fa-solid fa-hourglass-end" id="status_overtime"></i></td>
+                            {% else %}
+                                <td><i class="fa-solid fa-xmark" id="status_cancelled"></i></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </div>  
+</div>
+<br>
+<div id="TextAreaPopUpModal" class="modal" style="display:none;">
+    <div class="PopUpModalContainer">
+        <div class="PopUpModalContent">
+            <span id="popUpIcon"></span>
+            <br><br>
+            <span id="popUpText"></span>
+        </div>
+        <br>
+        <div>
+            <form id="rpaForm" method="post" enctype="multipart/form-data">
+                {{ render_field(form.aciklama, class="form-control", id="aciklama") }}
+            </form>
+        </div>
+        <div class="PopUpModalButton">
+            <button type="button" class="btn btn-primary confirm">Evet</button>
+            <button type="button" class="btn btn-primary deny">Hayır</button>
+        </div>
+    </div>
+</div>
+<style>
+    #status_active {
+        color: #0E3A2F;
+    }
+
+    #status_overtime {
+        color: #F7B046;
+    }
+
+    #status_cancelled {
+        color: #F15252;
+    }
+
+    .dark-mode #status_active {
+        color: #78FAAE;
+    }
+
+    #tableContainer {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto !important; /* Ensure horizontal scrolling */
+        border-bottom: 1px solid #0E3A2F;
+        display: block;
+        white-space: nowrap; /* Prevents text wrapping */
+    }
+
+    /* Ensure table fits within its container */
+    .arac2elTable {
+        width: 100%;
+        text-align: center;
+        color: #0E3A2F;
+        border-collapse: collapse;
+    }
+
+    /* MOBILE FIX */
+    @media screen and (max-width: 1000px) {
+        #tableContainer {
+            overflow-x: auto !important; /* Ensure scrolling */
+            display: block;
+            -webkit-overflow-scrolling: touch; /* Improves iOS scrolling */
+        }
+
+        .arac2elTable {
+            min-width: 600px; /* Ensures table doesn't shrink too much */
+            width: max-content; /* Keeps table scrollable */
+        }
+
+    }
+</style>
+<script>
+    function showTextAreaPopUpModal(message, type, callback) {
+        const modal = document.getElementById('TextAreaPopUpModal');
+        const popUpText = modal.querySelector('#popUpText');
+        const popUpIcon = modal.querySelector('#popUpIcon');
+        if (modal && popUpText) {
+            popUpText.innerHTML = message;
+
+            if (type == 'alert') {
+                popUpIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: #F7B046;"></i>'
+            }
+            else if (type == 'question') {
+                popUpIcon.innerHTML = '<i class="fa-regular fa-circle-question" style="color: #394748;"></i>'
+            }
+            else if (type == 'error') {
+                popUpIcon.innerHTML = '<i class="fa-solid fa-xmark" style="color: #F15252;"></i>'
+            }
+            else if (type == 'check') {
+                popUpIcon.innerHTML = '<i class="fa-regular fa-circle-check" style="color: #0961A1"></i>'
+            }
+
+            modal.style.display = 'flex';
+
+            const confirmButton = modal.querySelector('.confirm');
+            confirmButton.onclick = function() {
+                modal.style.display = 'none';
+                if (callback) callback();
+            };
+
+            const denyButton = modal.querySelector('.deny');
+            denyButton.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        } else {
+            console.error("Modal or popUpText element not found");
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1) Get all buttons that start with "deleteBtn_"
+        const allDeleteBtns = document.querySelectorAll("[id^='deleteBtn_']");
+
+        // 2) Attach click event to each button
+        allDeleteBtns.forEach(button => {
+            button.addEventListener("click", function() {
+                // Extract the reservation ID from the button's ID
+                const reservationId = button.id.split("_")[1];
+
+                showTextAreaPopUpModal('Bu rezervasyonu silmek istediğinize emin misiniz?', 'question', function() {
+                    // 3) Retrieve the 'aciklama' value from the textarea
+                    const aciklamaValue = document.getElementById('aciklama').value;
+
+                    // 4) Make a POST request to the backend with both reservation_id & aciklama
+                    fetch("/delete_reservation", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `reservation_id=${encodeURIComponent(reservationId)}&aciklama=${encodeURIComponent(aciklamaValue)}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Option A: Reload the page
+                            window.location.reload();
+                        } else {
+                            // showPopUpModal is presumably a separate function for showing a normal popup
+                            showPopUpModal("Silme işleminde bir hata oluştu: " + data.error, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Fetch error:", err);
+                        showPopUpModal("Bağlantı hatası oluştu", 'error');
+                    });
+                });
+            });
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        const showAllCheckbox = document.getElementById('showAll');
+
+        function updateRowsVisibility() {
+            const showAll = showAllCheckbox.checked;
+
+            const zeroRows = document.querySelectorAll('tr[class="0"]');
+            zeroRows.forEach(row => {
+                row.style.display = showAll ? '' : 'none';
+            });
+        }
+
+        // Listen for changes on the checkbox
+        showAllCheckbox.addEventListener('change', updateRowsVisibility);
+
+        // Run once on page load to set initial visibility
+        updateRowsVisibility();
+    });
+</script>
+{% endblock body %}

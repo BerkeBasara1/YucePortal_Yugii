@@ -1,0 +1,155 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class="container">
+    <div class="rpaDescription">
+        <br>
+        <h3><a href="/fiktif_araclar_menu" class="returnBtn">Fiktif Araçlar Menü</a> >> Mail Tanımlama</h3>
+        <br>
+        <small>Eğer hem "to" hem "cc" alanını boş bırakırsanız, bayi otomatik olarak listeden çıkarılacaktır.</small>
+        <br>
+        <hr>
+        <br>
+    </div>
+    <div class="rpaContent">
+        <form id="rpaForm" method="post" enctype="multipart/form-data" style="width: 80%;">
+            <div class="scroll_table_div">
+                <table class="arac2elTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 3%;">Bayi Adı</th>
+                            <th>To</th>
+                            <th>CC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bayii in mailing_results %}
+                            <tr>
+                                <td style="font-weight: bold;">{{ bayii[5] }}</td>
+                                <td class="table_input_cell">
+                                    {% if bayii[2] != "None" %}
+                                        {{ render_field(form.bayi_to, class="form-control", id=bayii[0]~"-to", value=bayii[2]) }}
+                                    {% else %}
+                                        {{ render_field(form.bayi_to, class="form-control", id=bayii[0]~"-to") }}
+                                    {% endif %}
+                                </td>
+                                <td class="table_input_cell">
+                                    {% if bayii[3] != "None" %}
+                                        {{ render_field(form.bayi_cc, class="form-control", id=bayii[0]~"-cc", value=bayii[3]) }}
+                                    {% else %}
+                                        {{ render_field(form.bayi_cc, class="form-control", id=bayii[0]~"-cc") }}
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <div class="center_item" style="width: 60%;">
+                {{ render_field(form.mail_subject, class="form-control", id="mail_subject", readonly=True) }}
+                <br><br>
+                {{ render_field(form.mail_body, class="form-control", style="height: 200px", id="mail_body", readonly=True) }}
+            </div>
+
+            <br>
+            <button type="button" id="Kaydet" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+</div>
+<br>
+<div id="PopUpModal" class="modal" style="display:none;">
+    <div class="PopUpModalContainer">
+        <div class="PopUpModalContent">
+            <span id="popUpIcon"></span>
+            <br><br>
+            <span id="popUpText"></span>
+        </div>
+        <br>
+        <div class="PopUpModalButton">
+            <button type="button" class="btn btn-primary">Tamam</button>
+        </div>
+    </div>
+</div>
+<script>
+    function Send_Email_TO_CC_() {
+        return new Promise((resolve, reject) => {
+            const data = [];
+
+            // Collect 'To' and 'Cc' fields for each bayi
+            const bayiToInputs = document.querySelectorAll('input[id$="-to"]');
+            const bayiCcInputs = document.querySelectorAll('input[id$="-cc"]');
+
+            bayiToInputs.forEach(input => {
+                const id = input.id;  // Get the ID of the input field (e.g., '123-to')
+                const value = input.value.trim();  // Get the value of the input field
+
+                data.push({
+                    id: id,  // Push the ID and value for each bayi
+                    value: value
+                });
+            });
+
+            bayiCcInputs.forEach(input => {
+                const id = input.id;  // Get the ID of the input field (e.g., '123-cc')
+                const value = input.value.trim();  // Get the value of the input field
+
+                data.push({
+                    id: id,  // Push the ID and value for each bayi
+                    value: value
+                });
+            });
+
+            // Collect mailSubject and mailBody
+            const mailSubject = document.getElementById('mail_subject').value.trim();
+            const mailBody = document.getElementById('mail_body').value.trim();
+
+            data.push({
+                mailSubject: mailSubject,
+                mailBody: mailBody
+            });
+
+            // Send the data to the API
+            fetch('/Fiktif_Araclar/Update_Mail_info', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        console.log('Emails saved successfully!');
+                        resolve();
+                    } else {
+                        console.error('Error saving emails:', result.error);
+                        reject(result.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    reject(error);
+                });
+        });
+    }
+
+    // Button click event handler
+    const kaydetButton = document.getElementById('Kaydet');
+    kaydetButton.addEventListener('click', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+        Send_Email_TO_CC_().then(() => {
+            showPopUpModal('Değişiklikler başarıyla kaydedildi', 'check', function() {
+                location.reload();
+            });
+        }).catch(error => {
+            showPopUpModal('Değişiklikler kaydedilemedi', 'error', function() {
+                console.error('Failed to save emails:', error);
+            });
+        });
+    });
+
+</script>
+{% endblock body %}

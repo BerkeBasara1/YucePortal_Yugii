@@ -1,0 +1,36 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription" style="margin-left:30px;">
+        <br>
+        <h3>Bayi Hedef Gönderme</h3>
+        <br>
+        <small>Mail adresinizi girerken lütfen şirket içi kullanımda kullandığımız formatta, yani "dogao@skoda.com.tr" gibi giriniz.</small>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data">
+            <div class="side-by-side_between center_item">
+                <div style="width: 50%">
+                    {{ render_field(form.year, class = "form-control") }}
+                    {{ render_field(form.month, class = "form-control") }}
+                </div>
+                <div style="width: 50%">
+                    {{ render_field(form.email, class = "form-control") }}
+                    {{ render_field(form.password, class = "form-control") }}
+                </div>
+            </div>
+            <div class="center_item" style="width: 90%;">
+                {{ render_field(form.file1, class = "form-control") }}
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Hedef Gönder</button>
+        </form>
+    </div>
+</div>
+<br>
+{% endblock body %}

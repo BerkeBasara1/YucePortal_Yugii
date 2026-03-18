@@ -1,0 +1,127 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div id="rpaPlatform" style="margin: 0 3% !important;">
+    <div class="rpaDescription">
+        <br>
+        <h3>Dashboard Yetkilendirme</h3>
+        <br>
+        <small><a href="https://dashboard.skoda.com.tr/" target="_blank" id="dashboardLink">Skoda Dashboard</a>'un YS kullanıcıları yetkilerini buradan görüntüleyebilir veya yeni kayıt oluşturabilirsiniz.</small>
+        <br>
+        <hr>
+        <br>
+        <br>
+        <div class="platformContainer">
+            <form id="rpaForm" method="post" enctype="multipart/form-data" style="margin-left:5%; margin-right:5%;">
+                <div class="center_item" style="width: 60%;">
+                    <div class="side-by-side">
+                        <div>
+                            {{ render_field(form.bayi_adi, class="form-control", id="bayi_adi") }}
+                        </div>
+                        <div>
+                            {{ render_field(form.user_email, class="form-control", id="user_email") }}
+                        </div>
+                        <div>
+                            {{ render_field(form.satis, class="form-control", id="satis")}}
+                        </div>
+                        <div>
+                            {{ render_field(form.servis, class="form-control", id="servis") }}
+                        </div>
+                        <div>
+                            {{ render_field(form.aktif_pasif, class="form-control", id="aktif_pasif", checked="checked" if form.aktif_pasif.data else None) }}
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div style="text-align: center; margin-top:15px;">
+                    <button id="addUser" type="submit" class="btn btn-primary">Kullanıcı Ekle&nbsp;&nbsp;<i class="fa-solid fa-arrow-down"></i></button>
+                </div>
+            </form>
+            <br>
+            <hr style="margin-left: 30px; margin-right: 30px;">
+            <div style="text-align: right;margin-right: 3%;">
+                <button id="saveBtn" type="button" class="btn btn-primary" style="min-width: 10%;"><i class="fa-regular fa-floppy-disk"></i>&nbsp;&nbsp;Kaydet</button>
+            </div>
+            <br>
+            <div class="rpaContent">
+                <div id="tableContainer" style="overflow: visible;">
+                    <table class="arac2elTable">
+                        <thead>
+                            <th style="width: 12%;">Bayi Adı</th>
+                            <th style="width: 15%;">YS Kullanıcı email</th>
+                            <th style="width: 4%;">Satış</th>
+                            <th style="width: 4%;">Servis</th>
+                            <th style="width: 4%;">Aktif/Pasif</th>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr id="{{ user[0] }}">
+                                    <td>{{ user[7] }}</td>
+                                    <td>{{ user[2] }}</td>
+                                    <td>{{ "Evet" if user[3] == 1 else "-" }}</td>
+                                    <td>{{ "Evet" if user[4] == 1 else "-" }}</td>
+                                    <td><input type="checkbox" name="aktif_pasif" class="form-control" id="aktif_pasif_{{ user[0] }}" {% if user[5] == 1 %} checked {% endif %}></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+<br>
+</div>
+<style>
+    #dashboardLink {
+        color: #F7B046;
+        text-decoration: underline;
+    }
+
+    .arac2elTable input[type="checkbox"] {
+        width: 25px;
+        height: 25px;
+    }
+</style>
+<script>
+    document.getElementById('saveBtn').addEventListener('click', function () {
+        const tableRows = document.querySelectorAll('.arac2elTable tbody tr');
+        const dataToSend = [];
+
+        tableRows.forEach(row => {
+            const rowId = row.id;
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            const isChecked = checkbox.checked ? 1 : 0;
+
+            dataToSend.push({
+                id: rowId,
+                aktif_pasif: isChecked
+            });
+        });
+
+        fetch('/update_dashboard_yetkilendirme', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend),
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong');
+            }
+        })
+        .then(data => {
+            location.reload();
+        })
+        .catch(error => {
+            alert('An error occurred: ' + error.message); // Show error message
+            console.error(error);
+        });
+    });
+
+</script>
+{% endblock body %}

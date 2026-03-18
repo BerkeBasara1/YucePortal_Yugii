@@ -1,0 +1,307 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+
+<div class="main-container">
+  <div class="posts-container">
+    {% for post in posts %}
+    <div class="post-card">
+      <div class="post-info">
+        <p class="department_post_owner">{{ post.department }}</p>
+        <p class="timestamp"><small>{{ post.timestamp }}</small></p>
+      </div>
+      <div class="post-image" style="background-color: transparent;">
+        <img src="{{ post.image_url or '../static/default-image.png' }}" alt="{{ post.title }}">
+      </div>
+      <div class="post-content">
+        <h4>{{ post.title }}</h4>
+        <div>{{ post.content | safe }}</div>
+    </div>    
+    </div>
+    {% endfor %}
+  {% if session["departman"] == "Bilgi Teknolojileri" %}
+  </div>
+  <a href="/create_post">
+    <div class="floatingButton" onclick="handleClick()">
+      <i class="fa fa-plus"></i><span class="buttonSpan">&nbsp;&nbsp;Duyuru Paylaş</span>
+    </div>
+  </a>
+  <a href="/view&editposts_from">
+    <div class="floatingButton" id="edit_news" onclick="handleClick()">
+      <i class="fa-solid fa-pencil"></i><span class="buttonSpan">&nbsp;&nbsp;Duyuruları Düzenle</span>
+    </div>
+  </a>
+  {% endif %}
+  
+  <div class="shortcuts-container" style="overflow: auto;">
+    <h3 class="shortcutHeader">Kısayollar</h3>
+    <a href="https://turkuaz.dohas.com.tr/Admin/UILogin.aspx?ReturnUrl=%2f&__019395E80B9C__=AVDXGkdo__&t=1733386832796T" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='TurkuazLogin.png') }}"></div></a>
+    <a href="http://ikon.skoda.com.tr/ss/signin?returnUrl=%2Fdashboard" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='ikon_Image.png') }}"></div></a>
+    <a href="https://skoda-yuce-auto.atlassian.net/jira/projects?page=1&sortKey=name&sortOrder=ASC" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='Jira_Image.png') }}"></div></a>
+    <a href="https://grp.cpn.vwg/isam/sps/authsvc/policy/grpuidpw?Target=https://grp.cpn.vwg/" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='GRP.png') }}"></div></a>
+    <a href="https://dashboard.skoda.com.tr/" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='Skoda_Dashboard.png') }}"></div></a>
+    <a href="https://www.skodaakademi.com/Home/Login" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='skodaakademi.png') }}"></div></a>
+    <a href="https://urunportali.skoda.com.tr/" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='UrunPortal.jpeg') }}"></div></a>
+    <a href="https://www.road2skoda.com/session/new" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='road2skoda.png') }}"></div></a>
+    <a href="https://portal.skoda-auto.com/eai/b2x-auth/login?authlevel=" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='b2b_portal.png') }}"></div></a>
+    <a href="https://destek.skoda.com.tr/#!/login" target="_blank" class="shortcut-box"><div class="card"><img src="{{ url_for('static', filename='TYS.png') }}"></div></a>
+    <a href="https://talep.dohas.com.tr/" target="_blank" class="shortcut-box">Turkuaz TYS</a>
+  </div>
+</div>
+<style>
+  /* Main container for posts and shortcuts */
+  .main-container {
+    display: flex;
+    justify-content: space-between; /* Space between posts and shortcuts */
+    gap: 20px;
+    padding: 20px;
+  }
+
+  /* Posts container */
+  .posts-container {
+    display: flex;
+    flex-direction: column; /* Stack posts vertically */
+    width: 100%; /* Default to full width */
+    gap: 20px; /* Space between posts */
+    transition: width 0.3s; /* Smooth width change */
+  }
+
+  /* Shortcuts container (fixed on larger screens) */
+  .shortcuts-container {
+    background-color: #E3E5E6;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%; /* Default to full width on small screens */
+    position: relative; /* Default positioning */
+    top: 0;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .dark-mode .shortcuts-container {
+    background-color: black;
+  }
+
+  /* Shortcut boxes */
+  .shortcut-box {
+    background-color: #0E3A2F;
+    color: #78FAAE;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    width: 75%;
+    padding: 3px;
+    transition: background-color 0.5s ease, width 0.5s ease;
+  }
+
+  .shortcut-box:hover {
+    background-color: #78FAAE;
+    width: 80%;
+  }
+
+  a.shortcut-box {
+    text-decoration: none;
+  }
+
+  .dark-mode .shortcut-box:hover {
+    background-color: #F7B046
+  }
+
+  .shortcutHeader {
+    color: #0E3A2F;
+  }
+
+  .dark-mode .shortcutHeader{
+    color: #78FAAE;
+  }
+
+  .card {
+    background-color: transparent;
+  }
+
+  .card img {
+    height: 120px;
+    border-radius: 10px;
+    border: none;
+  }
+
+  /* Post cards */
+  .post-card {
+    background-color: #e3e5e6;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    width: 75%; /* Adjust width for better centering */
+    margin: 0 auto; /* Center the post cards horizontally */
+    border: 1px solid #A0A7A8;
+  }
+  
+  .dark-mode .post-card {
+    border: 1px solid black;
+    background-color: black;
+  }
+
+  .post-image img {
+    width: 100%; /* Make the image span the entire post width */
+    max-height: 500px;
+    object-fit: contain;
+  }
+
+  .post-content {
+    padding: 20px;
+    background-color: #E3E5E6;
+    color: #0E3A2F;
+  }
+
+  .dark-mode .post-content {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+  }
+
+  .post-content h4 {
+    margin: 0 0 10px;
+    font-size: 24px; /* Adjust font size for title */
+    font-weight: bold;
+  }
+
+  .post-content p {
+    margin: 0;
+    font-size: 16px; /* Adjust font size for content */
+    line-height: 1.5; /* Add better line spacing */
+  }
+
+  .post-content img {
+    max-width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Prevent inline behavior and any text wrapping */
+    margin: 10px 0; /* Optional: adds margin around images */
+  }
+
+  .post-info {
+    display: flex;
+    justify-content: space-between; /* Spread department and timestamp */
+    align-items: center;
+    justify-items: center;
+    background-color: #e3e5e6;
+    color: #0e3a2f; /* White text */
+    padding: 10px 20px;
+    font-size: 18px; /* Adjust font size */
+    font-weight: bold;
+  }
+
+  .dark-mode .post-info {
+    background-color: black;
+  }
+
+  .post-info p {
+    margin-bottom: 0;
+  }
+
+  /* Fixed position on larger screens */
+  @media (min-width: 768px) {
+    .shortcuts-container {
+      width: 20%;
+      position: fixed; /* Make it fixed on larger screens */
+      right: 0px; /* Add space from the right edge */
+      top: 60px; /* Adjust to the height of the navbar (adjust as necessary) */
+    }
+
+    .posts-container {
+      padding:10px 0px;
+      border-radius: 10px;
+      background-color:transparent;
+      opacity: 95%;
+      width: 80%;
+    }
+  }
+
+  /* Hide shortcuts on smaller screens */
+  @media (max-width: 767px) {
+    .shortcuts-container {
+      display: none; /* Hide the shortcuts on smaller devices */
+    }
+
+    .posts-container {
+      width: 100%; /* Ensure posts take the full width */
+    }
+
+    .post-card {
+      width: 90%;
+    }
+  }
+
+  .floatingButton {
+    position: fixed;
+    bottom: 20px;
+    right: 21%;
+    width: 60px;
+    height: 60px;
+    background-color: #0E3A2F;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.3s ease, width 0.3s ease, border-radius 0.3s ease;
+  }
+
+  .floatingButton i {
+    color: #78FAAE;
+  }
+
+  .floatingButton:hover {
+    background-color: #78FAAE;
+    width: 180px;
+    border-radius: 15px;
+  }
+
+  .floatingButton:hover i {
+   color: #0E3A2F;
+  }
+
+  .dark-mode .floatingButton {
+    background-color: #78FAAE;
+  }
+
+  .dark-mode .floatingButton i {
+    color: #0E3A2F;
+  }
+
+  .dark-mode .floatingButton:hover {
+    background-color: #F7B046;
+  }
+
+  .dark-mode .floatingButton:hover i {
+    color: #0E3A2F;
+  }
+
+  .buttonSpan {
+    display: flex;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    color: transparent;
+    transition: width 0.3s ease, color 0.3s ease;
+  }
+
+  .floatingButton:hover .buttonSpan {
+    width: auto;
+    color: #0E3A2F;
+  }
+
+  #edit_news {
+    bottom: 100px;
+  }
+</style>
+
+{% endblock body %}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haftanın En'leri</title>
+</head>
+<body>
+    <div style="display: flex;">
+        {% if birthdays | length <= 0 and anniversaries | length <= 0 %}
+            <div class="text-div_alone">
+                Sevgili Çalışma Arkadaşlarımız,
+                <br><br>
+                Haftanın En'leri" köşemizde bu hafta bir şeyler eksik: doğum günü mumları, kıdem kutlamaları! Maalesef kimse bu hafta sıraya girmemiş. 😊
+                <br>
+                Ama endişelenmeyin, biz hâlâ burada, her zamanki gibi kutlama yapmasak da birlikte olmanın mutluluğunu yaşıyoruz.
+                <br>
+                Önümüzdeki haftalarda yeniden duyurularımızla karşınızda olacağız. Şimdilik bu sessiz haftanın tadını çıkaralım. 🤗
+                <br><br>
+                Haftaya yeniden En'lerle görüşmek dileğiyle!
+                <br><br>
+                Saygılarımızla,
+                <br>
+                Yüce Auto İnsan Kaynakları Yönetimi
+            </div>
+        {% else %}
+            <div class="text-div">
+                Sevgili Çalışma Arkadaşlarımız,
+                <br><br>
+                Haftanın ‘En’ leri serimizle karşınızdayız!
+                <br>
+                Senin de Haftanın ‘En’ lerinde yayınlanmasını istediğin önerilerin<br>varsa bize her zaman yazabilirsin.
+                <br><br>
+                Gelecek hafta görüşmek üzere! 😊
+                <br><br>
+                Yüce Auto İnsan Kaynakları Yönetimi
+            </div>
+            <div class="template-container">
+                <p class="title">Haftanın En'leri</p>
+                <div>
+                    <img src='../static/phone.png' class="border-image">
+                    <img src='../static/Elroq.png' class="inside-image">
+                </div>
+                {% if birthdays | length >= 1 and anniversaries | length <= 0 %}
+                    <div id="birthday-container_alone" class="inner-container">
+                        <div><span class="text-title">Doğum Günü</span></div>
+                        <div id="birthday" class="text-area">
+                            {% for birthday in birthdays %}
+                                {{ birthday['name'] + " " + birthday['surname']}} - {{ birthday['day'] + " " + birthday['month']}}<br>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                {% elif birthdays | length <= 0 and anniversaries | length >= 1 %}
+                    <div id="kidem-container_alone" class="inner-container">
+                        <div><span class="text-title">Kıdem</span></div>
+                        <div id="kidem" class="text-area">
+                            {% for anniversary in anniversaries %}
+                                {{ anniversary['name'] + " " + anniversary['surname'] }} - {{ anniversary['years'] }}. Yıl<br>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                {% elif birthdays | length >= 0 and anniversaries | length >= 1 %}
+                    <div id="birthday-container" class="inner-container">
+                        <div><span class="text-title">Doğum Günü</span></div>
+                        <div id="birthday" class="text-area">
+                            {% for birthday in birthdays %}
+                                {{ birthday['name'] + " " + birthday['surname']}} - {{ birthday['day'] + " " + birthday['month']}}<br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div id="kidem-container" class="inner-container">
+                        <div><span class="text-title">Kıdem</span></div>
+                        <div id="kidem" class="text-area">
+                            {% for anniversary in anniversaries %}
+                                {{ anniversary['name'] + " " + anniversary['surname'] }} - {{ anniversary['years'] }}. Yıl<br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>    
+        {% endif %}
+    </div>
+</body>
+<style>
+    @font-face {
+        font-family: "SKODANextW05-Bold";
+        src: url("/static/Fonts/SKODANextW05-Bold.woff2") format("woff2"), url("SKODANextW05-Bold.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "SKODANextW05-Light";
+        src: url("/static/Fonts/SKODANextW05-Light.woff2") format("woff2"), url("SKODANextW05-Light.woff") format("woff");
+    }
+
+    body {
+        background-image: url('/static/enler_background-image.png');
+        background-size: 900px auto;
+        background-position: 0 0;
+        background-repeat: no-repeat;
+    }
+
+    .text-div {
+        font-family: 'SKODANextW05-Light', sans-serif;
+        margin-top: 280px;
+        margin-left: 75px;
+        text-wrap: wrap;
+        color: black;
+    }
+
+    .text-div_alone {
+        font-family: 'SKODANextW05-Light', sans-serif;
+        width: 700px;
+        margin-top: 180px;
+        margin-left: 75px;
+        text-wrap: wrap;
+        color: black;
+    }
+
+    .template-container {
+        font-family: 'SKODANextW05-Bold', sans-serif;
+        position: relative;
+        top: 130px;
+        left: 30px;
+        width: 200px;
+        height: auto;
+    }
+
+    .border-image {
+        width: 250px;
+        height: 500px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .inside-image {
+        position: absolute;
+        top: 0;
+        left: 5px;
+        width: 243px;
+        height: 490px;
+        border-radius: 40px;
+        z-index: 1;
+    }
+
+    .title {
+        position: absolute;
+        font-size: 23px;
+        top: 28px;
+        left: 40px;
+        z-index: 3;
+        color: #0E3A2F;
+        text-shadow: 2px 2px 5px rgba(14, 58, 47, 0.5);
+    }
+
+    .inner-container {
+        position: relative;
+    }
+
+    .text-title {
+        font-size: 15px;
+        position: relative;
+        z-index: 4;
+        margin-bottom: 0px;
+        margin-left: 16px;
+        background-color: rgba(120, 250, 174, 0.9);
+        padding: 2px 7px 0px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        color: #0E3A2F;
+        width: 200px;
+    }
+
+    .text-area {
+        position: absolute;
+        left: 16px;
+        background-color: rgba(241, 242, 242, 0.9);
+        width: 219px;
+        height: 120px;
+        z-index: 3;
+        padding: 0px 5px;
+        border-left: 5px solid #78FAAE;
+        box-shadow: 0px 4px 10px rgba(120, 250, 174, 0.5); 
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        text-wrap: wrap;
+        font-size: 13px;
+    }
+
+    #birthday-container {
+        position: absolute;
+        top: 95px;
+        width: 500px;
+    }
+
+    #birthday-container_alone {
+        position: absolute;
+        top: 180px;
+        width: 500px;
+    }
+
+    #kidem-container {
+        position: absolute;
+        top: 290px;
+        width: 500px;
+    }
+
+    #kidem-container_alone {
+        position: absolute;
+        top: 180px;
+        width: 500px;
+    }
+</style>
+</html>

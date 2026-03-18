@@ -1,0 +1,126 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/formshelpers.html" import render_field %}
+<div class = "container">
+    <div class="rpaDescription">
+        <br>
+        <h3>Faturaları PDF formatta bulma</h3>
+        <br>
+        <small>İhtiyacınız olan faturaları PDF formatta bir dosya içinde toplamak için kullanabilirsiniz.</small>
+        <br>
+        <br>
+        <small style="text-decoration:underline; font-weight:bold;">Lütfen aşağıdaki yönergelere uyunuz:</small>
+        <br>
+        <small>- Lütfen Excel dosyayı yükleyiniz.</small>
+        <br>
+        <small>- Yüklenen Excel'de tek bir sheet olduğundan emin olunuz.</small>
+        <br>
+        <small>- Verilerin 'A' sütununda olduğundan ve şasi no veya fatura no dışında bir değer olmadığından emin olunuz.</small>
+        <br>
+        <small>- "A1" hücresinde hiçbir veri olmadığından emin olunuz. Veriler "A2" hücresinden başlıyor olmalı.</small>
+        <br>
+        <small>- Her bir hücrede fatura no için 8 hane, Şasi no için 17 haneli veri olduğundan emin olunuz.</small>
+        <br>
+        <small>- Oluşturulacak Dosya ismini ismini giriniz ve "Çalıştır" butonuna basınız.</small>
+        <br>
+        <br>
+        <hr>
+        <br>
+    </div>
+
+    <div class="rpaContent">
+        <form id="rpaForm" method = "post" enctype="multipart/form-data">
+            {{ render_field(form.file1, class = "form-control") }}
+            <br>
+            {{ render_field(form.dosya_adi, class = "form-control") }}
+            <br>
+            <br>
+            <button type="submit" class="btn btn-primary">Çalıştır</button>
+        </form>
+    </div>
+    <div style="text-align: right;margin-right: 3%;">
+        <button id="ExcelBtn" type="button" class="btn btn-primary" style="min-width: 10%;"><i class="fa-regular fa-file-excel"></i>&nbsp;&nbsp;Eksik Faturaları Excel'e Al</button>
+    </div>
+    <!-- <div style="text-align: right;">
+        <br>
+        <button id="openModalBtn" class="btn btn-primary" style="margin-right:30px">Bulunamayan Faturalar için tıklayın</button>
+    </div>
+    <div id="myModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="side-by-side_between">
+                <button id="copyBtn"><i class="fa-solid fa-copy"></i> Kopyala</button>
+                <button id="closeModalBtn"  class="close-modal-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <br>
+            <p id="modalText">
+            {{ pdfsnotfound }}
+            </p>
+        </div>
+    </div> -->
+    <br>
+</div>
+<br>
+<script>
+    document.getElementById("ExcelBtn").addEventListener("click", function () {
+        window.location.href = "/download_missing_pdfs_excel";
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const modal = document.getElementById('myModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const modalText = document.getElementById('modalText');
+
+        openModalBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+
+        closeModalBtn.onclick = function(event) {
+            modal.style.display = 'none';
+        }
+
+        copyBtn.onclick = function() {
+            const textToCopy = modalText.innerText;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    showPopUpModal('Bulunamayan faturalar kopyalanmıştır.', 'check');
+                }, function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = textToCopy;
+                try {
+                    const successful = document.execCommand('copy');
+                    const msg = successful ? 'successful' : 'unsuccessful';
+                    console.log(msg);
+                    // alert('Bulunamayan faturalar kopyalanmıştır.');
+                    copyBtn.innerHTML = '<i class="fa-solid fa-check" style="color: #78faae"></i><span style="color: #0e3a2f"> Faturalar kopyalanmıştır.</span>'
+                } catch (err) {
+                    console.error('Unable to copy', err);
+                }
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    });
+
+    function setButtonToLoading() {
+      var button = document.querySelector('button[type="submit"]');
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor..';
+      button.disabled = true; // Prevent multiple form submissions
+      button.classList.add('loading');
+    }
+
+    document.querySelector('form').addEventListener('submit', function () {
+      setButtonToLoading();
+    });
+</script>
+{% endblock body %}

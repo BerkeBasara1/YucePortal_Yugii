@@ -1,0 +1,294 @@
+<link rel="icon" type="image/png" href="../static/Skoda Logo.png">
+<style>
+    .navbar {
+        position: relative;
+        background-color:#0E3A2F;
+    }
+
+    .navbar::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -2px; /* Adjust this value according to your border thickness */
+        width: 100%;
+        height: 7px; /* Adjust this value according to your border thickness */
+        background: linear-gradient(to bottom, #0E3A2F, #fff);
+    }
+
+    .navbar.dark-mode {
+        background-color: black; /* Black background */
+        border-bottom: 1px solid #78FAAE; /* Border color */
+    }
+
+    .navbar.dark-mode::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px; /* Adjust thickness for the gradient */
+        background: linear-gradient(to bottom, #0E3A2F, #0E3A2F); /* Dark gradient */
+    }
+
+    .navbar-nav a {
+        color: #78FAAE;
+        text-decoration: none;
+        position: relative;
+    }
+
+    .navbar-nav a::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 1px; /* Set the height of the underline */
+        background-color: #78FAAE;
+        transition: width 0.4s ease; /* Add a transition for width property */
+    }
+
+    .navbar-nav a:hover::before {
+        width: 100%; /* Expand the width on hover */
+    }
+
+    li a {
+        font-family: "SKODANextW02-Light", sans-serif;
+    }
+
+    .ml-auto {
+        align-items: center;
+    }
+    
+    .ios-toggle {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 28px;
+        margin: 0px 30px;
+    }
+
+    .ios-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #E3E5E6;
+        border-radius: 34px;
+        transition: 0.4s;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0px 3px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: #0E3A2F;
+        border-radius: 50%;
+        transition: 0.25s;
+    }
+
+    input:checked + .slider {
+        background-color: #78FAAE;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+</style>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse" style="align-items: baseline;">
+        <ul class="navbar-nav mr-auto">
+            {% if session["logged_in"] == True %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/index" style="color:#78FAAE">
+                        <i class="fa-solid fa-house" style="color:#78FAAE"></i><b> Anasayfa</b><span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if session["YA_user"] == True %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/organizasyon_data" style="color:#78FAAE">
+                        <i class="fa-solid fa-sitemap"></i> Organizasyon<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if session["YA_user"] == True %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/news_feed" style="color:#78FAAE">
+                        <i class="fa-regular fa-newspaper"></i> Duyurular<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if session["departman"] == 'Bilgi Teknolojileri' %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/haftalik_takvim" style="color:#78FAAE">
+                        <i class="fa-solid fa-calendar-days"></i> Haftalık Takvim<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+
+
+
+            {% if session["username"] == 'zeynepg' %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/YA_otopark_rezerve" style="color:#78FAAE">
+                        <i class="fa-solid fa-car"></i> Otopark<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if session["departman"] == 'Bilgi Teknolojileri' %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/YA_otopark_rezerve" style="color:#78FAAE">
+                        <i class="fa-solid fa-car"></i> Otopark<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+
+
+            {% if session["YA_user"] == True %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/dashboard" style="color:#78FAAE">
+                        <i class="fa-solid fa-arrow-up-9-1"></i> Sayaç<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if session["username"] == 'dogao' %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/rpa_dashboard" style="color:#78FAAE">
+                        <i class="fa-solid fa-robot"></i> RPA<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if session["departman"] == 'Bilgi Teknolojileri' %}
+                <li class="nav-item active" style="margin-left: 15px;">
+                    <a class="nav-link" href="/yuce_portal_log_kaydi?username=&requestedlink=&date_from=&date_to=&exclude_username1=dogao&exclude_username2=sevvalo&exclude_username3=busray" style="color:#78FAAE">
+                        <i class="fa-solid fa-eye"></i> Log<span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            {% if session["YA_user"] == True %}
+                <li class="nav-item">
+                    <label class="ios-toggle">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"><i class="fa-solid fa-moon" style="color: #0E3A2F;"></i><i class="fa-solid fa-sun"></i></span>
+                    </label>
+                </li>
+            {% endif %}
+            {% if session["departman"] == "Bilgi Teknolojileri" %}
+                <li class="nav-item dropdown active" style="margin-right: 15px;">
+                    <a class="nav-link dropdown-toggle" href="#" id="kayıtOluşturDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#78FAAE;">
+                        <i class="fa-solid fa-address-card"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="kayıtOluşturDropdown">
+                        <a class="dropdown-item" href="/register">Kayıt Oluştur (YA User)</a>
+                        <a class="dropdown-item" href="/register_bayii_user">Kayıt Oluştur (Bayii User)</a>
+                    </div>
+                </li>
+            {% endif %}
+            {% if session["logged_in"] == True %}
+                {% if session["YA_user"] == True %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/profile&settings" style="color:#78FAAE">
+                            <img src="{{ url_for('static', filename='users_card_photos/' + session['username'] + '.jpg') }}" alt="Image" style="width: 30px; height: 30px; border: 2px solid #78FAAE; border-radius: 50%;" onerror="this.onerror=null;this.src='{{ url_for('static', filename='Skoda Logo.png') }}';"> {{ session["name"] + " " + session["surname"]}}
+                        </a>
+                    </li>
+                    <li class="nav-item active" style="margin-left: 15px;">
+                        <a class="nav-link" href="/logout" style="color:#78FAAE;">
+                            <i class="fa-solid fa-right-from-bracket" style="color:#78FAAE"></i> Çıkış
+                        </a>
+                    </li>
+                {% elif session["YA_user"] == False %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/profile&settings_bayi" style="color:#78FAAE">
+                            <i class="fa fa-user" style="color:#78FAAE"></i> {{ session["name"] + " " + session["surname"]}}
+                        </a>
+                    </li>
+                    <li class="nav-item active" style="margin-left: 15px;">
+                        <a class="nav-link" href="/logout" style="color:#78FAAE;">
+                            <i class="fa-solid fa-right-from-bracket" style="color:#78FAAE"></i> Çıkış
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdownToggle = document.getElementById('kayıtOluşturDropdown');
+        var dropdownMenu = dropdownToggle.nextElementSibling;
+
+        // Toggle dropdown on click
+        dropdownToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Check if the dropdown is already visible
+            if (dropdownMenu.style.display === 'block') {
+                slideUp(dropdownMenu, 300);
+            } else {
+                slideDown(dropdownMenu, 300);
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            // If the clicked element is not the dropdown or inside the dropdown menu, close it
+            if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                if (dropdownMenu.style.display === 'block') {
+                    slideUp(dropdownMenu, 300);
+                }
+            }
+        });
+
+        // Function to slide down
+        function slideDown(element, duration) {
+            element.style.display = 'block';
+            element.style.height = '0px';
+            element.style.overflow = 'hidden';
+            element.style.transition = `height ${duration}ms ease-in-out`;
+
+            // Get the natural height of the element
+            var height = element.scrollHeight;
+
+            setTimeout(function () {
+                element.style.height = height + 'px';
+            }, 10); // Small timeout to ensure the height transition happens
+        }
+
+        // Function to slide up
+        function slideUp(element, duration) {
+            element.style.transition = `height ${duration}ms ease-in-out`;
+            element.style.height = '0px';
+
+            // Wait for the animation to complete before hiding it completely
+            setTimeout(function () {
+                element.style.display = 'none';
+                element.style.height = '';
+                element.style.overflow = '';
+            }, duration);
+        }
+    });
+
+</script>
+
+  
